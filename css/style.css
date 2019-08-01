@@ -1,5 +1,4 @@
 html {
-  height: 100%;
   font-size: 20px;
 }
 body {
@@ -14,6 +13,12 @@ body {
   font-size: 14px;
   font-family: Lato, Helvetica Neue For Number, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif;
   line-height: 2;
+  -webkit-text-size-adjust: 100%;
+}
+html,
+body,
+#container {
+  height: 100%;
 }
 a {
   text-decoration: none;
@@ -34,7 +39,9 @@ h2,
 h3,
 h4,
 h5,
-p {
+h6,
+p,
+div {
   margin: 0;
 }
 * {
@@ -45,6 +52,22 @@ table {
   width: 100%;
   border-spacing: 0;
   border-collapse: collapse;
+}
+.outer {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.left,
+.alignleft {
+  float: left;
+}
+.right,
+.alignright {
+  float: right;
+}
+.clear {
+  clear: both;
 }
 @media screen and (min-width: 768px) {
   #recent-posts {
@@ -246,14 +269,12 @@ table {
   font-family: "Source Code Pro", Consolas, Monaco, Menlo, Consolas, monospace;
 }
 .article-entry .highlight table {
-  position: relative;
-  margin: 0;
   width: auto;
   border: none;
 }
 .article-entry .highlight table td {
   padding: 0;
-  border: none;
+  border: none !important;
 }
 .article-entry .highlight .gutter {
   display: none;
@@ -452,7 +473,7 @@ table {
 .article-sort-item__time {
   position: absolute;
   top: 0.1rem;
-  color: #99a9bf;
+  color: $theme-link-color;
 }
 .article-sort-item__title {
   display: block;
@@ -602,6 +623,13 @@ table {
   padding: 0 0 0 0.8rem;
   list-style: none;
 }
+#post ul ul,
+#post ol ul,
+#post ul ol,
+#post ol ol {
+  margin-top: 0;
+  margin-bottom: 0;
+}
 #post ul {
   list-style: disc;
 }
@@ -655,6 +683,21 @@ table {
   margin-top: line-height;
   margin-bottom: line-height;
 }
+#post table {
+  width: 100%;
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+#post table th {
+  font-weight: bold;
+  border-bottom: 3px solid #ddd;
+  text-align: left;
+}
+#post table td {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
 #post img,
 #post video {
   max-width: 100%;
@@ -681,7 +724,7 @@ table {
 #post blockquote footer {
   font-size: font-size;
   margin: line-height 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-family: font-sans;
 }
 #post blockquote footer cite:before {
   content: "—";
