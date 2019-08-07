@@ -1,59 +1,33 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="原型-原型链"><meta name="keywords" content="javascript"><meta name="author" content="Yin-Hongwei"><meta name="copyright" content="Yin-Hongwei"><title>Hongwei Blog</title><link rel="icon" href="/favicon.ico"><!--link(rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css")--><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"></head><body><header id="header" style="background-image: url(/img/005.jpg)"><nav id="navbar"><span class="nav-left"><a id="site-name" href="/">Hongwei Blog</a></span><i class="fa fa-bars toggle-menu nav-right" aria-hidden="true"></i><span class="nav-right menus"><a class="site-page" href="/about">关于</a><a class="site-page" href="/archives">存档</a><a class="site-page" href="/tags">标签</a></span></nav><div id="site-info"><div id="site-title">Hongwei Blog</div><div id="site-sub-title">非学无以广才，非志无以成学</div><div id="site-social-icons"><a class="social-icon" href="yinhongwei96@126.com" target="_blank"><i class="fa-envelope-o fa"></i></a><a class="social-icon" href="https://github.com/Yin-Hongwei" target="_blank"><i class="fa-github fa"></i></a><a class="social-icon" href="https://weibo.com/u/6746100432?topnav=1&amp;wvr=6&amp;topsug=1" target="_blank"><i class="fa-weibo fa"></i></a></div></div></header><article id="content-outer"><section id="content-inner"><article class="article-entry" id="post"><h1>原型-原型链</h1><h3 id="一-原型"><a href="#一-原型" class="headerlink" title="一 原型"></a>一 原型</h3><h4 id="1-原型对象"><a href="#1-原型对象" class="headerlink" title="1.原型对象"></a>1.原型对象</h4><ul>
-<li>每个函数都有一个 prototype （原型）属性，它指向一个对象，这个对象就是原型对象。默认情况下，原型对象上都有一个 constructor （构造函数）属性，它是一个指向 prototype 属性所在函数的指针。</li>
-<li>创建自定义构造函数后，其原型对象默认只会取得 constructor 属性，其他方法都是从 object 继承而来。</li>
-<li>通过原型可以创建自定义类型，所有引用类型也都在其构造函数的原型上定义了方法，可以通过原生对象的原型取得默认方法的引用，也可以定义新方法（不推荐）。</li>
-</ul>
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="原型-原型链"><meta name="keywords" content="JavaScript"><meta name="author" content="Yin-Hongwei"><meta name="copyright" content="Yin-Hongwei"><title>Hongwei Blog</title><link rel="icon" href="/favicon.ico"><!--link(rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css")--><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"></head><body><header id="header" style="background-image: url(/img/005.jpg)"><nav id="navbar"><span class="nav-left"><a id="site-name" href="/">Hongwei Blog</a></span><i class="fa fa-bars toggle-menu nav-right" aria-hidden="true"></i><span class="nav-right menus"><a class="site-page" href="/about">关于</a><a class="site-page" href="/archives">存档</a><a class="site-page" href="/tags">标签</a></span></nav><div id="site-info"><div id="site-title">Hongwei Blog</div><div id="site-sub-title">非学无以广才，非志无以成学</div><div id="site-social-icons"><a class="social-icon" href="yinhongwei96@126.com" target="_blank"><i class="fa-envelope-o fa"></i></a><a class="social-icon" href="https://github.com/Yin-Hongwei" target="_blank"><i class="fa-github fa"></i></a><a class="social-icon" href="https://weibo.com/u/6746100432?topnav=1&amp;wvr=6&amp;topsug=1" target="_blank"><i class="fa-weibo fa"></i></a></div></div></header><article id="content-outer"><section id="content-inner"><article class="article-entry" id="post"><h1>原型-原型链</h1><h2 id="原型"><a href="#原型" class="headerlink" title="原型"></a>原型</h2><h4 id="1-原型对象、构造函数、实例对象的关系"><a href="#1-原型对象、构造函数、实例对象的关系" class="headerlink" title="1.原型对象、构造函数、实例对象的关系"></a>1.原型对象、构造函数、实例对象的关系</h4><p>每个函数都有一个 prototype 属性，它指向一个对象，这个对象就是原型对象。</p>
+<p>默认情况下，原型对象上都有一个 constructor 属性，它是一个指向 prototype 属性所在函数的指针。</p>
+<p>当调用构造函数创建一个实例后，该对象实例内部有个 <strong>proto</strong> 属性，指向构造函数的原型对象。</p>
 <a id="more"></a>
-<h4 id="2-原型对象和对象实例的关系"><a href="#2-原型对象和对象实例的关系" class="headerlink" title="2.原型对象和对象实例的关系"></a>2.原型对象和对象实例的关系</h4><ul>
-<li>当调用构造函数创建一个实例后，该对象实例内部有个 __proto__ 属性，指向构造函数的原型对象。</li>
-<li><p>实例和原型之间的连接是一个指针，不是副本，所以原型中的属性变化实例在访问时会反应出来</p>
-</li>
-<li><p>确定一个实例是否指向一个构造函数的原型对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">console.log(Object.__proto__ === Function.prototype) //true</span><br><span class="line"></span><br><span class="line">console.log(Function.__proto__ === Object.prototype) //false</span><br><span class="line"></span><br><span class="line">console.log(Function.__proto__ === Function.prototype) //true</span><br><span class="line"></span><br><span class="line">console.log(Function.prototype.__proto__ === Object.prototype) //true</span><br><span class="line"></span><br><span class="line">console.log(Object.prototype.__proto__ === null) //true</span><br><span class="line"></span><br><span class="line">// 函数上的__proto__继承自Function.prototype，对象上的__proto__继承自Object.prototype。</span><br></pre></td></tr></table></figure>
+<p>确定一个实例是否指向一个构造函数的原型</p>
 <ul>
 <li>isPrototypeOf()：返回布尔值</li>
 <li>Object. getPrototypeOf()：返回对象实例指向的原型对象</li>
 </ul>
-</li>
-</ul>
-<h4 id="3-原型对象上的属性和对象实例之间的关系"><a href="#3-原型对象上的属性和对象实例之间的关系" class="headerlink" title="3.原型对象上的属性和对象实例之间的关系"></a>3.原型对象上的属性和对象实例之间的关系</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Person</span> (<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line">Person.prototype.name = <span class="string">'Tom'</span>;</span><br><span class="line"></span><br><span class="line">person = <span class="keyword">new</span> Person();</span><br><span class="line"><span class="built_in">console</span>.log(person.name) <span class="comment">// Tom</span></span><br><span class="line"></span><br><span class="line">person.name = <span class="string">'Nike'</span></span><br><span class="line"><span class="built_in">console</span>.log(person.name) <span class="comment">// Nike</span></span><br></pre></td></tr></table></figure>
-<p><img src="/img/yuanxingduixiangshilli.jpg" width="600"></p>
+<h4 id="2-原型属性和实例之间的关系"><a href="#2-原型属性和实例之间的关系" class="headerlink" title="2.原型属性和实例之间的关系"></a>2.原型属性和实例之间的关系</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function Person () &#123;&#125;</span><br><span class="line"></span><br><span class="line">Person.prototype.name = &apos;Tom&apos;;</span><br><span class="line"></span><br><span class="line">person = new Person();</span><br><span class="line"></span><br><span class="line">console.log(person.name) // Tom</span><br><span class="line"></span><br><span class="line">person.name = &apos;Nike&apos;</span><br><span class="line"></span><br><span class="line">console.log(person.name) // Nike</span><br></pre></td></tr></table></figure>
 <ul>
-<li><p>当读取某个对象上的某个属性时，先在对象实例上搜索是否有给定名字的属性，如果找到返回对应的值，否则在原型对象中找，找到时返回。</p>
-</li>
-<li><p>可以通过对象实例访问保存在原型中的值，但不能通过对象实例重写原型中的值，通过”对象实例.属性 = 值’’的形式在修改对象属性时，这个属性假如不在对象实例上，而是在原型对象上，则它所执行的操作是在对象实例上创建了一个相同属性名的属性，并没有改变原型对象上的属性，在访问时候，对象实例会屏蔽原型对象上相同属性名的属性而读取对象实例上的属性。</p>
-</li>
-<li><p>hasOwnProperty() 方法检测一个属性存在于对象实例还是原型对象中，在对象实例上返回 true。</p>
-</li>
+<li>当读取某个对象上的某个属性时，先在实例上找，如果没找到就在原型中找，找到时返回。</li>
+<li>可以通过实例访问保存在原型中的值，但不能通过实例重写原型中的值，通过”实例.属性 = 值’’的形式在修改对象属性时，假如这个属性在原型对象上，则它所执行的操作是在对象实例上创建了一个相同属性名的属性，并没有改变原型对象上的属性，在访问时候，对象实例会屏蔽原型对象上相同属性名的属性而读取对象实例上的属性。</li>
 </ul>
-<h4 id="4-原型对象上属性的访问"><a href="#4-原型对象上属性的访问" class="headerlink" title="4.原型对象上属性的访问"></a>4.原型对象上属性的访问</h4><ul>
+<p>hasOwnProperty() 方法检测一个属性存在于实例还是原型中，在实例上返回 true。</p>
+<h4 id="3-原型属性的访问"><a href="#3-原型属性的访问" class="headerlink" title="3.原型属性的访问"></a>3.原型属性的访问</h4><ul>
 <li>单独使用 in 操作符：当通过对象能够访问到给定属性时返回 true。（通过hasOwnProperty()  和 in 操作符可以确定给定属性在对象实例还是原型对象上）</li>
 </ul>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'name'</span> <span class="keyword">in</span> person) <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">console.log(&apos;name&apos; in person) // true</span><br></pre></td></tr></table></figure>
 <ul>
 <li>使用for-in循环时，返回所有能通过对象访问的、可枚举的属性。（包括实例和原型上的属性）</li>
 <li>hasPrototypeProperty() 是当实例中没有给定属性而原型上有返回true，当实例重写了给定属性后就找不到了（因为原型中的该属性让屏蔽了），此时返回false。</li>
 <li>Object.keys()  方法接受一个对象作为参数，返回该对象上所有可枚举属性的字符串数组。（不向上找）</li>
 <li>Object.getOwnPropertyNames() 返回所以对象属性，无论是否可枚举。（不向上找）</li>
 </ul>
-<h4 id="5-原型对象的重写"><a href="#5-原型对象的重写" class="headerlink" title="5.原型对象的重写"></a>5.原型对象的重写</h4><ul>
+<h4 id="4-原型的重写"><a href="#4-原型的重写" class="headerlink" title="4.原型的重写"></a>4.原型的重写</h4><ul>
 <li>为了简写每次添加属性都要写一次 “构造函数.prototype“ 的写法，可以直接一次赋给它一个对象，然后将要添加的属性封装到那个对象中。但是问题是这样会导致原型对象的 constructor 不在指向该构造函数了，因为此操作相当于重写了默认的原型对象，所以此时的 constructor 指向的是 Object 构造函数，即无法用 constructor 确定对象类型了。所以在重写原型对象后，要同时修改它的 constructor 指向。</li>
 <li>重写原型对象会切断现有原型和任何之前已经存在的实例对象之间的联系，那些实例对象指向的仍然是之前的那个原型。</li>
 </ul>
-<p><img src="/img/chongxieyuanxing.png" width="600"></p>
-<h3 id="二-原型链"><a href="#二-原型链" class="headerlink" title="二 原型链"></a>二 原型链</h3><h4 id="1-概念"><a href="#1-概念" class="headerlink" title="1.概念"></a>1.概念</h4><ul>
-<li><p>构造函数、原型对象、实例的关系：每个构造函数都有一个原型对象，原型对象都包含一个指向构造函数的指针，而实例都包含一个指向原型对象的内部指针。</p>
-</li>
-<li><p>原型链：让一个原型对象等于另一个类型的实例，原型对象将包含一个指向另一个原型对象的指针，另一个原型中也包含着一个指向另一个构造函数的指针，假如另一个原型又是另一个类型的实例，这样层层递进，就构成了实例和原型的链条。</p>
-</li>
-</ul>
-<h4 id="2-确定原型和实例的关系"><a href="#2-确定原型和实例的关系" class="headerlink" title="2.确定原型和实例的关系"></a>2.确定原型和实例的关系</h4><ul>
-<li><p>instanceof</p>
-</li>
-<li><p>isPrototypeof()</p>
-</li>
-</ul>
-<h4 id="3-存在的问题"><a href="#3-存在的问题" class="headerlink" title="3.存在的问题"></a>3.存在的问题</h4><ol>
-<li>通过原型链实现继承时，不能使用对象字面量创建原型方法，这样会重写原型链。</li>
-<li>包含引用类型值的原型属性会被所有实例共享。（所以属性在构造函数中定义，不在原型中定义）</li>
-</ol>
+<h2 id="原型链"><a href="#原型链" class="headerlink" title="原型链"></a>原型链</h2><h4 id="1-概念"><a href="#1-概念" class="headerlink" title="1.概念"></a>1.概念</h4><p>让一个原型对象等于另一个类型的实例，原型对象将包含一个指向另一个原型对象的指针，另一个原型中也包含着一个指向另一个构造函数的指针，假如另一个原型又是另一个类型的实例，这样层层递进，就构成了实例和原型的链条。</p>
+<h4 id="2-存在的问题"><a href="#2-存在的问题" class="headerlink" title="2.存在的问题"></a>2.存在的问题</h4><p>1）通过原型链实现继承时，不能使用对象字面量原型方法，这样会重写原型链。<br>2）包含引用类型值的原型属性会被所有实例共享。（所以属性在构造函数中定义，不在原型中定义）</p>
 </article></section></article><footer id="footer-outer"><div id="footer-inner"><p class="footer-text">Copyright &copy; 2019</p><p class="footer-text">Designed by Yin-Hongwei</p></div></footer></body><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://hecdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="/js/main.js" defer></script></html>
