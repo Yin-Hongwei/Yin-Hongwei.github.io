@@ -10,7 +10,7 @@ body {
   min-height: 100%;
   background-color: #fff;
   color: #4c4948;
-  font-size: 14px;
+  font-size: 16px;
   font-family: Lato, Helvetica Neue For Number, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif;
   line-height: 2;
   -webkit-text-size-adjust: 100%;
@@ -265,7 +265,7 @@ table {
   margin: 5px 10px;
   padding: 15px 20px;
   overflow: auto;
-  line-height: 22.400000000000002px;
+  line-height: 25.6px;
   font-family: "Source Code Pro", Consolas, Monaco, Menlo, Consolas, monospace;
 }
 .article-entry .highlight table {
@@ -291,24 +291,6 @@ table {
 }
 #content-outer #content-inner {
   padding-bottom: 3rem;
-}
-#content-outer #content-inner h1,
-#content-outer #content-inner h2,
-#content-outer #content-inner h3,
-#content-outer #content-inner h4,
-#content-outer #content-inner h5,
-#content-outer #content-inner h6 {
-  cursor: pointer;
-  transition: all 0.2s ease-out;
-}
-#content-outer #content-inner h1:hover,
-#content-outer #content-inner h2:hover,
-#content-outer #content-inner h3:hover,
-#content-outer #content-inner h4:hover,
-#content-outer #content-inner h5:hover,
-#content-outer #content-inner h6:hover {
-  padding-left: 1rem;
-  color: #2aa3ef;
 }
 #content-outer #content-inner ul,
 #content-outer #content-inner ol,
@@ -643,16 +625,11 @@ table {
   margin: auto;
   background-color: #fff;
   color: color-default;
-  padding: 20px;
+  padding: 40px;
   border-radius: 4px;
   -webkit-box-shadow: 1px 1px 8px rgba(0,0,0,0.2);
   -moz-box-shadow: 1px 1px 8px rgba(0,0,0,0.2);
   box-shadow: 1px 1px 8px rgba(0,0,0,0.2);
-}
-#post p,
-#post table {
-  line-height: line-height;
-  margin: line-height 0;
 }
 #post h1,
 #post h2,
@@ -668,20 +645,14 @@ table {
 #post h4,
 #post h5,
 #post h6 {
-  line-height: line-height-title;
-  margin: line-height-title 0;
+  line-height: $line-height-title;
+  margin: $line-height-title 0;
 }
 #post a {
   color: #7a9eb8;
 }
 #post a:hover {
   color: #2aa3ef;
-}
-#post ul,
-#post ol,
-#post dl {
-  margin-top: line-height;
-  margin-bottom: line-height;
 }
 #post table {
   width: 100%;
@@ -719,7 +690,6 @@ table {
   font-family: $font-serif;
   font-size: 1.4em;
   margin: line-height 20px;
-  text-align: center;
 }
 #post blockquote footer {
   font-size: font-size;
@@ -766,28 +736,4 @@ table {
   width: 100%;
   height: 100%;
   margin-top: 0;
-}
-.article-gallery {
-  background: #000;
-  position: relative;
-}
-.article-gallery-photos {
-  position: relative;
-  overflow: hidden;
-}
-.article-gallery-img {
-  display: none;
-  max-width: 100%;
-}
-.article-gallery-img:first-child {
-  display: block;
-}
-.article-gallery-img.loaded {
-  position: absolute;
-  display: block;
-}
-.article-gallery-img img {
-  display: block;
-  max-width: 100%;
-  margin: 0 auto;
 }
