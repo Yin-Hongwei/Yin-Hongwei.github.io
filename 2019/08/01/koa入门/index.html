@@ -4,19 +4,26 @@
 <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><h3 id="1-ORM（Object-Relational-Mapping-对象关系映射）"><a href="#1-ORM（Object-Relational-Mapping-对象关系映射）" class="headerlink" title="1.ORM（Object Relational Mapping 对象关系映射）"></a>1.ORM（Object Relational Mapping 对象关系映射）</h3><p>我这里简单介绍一下。首先面向对象编程把所有实体看成对象（object），关系型数据库则是采用实体之间的关系（relation）连接数据，然后 ORM 就是把数据库映射成对象，这样的好处是我们操作数据库不再需要在去写 SQL语句，只需要操作实体对象的属性和方法就可以达到操作数据库的效果。映射关系如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">数据库的表（table） --&gt; 类（class）</span><br><span class="line"></span><br><span class="line">记录（record，行数据）--&gt; 对象（object）</span><br><span class="line"></span><br><span class="line">字段（field）--&gt; 对象的属性（attribute）</span><br></pre></td></tr></table></figure>
 <p>我这里 ORM 用的是<strong>Sequelize</strong>框架。对于<a href="http://www.ruanyifeng.com/blog/2019/02/orm-tutorial.html" target="_blank" rel="noopener">ORM</a> 更详细的描述，可以看看这里了解一下或者Google一下。</p>
+<h3 id="2-RESTful-API-设计指南"><a href="#2-RESTful-API-设计指南" class="headerlink" title="2.RESTful API 设计指南"></a>2.RESTful API 设计指南</h3><p>它是一种互联网应用程序的<em>API</em>设计理念，详情请看<a href="http://www.ruanyifeng.com/blog/2014/05/restful_api.html" target="_blank" rel="noopener">传送门</a>。</p>
 <h2 id="项目搭建"><a href="#项目搭建" class="headerlink" title="项目搭建"></a>项目搭建</h2><p>先看一下项目的结构。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">├── server // Koa 后端，用于提供Api</span><br><span class="line">│   ├── config // 配置文件夹，用来连接数据库</span><br><span class="line">|   |—— schema // 数据库表结构</span><br><span class="line">|   ├── modules // 模型</span><br><span class="line">│   ├── controllers // 控制器</span><br><span class="line">│   ├── routes // 路由</span><br><span class="line">|   |—— app.js // 入口文件</span><br><span class="line">│</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">├── server // Koa 后端，用于提供Api</span><br><span class="line">│   ├── config // 配置文件夹，用来连接数据库</span><br><span class="line">│   ├── schema // 数据库表结构</span><br><span class="line">│   ├── modules // 模型</span><br><span class="line">│   ├── controllers // 控制器</span><br><span class="line">│   ├── routes // 路由</span><br><span class="line">│   └── app.js // 入口文件</span><br></pre></td></tr></table></figure>
 <h3 id="1-环境配置"><a href="#1-环境配置" class="headerlink" title="1.环境配置"></a>1.环境配置</h3><p>开始之前先对环境进行配置。</p>
-<p>后端要存数据，当然就需要数据库，我这里用的是mysql，所以先安装mysql，数据库管理软件我用的是MySQL Workbench。</p>
+<blockquote>
+<p>mysql</p>
+</blockquote>
+<p>后端要存放数据，当然就需要数据库，我这里用的是mysql，所以先安装mysql，数据库管理软件我用的是MySQL Workbench。</p>
+<blockquote>
+<p>node</p>
+</blockquote>
 <p>koa项目是基于node的，所以需要安装node。项目的开发工具没啥说的。</p>
-<p>配置好项目需要的环境就开始做项目了。先创建一个文件夹，然后 <code>npm init</code> ，之后一路回车就行了。这是要建一个package.json文件，方便后面对包的管理。</p>
-<p>然后在server文件夹下再创建config、schema、modules、controllers、routes文件夹及app.js文件，下面就分好的这几部分进行介绍。</p>
-<h3 id="2-config"><a href="#2-config" class="headerlink" title="2. config"></a>2. config</h3><p>config 文件夹下创建 db.js 文件，利用 <strong>Sequelize</strong> 来连接数据库。</p>
-<h3 id="3-schema（数据表模型）"><a href="#3-schema（数据表模型）" class="headerlink" title="3.schema（数据表模型）"></a>3.schema（数据表模型）</h3><p>这里的主要功能就是利用 <strong>Sequelize</strong> 建立与数据表的对应关系，用于建表。</p>
-<h3 id="4-modules（模型）"><a href="#4-modules（模型）" class="headerlink" title="4.modules（模型）"></a>4.modules（模型）</h3><p>这里的功能是建立数据库表对应的一个对象。有关数据库 <strong>CRUD</strong> 的操作在这里实现，但是不是去用 SQL 语句去操作数据库，而是用 <strong>Sequelize</strong> 为我们提供的方法来实现。</p>
-<h3 id="5-controllers（控制器）"><a href="#5-controllers（控制器）" class="headerlink" title="5.controllers（控制器）"></a>5.controllers（控制器）</h3><p>这里用来处理接受到的请求，在处理请求的时候调用 modules 中的方法去处理数据，完成一些逻辑处理，最后返回响应。</p>
-<h3 id="6-routes（接口）"><a href="#6-routes（接口）" class="headerlink" title="6.routes（接口）"></a>6.routes（接口）</h3><p>这里用来设置前端访问的路径，访问到后将请求交给 controllers 中对应的控制器去处理。</p>
-<h3 id="7-app-js"><a href="#7-app-js" class="headerlink" title="7.app.js"></a>7.app.js</h3><p>这是项目的入口文件，用来加载中间件和设置项目监听的端口等等。</p>
+<h3 id="2-开始"><a href="#2-开始" class="headerlink" title="2.开始"></a>2.开始</h3><p>配置好项目需要的环境就开始做项目了。先创建一个数据库及表，再创建一个文件夹，我这里把它叫 server 先，然后 <code>npm init</code> ，之后一路回车就行了。这是要建一个package.json文件，方便后面对包的管理。</p>
+<p>然后在 server 文件夹下再创建config、schema、modules、controllers、routes 文件夹及 app.js 文件，要利用koa 来开发后端，主要就要弄明白这几个层次分别是做什么的，以及它们之间的工作联系，所以下面我就对这几层进行介绍。</p>
+<h3 id="1）config"><a href="#1）config" class="headerlink" title="1）config"></a>1）config</h3><p>config 文件夹下创建 db.js 文件，这里的主要功能就是利用 <strong>Sequelize</strong> 来连接数据库。</p>
+<h3 id="2）schema（数据表模型）"><a href="#2）schema（数据表模型）" class="headerlink" title="2）schema（数据表模型）"></a>2）schema（数据表模型）</h3><p>这里的主要功能就是利用 <strong>Sequelize</strong> 建立与数据表的对应关系，用于建表。</p>
+<h3 id="3）modules（对象模型）"><a href="#3）modules（对象模型）" class="headerlink" title="3）modules（对象模型）"></a>3）modules（对象模型）</h3><p>这里的功能是建立数据库表对应的一个对象。有关数据库 <strong>CRUD</strong> 的操作在这里实现，但是不是去用 SQL 语句去操作数据库，而是用 <strong>Sequelize</strong> 为我们提供的方法来实现。</p>
+<h3 id="4）controllers（控制器）"><a href="#4）controllers（控制器）" class="headerlink" title="4）controllers（控制器）"></a>4）controllers（控制器）</h3><p>这里用来处理接受到的请求，在处理请求的时候调用 modules 中的方法去处理数据，完成一些逻辑处理，最后返回响应。</p>
+<h3 id="5）routes（接口）"><a href="#5）routes（接口）" class="headerlink" title="5）routes（接口）"></a>5）routes（接口）</h3><p>这里用来设置前端访问的路径，访问到后将请求交给 controllers 中对应的控制器去处理。</p>
+<h3 id="6）app-js"><a href="#6）app-js" class="headerlink" title="6）app.js"></a>6）app.js</h3><p>这是项目的入口文件，用来加载中间件和设置项目监听的端口等等。</p>
 <h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>捋清楚项目的逻辑以后就可以开始做个 demo 练习一下了，我这里有一个利用 vue 和 koa 写的 demo，可以 clone 下来参考一下，<a href="https://github.com/Yin-Hongwei/koa-demo" target="_blank" rel="noopener">传送门</a>。</p>
 <p>如果对 vue 不了解，可以去<a href="https://cn.vuejs.org/v2/guide/" target="_blank" rel="noopener">官网</a>学习一下。这里也有一个 vue 入门的 demo。<a href="https://github.com/Yin-Hongwei/vue-demo" target="_blank" rel="noopener">传送门</a>。</p>
 </article></section></article><footer id="footer-outer"><div id="footer-inner"><p class="footer-text">Copyright &copy; 2019</p><p class="footer-text">Designed by Yin-Hongwei</p></div></footer></body><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://hecdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="/js/main.js" defer></script></html>
