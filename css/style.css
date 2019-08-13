@@ -97,8 +97,9 @@ table {
     width: 95%;
   }
 }
-#thread__wrapper .disqus-footer__wrapper {
-  display: none !important;
+#gitalk-container {
+  border-top: 1px solid #ddd;
+  margin-top: 30px;
 }
 #footer-outer {
   background-color: #242424;
@@ -448,7 +449,7 @@ table {
   color: #999 !important;
 }
 #post hr {
-  border: 1px dashed #ddd;
+  border: 1px solid #ddd;
 }
 #post strong {
   font-weight: bold;
@@ -502,7 +503,6 @@ table {
 }
 #post {
   margin: auto;
-  border-bottom: 1px solid #ddd;
 }
 #post h1,
 #post h2,

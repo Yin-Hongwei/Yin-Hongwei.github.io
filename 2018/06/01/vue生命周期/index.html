@@ -15,7 +15,7 @@
 <h4 id="7-beforeDestory（销毁前）"><a href="#7-beforeDestory（销毁前）" class="headerlink" title="7.beforeDestory（销毁前）"></a>7.beforeDestory（销毁前）</h4><p>组件销毁之前调用 ，在这一步，实例仍然完全可用。</p>
 <h4 id="8-destoryed（销毁后）"><a href="#8-destoryed（销毁后）" class="headerlink" title="8.destoryed（销毁后）"></a>8.destoryed（销毁后）</h4><p>组件销毁之后调用，对data的改变不会再触发周期函数，vue实例已解除事件监听和dom绑定，但dom结构依然存在</p>
 <h2 id="三-总结"><a href="#三-总结" class="headerlink" title="三 总结"></a>三 总结</h2><p>整个生命周期可以看成是 vue 实例的成长阶段，即出生到死亡，而八个钩子函数可以看成是在成长过程的几个时间点，即在该时间点 vue 实例具备了什么条件，可以做什么事情。我用下面过程在描述一下。😄<br>new Vue（创建一个Vue对象）<br>–&gt; beforeCreate<br>–&gt; observer Data(开始监控data对象数据变化）<br>–&gt; init event(vue内部初始化事件）<br>–&gt; created()<br>–&gt; compile(编译模板,把data里面的数据和模板生成html)<br>–&gt; beforeMount(还没有生成HTML到元素上)<br>–&gt; mounted(挂载完成，也就是模板中的html渲染到了html页面中）<br>–&gt; beforeUpdate (Vritual Dom)<br>–&gt; updated<br>–&gt; beforeDestroy<br>–&gt; destroyed    </p>
-<hr><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+<div id="gitalk-container"></div><script>var gitalk = new Gitalk({
   clientID: 'e238e2d1f25ec6e15026',
   clientSecret: '3c4e537d46a59d056e6c0cc478b04784defafcfb',
   repo: 'Yin-Hongwei.github.io',
