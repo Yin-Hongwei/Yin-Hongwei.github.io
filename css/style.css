@@ -97,6 +97,10 @@ table {
     width: 95%;
   }
 }
+#layout,
+#disqus_thread {
+  margin-top: 1rem;
+}
 #footer-outer {
   background-color: #242424;
   padding: 1rem;

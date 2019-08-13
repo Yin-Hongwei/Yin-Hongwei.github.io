@@ -30,4 +30,13 @@
 </ul>
 <h2 id="原型链"><a href="#原型链" class="headerlink" title="原型链"></a>原型链</h2><h4 id="1-概念"><a href="#1-概念" class="headerlink" title="1.概念"></a>1.概念</h4><p>让一个原型对象等于另一个类型的实例，原型对象将包含一个指向另一个原型对象的指针，另一个原型中也包含着一个指向另一个构造函数的指针，假如另一个原型又是另一个类型的实例，这样层层递进，就构成了实例和原型的链条。</p>
 <h4 id="2-存在的问题"><a href="#2-存在的问题" class="headerlink" title="2.存在的问题"></a>2.存在的问题</h4><p>1）通过原型链实现继承时，不能使用对象字面量原型方法，这样会重写原型链。<br>2）包含引用类型值的原型属性会被所有实例共享。（所以属性在构造函数中定义，不在原型中定义）</p>
-</article></section></article><footer id="footer-outer"><div id="footer-inner"><p class="footer-text">Copyright &copy; 2019</p><p class="footer-text">Designed by Yin-Hongwei</p></div></footer></body><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://hecdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="/js/main.js" defer></script></html>
+<hr><div id="disqus_thread"></div><script>var unused = null;
+var disqus_config = function () {
+  this.page.url = 'http://Yin-Hongwei.github.io/2018/10/19/原型/';
+  this.page.identifier = '2018/10/19/原型/';
+  this.page.title = '原型-原型链';
+}
+var d = document, s = d.createElement('script');
+s.src = "https://" + 'yinhongwei' +".disqus.com/embed.js";
+s.setAttribute('data-timestamp', '' + +new Date());
+(d.head || d.body).appendChild(s);</script><script id="dsq-count-scr" src="https://yinhongwei.disqus.com/count.js" async></script></article></section></article><footer id="footer-outer"><div id="footer-inner"><p class="footer-text">Copyright &copy; 2019</p><p class="footer-text">Designed by Yin-Hongwei</p></div></footer></body><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://hecdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="/js/main.js" defer></script></html>

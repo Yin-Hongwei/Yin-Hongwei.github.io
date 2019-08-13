@@ -5,4 +5,13 @@
 <h4 id="2-描述：-1"><a href="#2-描述：-1" class="headerlink" title="2.描述："></a>2.描述：</h4><p>同上，当执行到函数的时候，将函数压入调用栈，假如要调用浏览器的API，那么js引擎不会去管，因为那不是js引擎里的东西，所以浏览器继续向下执行，函数执行完就出栈，如果那个函数就是浏览器的API，出栈，而那个浏览器API会在回调队列里加入相应事件，当调用栈里的东西运行完清空后，会发生事件循环，即去读取回调队列，将那些事件相对应的回调函数压入调用栈去执行。</p>
 <hr>
 <p>😄😄😄以上为个人对事件循环（Event Loop）大致逻辑关系的理解。</p>
-</article></section></article><footer id="footer-outer"><div id="footer-inner"><p class="footer-text">Copyright &copy; 2019</p><p class="footer-text">Designed by Yin-Hongwei</p></div></footer></body><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://hecdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="/js/main.js" defer></script></html>
+<hr><div id="disqus_thread"></div><script>var unused = null;
+var disqus_config = function () {
+  this.page.url = 'http://Yin-Hongwei.github.io/2018/08/17/JS事件循环/';
+  this.page.identifier = '2018/08/17/JS事件循环/';
+  this.page.title = 'JavaScript 之 Event Loop';
+}
+var d = document, s = d.createElement('script');
+s.src = "https://" + 'yinhongwei' +".disqus.com/embed.js";
+s.setAttribute('data-timestamp', '' + +new Date());
+(d.head || d.body).appendChild(s);</script><script id="dsq-count-scr" src="https://yinhongwei.disqus.com/count.js" async></script></article></section></article><footer id="footer-outer"><div id="footer-inner"><p class="footer-text">Copyright &copy; 2019</p><p class="footer-text">Designed by Yin-Hongwei</p></div></footer></body><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://hecdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="/js/main.js" defer></script></html>
