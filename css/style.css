@@ -97,9 +97,8 @@ table {
     width: 95%;
   }
 }
-#layout,
-#disqus_thread {
-  margin-top: 1rem;
+#thread__wrapper .disqus-footer__wrapper {
+  display: none !important;
 }
 #footer-outer {
   background-color: #242424;
