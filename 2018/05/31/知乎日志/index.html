@@ -18,12 +18,12 @@
 <p>有些数据是直接拉的body，第二个是替换body中的图片的url</p>
 <p>4）还有一个就是有些页面拉取数据时候把css样式也拉取来，拉来之后在退出当前页面的时候要记得删除那个样式，不然等你去浏览其他页的时候会发现原来的结构变了，刷新一下又好了，那就是那个样式在作怪。</p>
 <p>5）此外要掌握一些组件，比如 mint-ui ， muse-ui ， element-ui等，这些东西很出效果，代码量小，很大的提高了开发效率看上去很多，但是知道了一个的原理，其他的看一眼就会了。</p>
-<hr><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+<hr><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
   clientID: 'e238e2d1f25ec6e15026',
   clientSecret: '3c4e537d46a59d056e6c0cc478b04784defafcfb',
   repo: 'https://github.com/Yin-Hongwei/Yin-Hongwei.github.io',
   owner: 'Yin-Hongwei',
   admin: 'Yin-Hongwei',
-  id: md5(decodeURI(location.pathname))
+  id: page.title
 })
 gitalk.render('gitalk-container')</script></article></section></article><footer id="footer-outer"><div id="footer-inner"><p class="footer-text">Copyright &copy; 2019</p><p class="footer-text">Designed by Yin-Hongwei</p></div></footer></body><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://hecdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="/js/main.js" defer></script></html>
