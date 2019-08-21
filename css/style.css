@@ -596,6 +596,9 @@ table {
   height: 100%;
   margin-top: 0;
 }
+.qrcode-img {
+  width: 100%;
+}
 .post-tag-list {
   font-weight: bold;
   padding: 0.5rem 0;
