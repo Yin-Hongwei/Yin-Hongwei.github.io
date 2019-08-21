@@ -390,8 +390,7 @@ table {
   margin: 0 0.4rem;
 }
 #pagination {
-  overflow: hidden;
-  margin-top: 1rem;
+  padding: 1rem 0;
 }
 #pagination .pagination {
   text-align: center;
@@ -542,13 +541,11 @@ table {
   height: auto;
   display: block;
   margin: 5px auto;
-  padding: 4px;
-  border: 1px solid #eaeefb;
   transition: all 0.2s;
 }
 #post img:hover,
 #post video:hover {
-  box-shadow: 0 0 8px 0 rgba(232,237,250,0.6), 0 2px 4px 0 rgba(232,237,250,0.5);
+  box-shadow: 0 0 8px 0 rgba(232,237,250,0.6);
 }
 #post iframe {
   border: none;
@@ -597,14 +594,18 @@ table {
   margin-top: 0;
 }
 .qrcode-img {
-  width: 100%;
+  width: 10rem;
+}
+.qrcode-desc {
+  text-align: center;
+  font-weight: bold;
 }
 .post-tag-list {
   font-weight: bold;
   padding: 0.5rem 0;
   border-bottom: 1px solid #ddd;
 }
-.post-tag {
+.post-tags {
   display: inline-block;
   margin: 0.4rem;
   padding: 0 0.5rem;
@@ -616,7 +617,7 @@ table {
   transition: all 0.2s ease-in-out;
   color: #4c4948 !important;
 }
-.post-tag:hover {
+.post-tags:hover {
   background: #000;
   color: #fff !important;
 }
