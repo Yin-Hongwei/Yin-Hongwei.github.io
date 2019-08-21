@@ -230,7 +230,7 @@ table {
 }
 #content-outer #recent-posts {
   margin: auto;
-  padding: 1rem;
+  padding: 1rem 1rem 0 1rem;
 }
 #content-outer .home-title {
   color: #000;
@@ -390,7 +390,8 @@ table {
   margin: 0 0.4rem;
 }
 #pagination {
-  margin-top: -20px;
+  overflow: hidden;
+  margin-top: 1rem;
 }
 #pagination .pagination {
   text-align: center;
@@ -419,7 +420,6 @@ table {
   color: #fff;
 }
 #pagination .pagination .extend {
-  width: 3rem;
   padding: 0 5px;
 }
 #pagination .pagination .current {
@@ -595,4 +595,25 @@ table {
   width: 100%;
   height: 100%;
   margin-top: 0;
+}
+.post-tag-list {
+  font-weight: bold;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #ddd;
+}
+.post-tag {
+  display: inline-block;
+  margin: 0.4rem;
+  padding: 0 0.5rem;
+  border: 1px solid #4c4948;
+  border-radius: 0.3rem;
+  background-color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  color: #4c4948 !important;
+}
+.post-tag:hover {
+  background: #000;
+  color: #fff !important;
 }
