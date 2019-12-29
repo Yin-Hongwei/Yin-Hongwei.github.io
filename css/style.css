@@ -535,15 +535,17 @@ table {
   border: none;
   border-collapse: collapse;
   border-spacing: 0;
+  margin: 10px 0;
 }
 #post table th {
   font-weight: bold;
-  border-bottom: 3px solid #ddd;
+  border: 2px solid #ddd;
   text-align: left;
+  padding: 10px 20px;
 }
 #post table td {
-  border-bottom: 1px solid #ddd;
-  padding: 10px 0;
+  border: 2px solid #ddd;
+  padding: 10px 20px;
 }
 #post img,
 #post video {
