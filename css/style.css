@@ -323,7 +323,7 @@ table {
   font-size: 2rem;
 }
 #about .article-container p:nth-of-type(1) {
-  width: 10rem;
+  width: 80%;
   margin: auto;
   position: relative;
 }
