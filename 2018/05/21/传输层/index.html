@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="传输层"><meta name="keywords" content="计算机网络"><meta name="author" content="Yin-Hongwei"><meta name="copyright" content="Yin-Hongwei"><title>传输层 | Hongwei Blog</title><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script></head><body><header id="page-header"><nav id="navbar"><span class="nav-left"><div class="tou-img"><img src="/img/tou.jpg"></div><a id="site-name" href="/">Hongwei Blog</a></span><i class="fa fa-bars toggle-menu nav-right" aria-hidden="true"></i><span class="nav-right menus"><a class="site-page" href="/about">关于</a><a class="site-page" href="/archives">存档</a><a class="site-page" href="/tags">标签</a></span></nav></header><article id="content-outer"><section id="content-inner"><article class="article-entry" id="post"><h1>传输层</h1><h2 id="一、基本概念"><a href="#一、基本概念" class="headerlink" title="一、基本概念"></a>一、基本概念</h2><h3 id="1、进程之间的通信"><a href="#1、进程之间的通信" class="headerlink" title="1、进程之间的通信"></a>1、进程之间的通信</h3><p>1）概念</p>
+<p>从IP层来说，通信的两端是两台主机，但是真正进行通信的实体是在主机中的进程，即一台主机的进程和另一台主机的进程交换数据。</p>
+<a id="more"></a>
+<p>2）作用</p>
+<ul>
+<li><p>传输层为相互通信的应用进程提供了逻辑通信</p>
+</li>
+<li><p>传输层还要对收到的报文进行差错检测</p>
+</li>
+<li><p>传输层提供面向连接和无连接的服务</p>
+</li>
+</ul>
+<p>3）传输层协议和网络层协议的主要区别</p>
+<ul>
+<li><p>IP协议：为主机之间提供逻辑通信</p>
+</li>
+<li><p>TCP和UDP：为应用进程之间提供端到端的逻辑通信</p>
+</li>
+</ul>
+<p><img src="https://img-blog.csdn.net/20180714005101694?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1lpbl9Ib25nd2Vp/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="img"><img src="data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==" alt="点击并拖拽以移动">​</p>
+<h3 id="2、传输层的端口"><a href="#2、传输层的端口" class="headerlink" title="2、传输层的端口"></a>2、传输层的端口</h3><p>1）端口的概念</p>
+<p>运行在计算机中的进程是用进程标识符来标志的。为了使运行不同操作系统的计算机的应用进程能够互相通信，就必须用统一的方法对 TCP/IP 体系的应用进程进行标志，解决这个问题的方法就是在传输层使用协议端口号或端口。虽然通信的终点是应用进程，但只要把要传送的报文交到目的主机的某一个合适的目的端口，剩下的工作（即最后交付目的进程）就由 TCP / UDP 来完成。端口号只具有本地意义，它只是为了标志本地计算机应用层的各个进程在和传输层交互时的层间接口。</p>
+<p>2）软件端口与硬件端口</p>
+<p>协议栈层间的抽象的协议端口是软件端口。路由器或交换机上的端口是硬件端口。硬件端口是不同硬件设备进行交互的接口，而软件端口是应用层的各种协议进程与运输实体进行层间交互的一种地址。 </p>
+<p>3）端口的分类</p>
+<p>（1）服务器端的端口</p>
+<ul>
+<li><p>熟知端口（0～1023）</p>
+<ul>
+<li>FTP：21</li>
+<li>TELNET：23</li>
+<li>SMTP：25</li>
+<li>DNS：53</li>
+<li>HTTP：80</li>
+<li>HTTPS：443</li>
+<li>RDP：3389</li>
+</ul>
+</li>
+<li><p>登记端口号（1024～49151）RDP：3389</p>
+</li>
+</ul>
+<p>（2）客户端口（49152～65535）留给客户进程选择暂时使用</p>
+<p>由此可见，两个计算机中的进程要互相通信，不仅必须知道对方的 IP 地址（为了找到对方的计算机），而且还要知道对方的端口号（为了找到对方计算机中的应用进程）</p>
+<h2 id="二、用户数据报协议-UDP"><a href="#二、用户数据报协议-UDP" class="headerlink" title="二、用户数据报协议 UDP"></a>二、用户数据报协议 UDP</h2><h3 id="1、UDP-概述"><a href="#1、UDP-概述" class="headerlink" title="1、UDP 概述"></a>1、UDP 概述</h3><p>1）概念：UDP协议只在IP的数据报服务之上增加了复用、分发及差错检测的功能。UDP 传送的数据单位协议是 UDP 报文或用户数据报</p>
+<p>2）UDP的主要特点</p>
+<ul>
+<li><p>是无连接的，即发送数据之前不需要建立连接</p>
+</li>
+<li><p>使用最大努力交付，即不保证可靠交付</p>
+</li>
+<li><p>是面向报文的【UDP对应用层交下来的报文，既不合并，也不拆分，而是保留这些报文的边界，即应用层交给UDP多长的报文，UDP就照样发送即一次发送一个报文。所以应用程序要选择合适大小的报文。传输层从IP层收到UDP数据报时，根据首部中的目的端口，把UDP数据报通过相应的端口，上交给应用进程。】</p>
+</li>
+<li><p>UDP没有拥塞控制，所以网络出现的拥塞不会使源主机的发送速率降低</p>
+</li>
+<li><p>支持一对一，一对一多，多对一，多对多的交互通信</p>
+</li>
+<li><p>首部开销小，只有8个字节</p>
+</li>
+</ul>
+<h3 id="2、UDP-的首部格式"><a href="#2、UDP-的首部格式" class="headerlink" title="2、UDP 的首部格式"></a>2、UDP 的首部格式</h3><p>用户数据报 UDP 有两个字段：数据字段和首部字段。首部字段只有 8 个字节，由四个字段组成，每个字段两个字节。<br><img src="https://img-blog.csdn.net/20180714004956416?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1lpbl9Ib25nd2Vp/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="img"><img src="data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==" alt="点击并拖拽以移动">​<br>伪首部：在计算检验和时，临时把“伪首部”和 UDP 用户数据报连接在一起。伪首部仅仅是为了计算检验和。<br><img src="https://img-blog.csdn.net/20180714005009595?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1lpbl9Ib25nd2Vp/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="img"><img src="data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==" alt="点击并拖拽以移动">​</p>
+<h2 id="三、传输控制协议-TCP"><a href="#三、传输控制协议-TCP" class="headerlink" title="三、传输控制协议 TCP"></a>三、传输控制协议 TCP</h2><p>TCP 传送的数据单位协议是 TCP 报文段(segment)。</p>
+<h3 id="1、TCP-的特点"><a href="#1、TCP-的特点" class="headerlink" title="1、TCP 的特点"></a>1、TCP 的特点</h3><ul>
+<li>TCP 是面向连接的运输层协议。</li>
+<li>每一条 TCP 连接只能有两个端点 (endpoint)，每一条 TCP 连接只能是点对点的（一对一）。 </li>
+<li>TCP 提供可靠交付的服务。</li>
+<li>TCP 提供全双工通信。</li>
+<li>面向字节流【流是指流入到进程或从进程流出的字节序列，虽然应用程序和 TCP 的交互是一次一个数据块，但 TCP 把应用程序交下来的数据看成仅仅是一连串无结构的字节流。TCP并不知道所传送字节流的含义。TCP不保证接收方应用程序所收到的数据块和发送方应用程序所发出的数据块大小一样，但接收方应用程序收到的字节流和发送方应用程序所发出的字节流完全一样】</li>
+</ul>
+<h3 id="2、TCP-的连接"><a href="#2、TCP-的连接" class="headerlink" title="2、TCP 的连接"></a>2、TCP 的连接</h3><p>1）概念：TCP 连接的端点不是主机，不是主机的IP 地址，不是应用进程，也不是运输层的协议端口。TCP 连接的端点叫做套接字 (socket) 或插口。 </p>
+<p>2）套接字 (socket)：端口号拼接到 (contatenated with) IP 地址即构成了套接字。<br><img src="https://img-blog.csdn.net/20180714004858744?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1lpbl9Ib25nd2Vp/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="img"><img src="data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==" alt="点击并拖拽以移动">​</p>
+<p>3）注意：TCP连接的端点是个很抽象的套接字。同一个IP地址可以有多个不同的TCP连接，同一个端口号也可以有多个不同的TCP连接。</p>
+<h3 id="3、TCP-报文段的首部格式"><a href="#3、TCP-报文段的首部格式" class="headerlink" title="3、TCP 报文段的首部格式"></a>3、TCP 报文段的首部格式</h3><p>1）概念</p>
+<p>TCP 虽然是面向字节流的，但 TCP 传送的数据单元却是报文段。</p>
+<p>一个 TCP 报文段分为首部和数据两部分，而 TCP 的全部功能都体现在它首部中各字段的作用。</p>
+<p>TCP 报文段首部的前 20 个字节是固定的，后面有 4n 字节是根据需要而增加的选项 (n 是整数)。因此 TCP 首部的最小长度是 20 字节。</p>
+<p>2）首部结构</p>
+<p><img src="https://img-blog.csdn.net/20180714004834109?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1lpbl9Ib25nd2Vp/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="img"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">1）源端口和目的端口字段：各占 2 字节。端口是运输层与应用层的服务接口。运输层的复用和分用功能都要通过端口才能实现。 </span><br><span class="line">2）序号字段：占 4 字节。TCP 连接中传送的数据流中的每一个字节都编上一个序号。序号字段的值则指的是本报文段所发送的数据的第一个字节的序号。 </span><br><span class="line">3）确认号字段：占 4 字节，是期望收到对方的下一个报文段的数据的第一个字节的序号。 </span><br><span class="line">4）数据偏移（即首部长度）：占 4 位，它指出 TCP 报文段的数据起始处距离 TCP 报文段的起始处有多远。“数据偏移”的单位是 32 位字（以 4 字节为计算单位）。 </span><br><span class="line">5）保留字段——占 6 位，保留为今后使用，但目前应置为 0。 </span><br><span class="line">7）紧急 URG —— 当 URG  1 时，表明紧急指针字段有效。它告诉系统此报文段中有紧急数据，应尽快传送(相当于高优先级的数据)。 </span><br><span class="line">8）确认 ACK —— 只有当 ACK  1 时确认号字段才有效。当 ACK  0 时，确认号无效。 </span><br><span class="line">9）推送 PSH (PuSH) —— 接收 TCP 收到 PSH = 1 的报文段，就尽快地交付接收应用进程，而不再等到整个缓存都填满了后再向上交付。 </span><br><span class="line">10）复位 RST (ReSeT) —— 当 RST  1 时，表明 TCP 连接中出现严重差错（如由于主机崩溃或其他原因），必须释放连接，然后再重新建立运输连接。 </span><br><span class="line">11）同步 SYN —— 同步 SYN = 1 表示这是一个连接请求或连接接受报文。 </span><br><span class="line">12）终止 FIN (FINish) —— 用来释放一个连接。FIN  1 表明此报文段的发送端的数据已发送完毕，并要求释放运输连接。 </span><br><span class="line">13）窗口字段 —— 占 2 字节，用来让对方设置发送窗口的依据，单位为字节。</span><br><span class="line">14）检验和 —— 占 2 字节。检验和字段检验的范围包括首部和数据这两部分。在计算检验和时，要在 TCP 报文段的前面加上 12 字节的伪首部。</span><br><span class="line">15）紧急指针字段 —— 占 16 位，指出在本报文段中紧急数据共有多少个字节（紧急数据放在本报文段数据的最前面）。</span><br><span class="line">16）选项字段 —— 长度可变。TCP 最初只规定了一种选项，即最大报文段长度 MSS。MSS 告诉对方 TCP：“我的缓存所能接收的报文段的数据字段的最大长度是 MSS 个字节。” 最佳的 MSS 是很难确定的。</span><br><span class="line">17）填充字段 —— 这是为了使整个首部长度是 4 字节的整数倍。</span><br></pre></td></tr></table></figure>
+<h3 id="4、TCP-可靠传输的实现"><a href="#4、TCP-可靠传输的实现" class="headerlink" title="4、TCP 可靠传输的实现"></a>4、TCP 可靠传输的实现</h3><p>1）超时重传：TCP 每发送一个报文段，就对这个报文段设置一次计时器，如果不能及时收到一个确认，将重发这个报文段。</p>
+<p>2）检验和：利用TCP报文头的校验和检测数据在传输过程中是否变化。如果改变，就丢弃这个报文段让发送端重传。</p>
+<p>3）排序：TCP发送方给每一个数据包进行编号，接收方对数据包进行排序，把有序数据传送给应用层。 且TCP的接收端会丢弃重复的数据包。</p>
+<p>4）以字节为单位的滑动窗口技术：发送端发送一个数据包之后不需要等到对方应答后在发下一个数据包，只要发送的字节还没超过滑动窗口的大小就可以一直发送。在收到接收端的应答后滑动窗口开始移动。</p>
+<p>5）流量控制：当接收端来不及处理发送端的数据，就减小自己的接收窗口，同时发送端也减小自己的发送窗口或者直接调成0，接收端处理完缓存里的数据在调整窗口开始接收数据包。</p>
+<h3 id="5、TCP-的拥塞控制"><a href="#5、TCP-的拥塞控制" class="headerlink" title="5、TCP 的拥塞控制"></a>5、TCP 的拥塞控制</h3><p>1）概念</p>
+<p>在某段时间，若对网络中某资源的需求超过了该资源所能提供的可用部分，网络的性能就要变坏。这种现象称为拥塞。</p>
+<p>2）原理</p>
+<p>拥塞控制就是防止过多的数据注入到网络中。只要网络没有出现拥塞，拥塞窗口就增大一些，以便把更多的数据包发送出去。只要网络出现拥塞，就必须把拥塞窗口减小一些，以减少注入到网络中的数据包，缓解网络出现拥塞。</p>
+<blockquote>
+<p>拥塞窗口只是一个状态变量，实际决定发送方能发送多少数据的是发送方窗口。</p>
+</blockquote>
+<p>3）流量控制与拥塞控制的区别</p>
+<p>都是控制发送方的速率，但是流量控制是为了让接收方能来得及接收，拥塞控制是为了降低整个网络的拥塞程度。            </p>
+<p>4）TCP 的拥塞控制方法</p>
+<p>（1）慢开始和拥塞避免：拥塞窗口最开始是1，每经过一个传输轮次，拥塞窗口就加倍，到了慢开始门限就变成加1的关系。当发送丢包的时候，会计算一个新的慢开始门限，它是上一次慢开始门限的1/2。然后拥塞窗口又重1开始慢慢增长。</p>
+<p>（2）快重传 / 快恢复：发生包丢后计算新的慢开始门限，然后拥塞窗口直接重新的慢开始门限开始线性增长。</p>
+<p><img src="https://img-blog.csdn.net/20180714004543816?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1lpbl9Ib25nd2Vp/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="img"><img src="data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==" alt="点击并拖拽以移动"></p>
+<h3 id="6、TCP-的传输连接管理"><a href="#6、TCP-的传输连接管理" class="headerlink" title="6、TCP 的传输连接管理"></a>6、TCP 的传输连接管理</h3><p><strong>1）TCP 的连接建立</strong></p>
+<p>握手需要在客户和服务器之间交换三个 TCP 报文段。称之为三报文握手。采用三报文握手主要是为了防止已失效的连接请求报文段突然又传送到了，因而产生错误。<br><img src="https://img-blog.csdn.net/20180714004508354?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1lpbl9Ib25nd2Vp/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="img"><img src="data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==" alt="点击并拖拽以移动">​</p>
+<ul>
+<li>建立连接之前要保证服务器处于监听状态，等待客户端的连接请求。</li>
+<li>客户端选择一个随机的端口开始和服务器进行socket通信。客户端向服务器发送建立连接的请求报文段，首部的同步位SYN=1，初始序号seq=x，进入SYN-SENT（同步以发送状态）。等待服务器确认。</li>
+<li>服务器收到该报文段后，向客户端发送确认，在确认报文段中SYN位和ACK位都置1，确认号ack=x+1，初始序号ack=y，此时服务器进入SYN_RECV状态</li>
+<li>客户端收到服务器的确认后还要向服务器给一个确认，确认报文段的ACK是1，确认号ack=y+1，自己的序号seq=x+1，客户端进入ESTABLISHED（建立连接）状态，服务器收到客户端的确认后也进入建立连接状态。</li>
+</ul>
+<p>2）TCP 的连接释放：TCP 连接释放过程是四报文握手。<br><img src="https://img-blog.csdn.net/20180714004450434?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1lpbl9Ib25nd2Vp/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="img"><img src="data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==" alt="点击并拖拽以移动">​</p>
+<ul>
+<li>客户端先发送一个连接释放的报文并停止发送数据。该报文段首部的终止控制位FIN=1，序号seq=u（客户端上次传送数据最后一个字节的序号加1）。并进入FIN-WAIT-1（终止等待1）状态。等待服务器的确认</li>
+<li>服务器收到该报文段后就发出确认，该报文段的确认号ack=u+1， 序号seq=v（服务器上次发送数据最后一个字节的序号加1）。进入了CLOSE=WAIT（关闭等待）状态。</li>
+<li>客户端收到服务器的确认后，就进入FIN-WAIT-2（终止等待2）状态，等待服务器发送连接释放报文。服务器向客户端发送连接释放的报文段，该报文段的终止控制位 FIN=1，重复上次的确认号ack = u + 1，序号 seq = w（半关闭状态服务器可能向客户端发送了一些数据）。进入了LAST-ACK（最后确认）状态，等待客户端的确认。</li>
+<li>客户端收到连接释放报文段后，给服务器一个确认结束的报文段，该报文段确认号ack = w + 1，序号 seq = u + 1。此时客户端就进入TIME-WAIT（时间等待）状态，服务器进入CLOSED（关闭）。客户端经过2*MSL（最长报文段寿命）的时间后（4分钟）后也进入关闭</li>
+</ul>
+<div class="qr-code"></div><img class="qrcode-img" src="/img/weixin.jpg"><div class="qrcode-desc">微信打赏</div><div class="post-tag-list">标签: <a class="post-tags" href="/tags/计算机网络/">计算机网络</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2018/06/01/vue生命周期/"><i class="fa fa-chevron-left"></i><span>Vue 生命周期</span></a></div><div class="next-post pull-right"><a href="/2018/05/20/网络层/"><span>网络层</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+  clientID: 'e238e2d1f25ec6e15026',
+  clientSecret: '3c4e537d46a59d056e6c0cc478b04784defafcfb',
+  repo: 'Yin-Hongwei.github.io',
+  owner: 'Yin-Hongwei',
+  admin: 'Yin-Hongwei',
+  id: md5(window.location.pathname)
+})
+gitalk.render('gitalk-container')</script></article></section></article><footer id="footer-outer"><div id="footer-inner"><p class="footer-text">Copyright &copy; 2018-2020</p><p class="footer-text">Designed by Yin-Hongwei</p></div></footer></body><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="/js/main.js" defer></script><script src="/js/scroll.js" defer></script></html>
