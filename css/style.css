@@ -198,8 +198,8 @@ table {
   padding: 20px 0;
 }
 .article-entry .highlight {
-  background-color: #f7fafe;
-  border: 1px solid #2aa3ef;
+  background-color: #383838;
+  color: #bebebe;
   border-radius: 3px;
   margin: 10px 0;
   overflow: auto;
