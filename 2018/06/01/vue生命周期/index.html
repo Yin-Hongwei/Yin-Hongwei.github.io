@@ -2,20 +2,16 @@
 <a id="more"></a>
 <h2 id="一、什么是-vue-生命周期"><a href="#一、什么是-vue-生命周期" class="headerlink" title="一、什么是 vue 生命周期"></a>一、什么是 vue 生命周期</h2><p>Vue 实例从创建到销毁的过程，就是生命周期。也就是从开始创建、初始化数据、编译模板、挂载Dom→渲染、更新→渲染、卸载等一系列过程，我们称这是 Vue 的生命周期。</p>
 <p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gda34tpiiaj30u023zt9s.jpg" width="400"></p>
-<h2 id="二、八个阶段介绍"><a href="#二、八个阶段介绍" class="headerlink" title="二、八个阶段介绍"></a>二、八个阶段介绍</h2><p>Vue 的生命周期总共分为8个阶段创建前/后，载入前/后，更新前/后，销毁前/后。</p>
-<h4 id="1-beforeCreate（创建前）"><a href="#1-beforeCreate（创建前）" class="headerlink" title="1.beforeCreate（创建前）"></a>1.beforeCreate（创建前）</h4><p>表示实例完全被创建出来之前，vue实例的挂载元素$el和数据对象data都为undefined，还未初始化。</p>
-<h4 id="2-created（创建后）"><a href="#2-created（创建后）" class="headerlink" title="2.created（创建后）"></a>2.created（创建后）</h4><p>数据对象data已存在，可以调用 methods 中的方法，操作 data 中的数据，但dom未生成，$el未存在 。</p>
-<p><br></p>
-<h4 id="3-beforeMount（挂载前）"><a href="#3-beforeMount（挂载前）" class="headerlink" title="3.beforeMount（挂载前）"></a>3.beforeMount（挂载前）</h4><p>vue实例的$el和data都已初始化，挂载之前为虚拟的dom节点，模板已经在内存中编辑完成了，但是尚未把模板渲染到页面中。data.message未替换。</p>
-<h4 id="4-mounted（挂载后）"><a href="#4-mounted（挂载后）" class="headerlink" title="4.mounted（挂载后）"></a>4.mounted（挂载后）</h4><p>vue实例挂载完成，data.message成功渲染。内存中的模板，已经真实的挂载到了页面中，用户已经可以看到渲染好的页面了。实例创建期间的最后一个生命周期函数，当执行完 mounted 就表示，实例已经被完全创建好了，DOM 渲染在 mounted 中就已经完成了。</p>
-<p><br></p>
-<h4 id="5-beforeUpdate（更新前）"><a href="#5-beforeUpdate（更新前）" class="headerlink" title="5.beforeUpdate（更新前）"></a>5.beforeUpdate（更新前）</h4><p>当data变化时，会触发beforeUpdate方法 。data 数据尚未和最新的数据保持同步。</p>
-<h4 id="6-updated（更新后）"><a href="#6-updated（更新后）" class="headerlink" title="6.updated（更新后）"></a>6.updated（更新后）</h4><p>当data变化时，会触发updated方法。页面和 data 数据已经保持同步了。</p>
-<p><br></p>
-<h4 id="7-beforeDestory（销毁前）"><a href="#7-beforeDestory（销毁前）" class="headerlink" title="7.beforeDestory（销毁前）"></a>7.beforeDestory（销毁前）</h4><p>组件销毁之前调用 ，在这一步，实例仍然完全可用。</p>
-<h4 id="8-destoryed（销毁后）"><a href="#8-destoryed（销毁后）" class="headerlink" title="8.destoryed（销毁后）"></a>8.destoryed（销毁后）</h4><p>组件销毁之后调用，对data的改变不会再触发周期函数，vue实例已解除事件监听和dom绑定，但dom结构依然存在</p>
-<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><p>整个生命周期可以看成是 vue 实例的成长阶段，即出生到死亡，而八个钩子函数可以看成是在成长过程的几个时间点，即在该时间点 vue 实例具备了什么条件，可以做什么事情。我用下面过程在描述一下。😄<br>new Vue（创建一个Vue对象）<br>–&gt; beforeCreate<br>–&gt; observer Data(开始监控data对象数据变化）<br>–&gt; init event(vue内部初始化事件）<br>–&gt; created()<br>–&gt; compile(编译模板,把data里面的数据和模板生成html)<br>–&gt; beforeMount(还没有生成HTML到元素上)<br>–&gt; mounted(挂载完成，也就是模板中的html渲染到了html页面中）<br>–&gt; beforeUpdate (Vritual Dom)<br>–&gt; updated<br>–&gt; beforeDestroy<br>–&gt; destroyed    </p>
-<div class="qr-code"></div><img class="qrcode-img" src="/img/weixin.jpg"><div class="qrcode-desc">微信打赏</div><div class="post-tag-list">标签: <a class="post-tags" href="/tags/Vue/">Vue</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2018/06/06/AJAX/"><i class="fa fa-chevron-left"></i><span>AJAX 回调地狱和跨域问题</span></a></div><div class="next-post pull-right"><a href="/2018/05/22/应用层/"><span>应用层</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+<h2 id="二、生命周期函数"><a href="#二、生命周期函数" class="headerlink" title="二、生命周期函数"></a>二、生命周期函数</h2><p>Vue 的生命周期总共分为8个阶段：创建前/后，载入前/后，更新前/后，销毁前/后。</p>
+<h4 id="1、beforeCreate（创建前）"><a href="#1、beforeCreate（创建前）" class="headerlink" title="1、beforeCreate（创建前）"></a>1、beforeCreate（创建前）</h4><p>表示实例完全被创建出来之前，vue 实例的挂载元素$el和数据对象 data 都为 undefined，还未初始化。</p>
+<h4 id="2、created（创建后）"><a href="#2、created（创建后）" class="headerlink" title="2、created（创建后）"></a>2、created（创建后）</h4><p>数据对象 data 已存在，可以调用 methods 中的方法，操作 data 中的数据，但 dom 未生成，$el 未存在 。</p>
+<h4 id="3、beforeMount（挂载前）"><a href="#3、beforeMount（挂载前）" class="headerlink" title="3、beforeMount（挂载前）"></a>3、beforeMount（挂载前）</h4><p>vue 实例的 $el 和 data 都已初始化，挂载之前为虚拟的 dom节点，模板已经在内存中编辑完成了，但是尚未把模板渲染到页面中。data.message 未替换。</p>
+<h4 id="4、mounted（挂载后）"><a href="#4、mounted（挂载后）" class="headerlink" title="4、mounted（挂载后）"></a>4、mounted（挂载后）</h4><p>vue 实例挂载完成，data.message 成功渲染。内存中的模板，已经真实的挂载到了页面中，用户已经可以看到渲染好的页面了。实例创建期间的最后一个生命周期函数，当执行完 mounted 就表示，实例已经被完全创建好了，DOM 渲染在 mounted 中就已经完成了。</p>
+<h4 id="5、beforeUpdate（更新前）"><a href="#5、beforeUpdate（更新前）" class="headerlink" title="5、beforeUpdate（更新前）"></a>5、beforeUpdate（更新前）</h4><p>当 data 变化时，会触发beforeUpdate方法 。data 数据尚未和最新的数据保持同步。</p>
+<h4 id="6、updated（更新后）"><a href="#6、updated（更新后）" class="headerlink" title="6、updated（更新后）"></a>6、updated（更新后）</h4><p>当 data 变化时，会触发 updated 方法。页面和 data 数据已经保持同步了。</p>
+<h4 id="7、beforeDestory（销毁前）"><a href="#7、beforeDestory（销毁前）" class="headerlink" title="7、beforeDestory（销毁前）"></a>7、beforeDestory（销毁前）</h4><p>组件销毁之前调用 ，在这一步，实例仍然完全可用。</p>
+<h4 id="8、destoryed（销毁后）"><a href="#8、destoryed（销毁后）" class="headerlink" title="8、destoryed（销毁后）"></a>8、destoryed（销毁后）</h4><p>组件销毁之后调用，对 data 的改变不会再触发周期函数，vue 实例已解除事件监听和 dom绑定，但 dom 结构依然存在。</p>
+<div class="qr-code"></div><img class="qrcode-img" src="/img/weixin.jpg"><div class="qrcode-desc">微信打赏</div><div class="post-tag-list">标签: <a class="post-tags" href="/tags/Vue/">Vue</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2018/08/01/vue响应式原理/"><i class="fa fa-chevron-left"></i><span>Vue 双向数据绑定</span></a></div><div class="next-post pull-right"><a href="/2018/05/22/应用层/"><span>应用层</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
   clientID: 'e238e2d1f25ec6e15026',
   clientSecret: '3c4e537d46a59d056e6c0cc478b04784defafcfb',
   repo: 'Yin-Hongwei.github.io',
