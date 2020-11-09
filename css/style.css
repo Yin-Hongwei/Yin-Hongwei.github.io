@@ -328,7 +328,7 @@ table {
   position: relative;
 }
 #about .article-container p:nth-of-type(1) img {
-  width: 100px;
+  width: 20vw;
 }
 #site-social-icons {
   margin: 0 auto;
