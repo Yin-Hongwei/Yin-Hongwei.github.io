@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="Vue 生命周期"><meta name="keywords" content="Vue"><meta name="author" content="Yin-Hongwei"><meta name="copyright" content="Yin-Hongwei"><title>Vue 生命周期 | Hongwei Blog</title><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script></head><body><header id="page-header"><nav id="navbar"><span class="nav-left"><div class="tou-img"><img src="/img/tou.jpg"></div><a id="site-name" href="/">Hongwei Blog</a></span><i class="fa fa-bars toggle-menu nav-right" aria-hidden="true"></i><span class="nav-right menus"><a class="site-page" href="/about">关于</a><a class="site-page" href="/archives">存档</a><a class="site-page" href="/tags">标签</a></span></nav></header><article id="content-outer"><section id="content-inner"><article class="article-entry" id="post"><h1>Vue 生命周期</h1><h2 id="一、概念"><a href="#一、概念" class="headerlink" title="一、概念"></a>一、概念</h2><p>每个 Vue 实例在被创建时都要经过一系列的初始化过程——例如，需要设置数据监听、编译模板、将实例挂载到 DOM 并在数据变化时更新 DOM 等。同时在这个过程中也会运行一些叫做<strong>生命周期钩子</strong>的函数，这给了用户在不同阶段添加自己的代码的机会。</p>
+<a id="more"></a>
+<p>下图展示了实例的生命周期。</p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gda34tpiiaj30u023zt9s.jpg" width="400"></p>
+<h2 id="二、执行过程"><a href="#二、执行过程" class="headerlink" title="二、执行过程"></a>二、执行过程</h2><h3 id="1、beforeCreate-created"><a href="#1、beforeCreate-created" class="headerlink" title="1、beforeCreate / created"></a>1、beforeCreate / created</h3><p>创建 Vue 实例时，会先执行 <code>initLifecycle</code> 方法注册生命周期的函数，再去执行 <strong>beforeCreate</strong> 钩子函数，此时还访问不到数据，</p>
+<p>当执行 <code>initState</code> 方法初始化 <code>props</code>、<code>data</code>、<code>methods</code>、<code>watch</code>、<code>computed</code> 等属性后，调用 <strong>created</strong> 钩子函数，就可以去访问数据进行数据的初始化了。但是还不能操作 DOM。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gt6dspzeyzj31fo0q0acm.jpg" alt=""></p>
+<h3 id="2、beforeMount-mounted"><a href="#2、beforeMount-mounted" class="headerlink" title="2、beforeMount / mounted"></a>2、beforeMount / mounted</h3><p>调用 <code>vm.$mount</code> 后，先将模版编译成渲染函数，然后执行 <strong>beforeMount</strong> 钩子函数，此时也不能操作 DOM。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gt6eeptvxrj30u00vd41c.jpg" alt=""></p>
+<p>当调用 <code>updateComponent</code> 回调函数后，会先将渲染函数转成 VNode，然后在将 VNode 渲染成 DOM 挂到页面中，挂载完成后，再去执行 <strong>mounted</strong> 钩子函数，此时 DOM 已经挂载，可以执行操作 DOM 的逻辑。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gt6eoaqm69j61fo0k60uj02.jpg" alt=""></p>
+<h3 id="3、beforeUpdate-updated"><a href="#3、beforeUpdate-updated" class="headerlink" title="3、beforeUpdate / updated"></a>3、beforeUpdate / updated</h3><p>DOM 挂载完成之后，当数据发生变化时会先执行 <strong>beforeUpdate</strong> 方法 。此时改变的数据还没有更新到试图；数据的修改会通过响应式原理通知到每个观察者去执行回调函数更新 DOM，当 DOM 重新渲染完成之后数据就更新到了视图，此时再去执行 <strong>updated</strong> 钩子函数。</p>
+<h3 id="4、beforeDestory-destoryed"><a href="#4、beforeDestory-destoryed" class="headerlink" title="4、beforeDestory / destoryed"></a>4、beforeDestory / destoryed</h3><p>组件销毁前先执行 <strong>beforeDestory</strong> 钩子函数 ，此时实例仍然可用。然后开始执行一系列清理工作，清理完数据及监听的事件之后，在执行 <strong>destoryed</strong> 钩子函数。</p>
+<h3 id="5、activated-deactivated"><a href="#5、activated-deactivated" class="headerlink" title="5、activated / deactivated"></a>5、activated / deactivated</h3><p>activated 和 deactivated 钩子函数在使用 keep-alive 组件时出现。<strong>activated</strong> 在 keep-alive 缓存的组件激活时调用。<strong>deactivated</strong> 在 keep-alive 缓存的组件停用时调用。</p>
+<h2 id="三、思考"><a href="#三、思考" class="headerlink" title="三、思考"></a>三、思考</h2><h3 id="1、父组件和子组件生命周期执行顺序"><a href="#1、父组件和子组件生命周期执行顺序" class="headerlink" title="1、父组件和子组件生命周期执行顺序"></a>1、父组件和子组件生命周期执行顺序</h3><ul>
+<li>组件初始化渲染</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">父beforeCreate -&gt; 父created -&gt; 父beforeMount -&gt; </span><br><span class="line"></span><br><span class="line">-&gt; 子beforeCreate -&gt; 子created -&gt; 子beforeMount -&gt; 子mounted -&gt;</span><br><span class="line"></span><br><span class="line">-&gt; 父mounted</span><br></pre></td></tr></table></figure>
+<ul>
+<li>子组件更新</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">父beforeUpdate -&gt; </span><br><span class="line"></span><br><span class="line">-&gt; 子beforeUpdate -&gt; 子updated -&gt;</span><br><span class="line"></span><br><span class="line">-&gt; 父updated</span><br></pre></td></tr></table></figure>
+<ul>
+<li>父组件更新</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">父beforeUpdate- &gt; 父updated</span><br></pre></td></tr></table></figure>
+<ul>
+<li>组件销毁</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">父beforeDestroy -&gt; 子beforeDestroy- &gt; 子destroyed -&gt;</span><br><span class="line"></span><br><span class="line">-&gt; 父destroyed</span><br></pre></td></tr></table></figure>
+<div class="qr-code"></div><img class="qrcode-img" src="/img/weixin.jpg"><div class="qrcode-desc">微信打赏</div><div class="post-tag-list">标签: <a class="post-tags" href="/tags/Vue/">Vue</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2018/08/01/vue响应式原理/"><i class="fa fa-chevron-left"></i><span>Vue响应式原理</span></a></div><div class="next-post pull-right"><a href="/2018/04/02/设计/"><span>设计</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+  clientID: 'e238e2d1f25ec6e15026',
+  clientSecret: '3c4e537d46a59d056e6c0cc478b04784defafcfb',
+  repo: 'Yin-Hongwei.github.io',
+  owner: 'Yin-Hongwei',
+  admin: 'Yin-Hongwei',
+  id: md5(window.location.pathname)
+})
+gitalk.render('gitalk-container')</script></article></section></article><footer id="footer-outer"><div id="footer-inner"><p class="footer-text">Copyright &copy; 2018-2021</p><p class="footer-text">Designed by Yin-Hongwei</p></div></footer></body><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="/js/main.js" defer></script><script src="/js/scroll.js" defer></script></html>
