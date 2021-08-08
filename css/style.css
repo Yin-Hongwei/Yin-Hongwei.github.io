@@ -8,19 +8,19 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100%;
-  background-color: #fafafa;
+  background-color: #eee;
   color: #4c4948;
   font-size: 14px;
   font-family: Lato, Helvetica Neue For Number, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif;
   line-height: 2;
   -webkit-text-size-adjust: 100%;
 }
-#content-outer {
-  flex: 1;
-}
 html,
 body {
   height: 100%;
+}
+#content-outer {
+  flex: 1;
 }
 a {
   text-decoration: none;
@@ -344,26 +344,23 @@ table {
   -moz-transition: all 0.2s ease-in-out;
   -o-transition: all 0.2s ease-in-out;
   -ms-transition: all 0.2s ease-in-out;
-  -webkit-box-shadow: 0px 0px 1px 1px rgba(0,0,0,0.1);
-  -moz-box-shadow: 0px 0px 1px 1px rgba(0,0,0,0.1);
-  box-shadow: 0px 0px 1px 1px rgba(0,0,0,0.1);
-  color: #000;
+  color: #242424;
   height: 1.6rem;
   width: 1.6rem;
   line-height: 1.6rem;
   margin: 0 0.2rem;
-  cursor: pointer;
 }
 #pagination .pagination .page-number:hover,
 #pagination .pagination .extend:hover {
-  background-color: #000;
+  background-color: #4c4948;
   color: #fff;
+  cursor: pointer;
 }
 #pagination .pagination .extend {
   padding: 0 5px;
 }
 #pagination .pagination .current {
-  background-color: #4c4948;
+  background-color: #242424;
   color: #fff;
   cursor: default;
 }
@@ -487,11 +484,7 @@ table {
   height: auto;
   display: block;
   margin: 5px auto;
-  transition: all 0.2s;
-}
-#post img:hover,
-#post video:hover {
-  box-shadow: 0 0 8px 0 rgba(232,237,250,0.6);
+  border-radius: 5px;
 }
 #post iframe {
   border: none;
@@ -556,7 +549,7 @@ table {
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
-  color: #4c4948 !important;
+  color: #242424 !important;
 }
 .post-tags:hover {
   background: #000;
