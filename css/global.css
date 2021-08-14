@@ -33,6 +33,9 @@ body {
   font-size: $sidebar-icon-size;
   cursor: pointer;
 }
+.fa.fa-arrow-right.on {
+  color: #1f2d3d !important;
+}
 #go-up {
   position: fixed;
   right: $go-up-right;
