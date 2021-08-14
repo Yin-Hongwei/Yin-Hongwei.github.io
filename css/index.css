@@ -875,7 +875,8 @@ blockquote {
   flex-direction: column;
   align-items: center;
 }
-#sidebar-auther .author-info .author {
+#sidebar-auther .author-info .description {
+  font-weight: bold;
   font-size: 20px;
 }
 #about,
