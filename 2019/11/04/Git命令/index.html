@@ -1,0 +1,85 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="Git 常用命令"><meta name="keywords" content="Git"><meta name="author" content="Yin-Hongwei"><meta name="copyright" content="Yin-Hongwei"><title>Git 常用命令 | Hongwei Blog</title><link rel="icon" href="/img/favicon.ico"><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script></head><body><header id="page-header"><nav id="navbar"><span class="nav-left"><a id="site-name" href="/">Hongwei Blog</a></span><i class="fa fa-bars toggle-menu nav-right" aria-hidden="true"></i><span class="title">Git 常用命令</span><span class="nav-right menus"><a class="site-page" href="/about">关于我</a></span></nav></header><article id="content-outer"><section id="content-inner"><article id="post"><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="sidebar-toc"><div class="sidebar-toc__title">大纲</div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#下载"><span class="toc-text">下载</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#基本设置"><span class="toc-text">基本设置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#基本用法"><span class="toc-text">基本用法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#版本记录-log："><span class="toc-text">版本记录 log：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#标签-tag：特殊表示一些版本信息"><span class="toc-text">标签 tag：特殊表示一些版本信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#分支-branch（master是默认分支）"><span class="toc-text">分支 branch（master是默认分支）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#合并分支"><span class="toc-text">合并分支</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#远程仓库"><span class="toc-text">远程仓库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#远程合作"><span class="toc-text">远程合作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#撤销"><span class="toc-text">撤销</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#差异"><span class="toc-text">差异</span></a></li></ol></div></div></div><div class="article-container" id="post-content"><h4 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h4><p><a href="https://git-scm.com/download" target="_blank" rel="noopener">https://git-scm.com/download</a></p>
+<a id="more"></a>
+<h4 id="基本设置"><a href="#基本设置" class="headerlink" title="基本设置"></a>基本设置</h4><p>先去 GitHub 上注册一个账号，然后开始对账号进行环境配置</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置用户名</span></span><br><span class="line">git config --global user.name <span class="string">"John Doe"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置邮箱</span></span><br><span class="line">git config --global user.email johndoe@example.com</span><br><span class="line"><span class="comment"># 以上命令执行结束后，可用 git config --global --list 命令查看配置是否OK</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成ssh</span></span><br><span class="line">ssh-keygen -t rsa -C<span class="string">"johndoe@example.com"</span></span><br><span class="line"><span class="comment"># 将 .ssh 文件夹中的公钥（ id_rsa.pub）添加到GitHub管理平台中</span></span><br></pre></td></tr></table></figure>
+<h4 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h4><ul>
+<li>git init：进入文件夹，初始化一个 git 仓库</li>
+<li>git add .：所以更改的文件添加到暂存区</li>
+<li><p>git commit -m “描述” # 提交版本</p>
+</li>
+<li><p>git status # 查看仓库状态</p>
+<ul>
+<li>modified # 已修改</li>
+<li>staged # 已暂存。可以看到你要提交的东西有哪些</li>
+<li>committed # 已提交</li>
+</ul>
+</li>
+</ul>
+<h4 id="版本记录-log："><a href="#版本记录-log：" class="headerlink" title="版本记录 log："></a>版本记录 log：</h4><ul>
+<li><p>git log：查看版本记录</p>
+</li>
+<li><p>git log -p：可以看记录的细节</p>
+</li>
+<li><p>git log –oneline：一行显示</p>
+</li>
+<li>git log –all –graph：图示全部历史记录</li>
+</ul>
+<h4 id="标签-tag：特殊表示一些版本信息"><a href="#标签-tag：特殊表示一些版本信息" class="headerlink" title="标签 tag：特殊表示一些版本信息"></a>标签 tag：特殊表示一些版本信息</h4><ul>
+<li><p>git tag：列出所以标签</p>
+</li>
+<li><p>git tag -a 表签名 -m “备注”：附注标签</p>
+</li>
+<li>git tag -a 表签名 -m “备注” 版本号：</li>
+<li>git show 标签名：查看某个标签的详细信息</li>
+</ul>
+<h4 id="分支-branch（master是默认分支）"><a href="#分支-branch（master是默认分支）" class="headerlink" title="分支 branch（master是默认分支）"></a>分支 branch（master是默认分支）</h4><ul>
+<li>git branch：列出所有本地分支</li>
+<li><p>git branch -r：列出所有远程分支</p>
+</li>
+<li><p>git branch 分支名: 创建分支。</p>
+</li>
+<li>git checkout 分支名: 来切换分支, 穿越到指定的历史节点<ul>
+<li>git checkout - : 代表退回上一个版本</li>
+</ul>
+</li>
+<li>git checkout -b 分支名: 创建并切换到该分支</li>
+</ul>
+<h4 id="合并分支"><a href="#合并分支" class="headerlink" title="合并分支"></a>合并分支</h4><ul>
+<li>git merge 分支名：合并分支<ul>
+<li>合并完后会出现有冲突，多余的东西删了调整就行，然后再提交</li>
+</ul>
+</li>
+</ul>
+<h4 id="远程仓库"><a href="#远程仓库" class="headerlink" title="远程仓库"></a>远程仓库</h4><ul>
+<li>git remote add 远程名 远程地址：给远程仓库添加名字</li>
+<li>git remote （-v）：列出所有远程仓库</li>
+<li><p>git push -u 远程名 分支名：长传代码</p>
+<ul>
+<li>git push -u origin master</li>
+</ul>
+</li>
+<li><p>git clone 仓库地址：克隆仓库</p>
+</li>
+</ul>
+<h4 id="远程合作"><a href="#远程合作" class="headerlink" title="远程合作"></a>远程合作</h4><ul>
+<li><p>git fetch: 从远程仓库下载本地仓库中缺失的提交记录</p>
+</li>
+<li><p>git pull：获取远程更新（等同于git fetch &amp;&amp; git merge）</p>
+</li>
+</ul>
+<h4 id="撤销"><a href="#撤销" class="headerlink" title="撤销"></a>撤销</h4><ul>
+<li>git reset –hard：重置暂存区与工作区，与上一次commit保持一致（hard^、hard^^，后hard~100直接回退前100个版本）</li>
+</ul>
+<h4 id="差异"><a href="#差异" class="headerlink" title="差异"></a>差异</h4><ul>
+<li>git diff：显示暂存区和工作区的差异</li>
+<li>git diff –cached [file]：显示暂存区和上一个commit的差异</li>
+</ul>
+</div><div class="qr-code"></div><img class="qrcode-img" src="/img/weixin.jpg"><div class="qrcode-desc">微信打赏</div><nav id="pagination"><div class="prev-post pull-left"><a href="/2019/11/05/Git工作原理/"><i class="fa fa-chevron-left"></i><span>Git 工作原理</span></a></div><div class="next-post pull-right"><a href="/2019/08/12/JavaScript动画/"><span>JavaScript 中的动画问题</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+  clientID: 'e238e2d1f25ec6e15026',
+  clientSecret: '3c4e537d46a59d056e6c0cc478b04784defafcfb',
+  repo: 'Yin-Hongwei.github.io',
+  owner: 'Yin-Hongwei',
+  admin: 'Yin-Hongwei',
+  id: md5(window.location.pathname)
+})
+gitalk.render('gitalk-container')</script></article></section></article><footer id="footer-outer"><div id="footer-inner"><p class="footer-text">Copyright &copy; 2018-2022 Yin-Hongwei</p></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i></body><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/animejs@latest/lib/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="/js/utils.js" defer></script><script src="/js/transition.js" defer></script><script src="/js/fancybox.js" defer></script><script src="/js/menu.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/scroll.js" defer></script></html>
