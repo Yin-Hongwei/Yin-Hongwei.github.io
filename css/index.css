@@ -481,19 +481,6 @@ table {
   border-top: 1px solid #ddd;
   margin-top: 30px;
 }
-#gitalk-container .gt-btn.gt-btn-preview {
-  color: #242424;
-  border-color: #242424;
-}
-#gitalk-container .gt-container .gt-svg svg {
-  fill: #242424;
-}
-#gitalk-container .gt-btn.gt-btn-login,
-#gitalk-container .gt-btn.gt-btn-loadmore,
-#gitalk-container .gt-btn.gt-btn-public {
-  background-color: #242424;
-  border-color: #242424;
-}
 #footer-outer {
   background-color: #242424;
   padding: 1rem;
@@ -863,8 +850,11 @@ blockquote {
 #sidebar-auther .author-img {
   width: 15vw;
   height: 15vw;
+  min-width: 100px;
+  min-height: 100px;
   overflow: hidden;
   border-radius: 10px;
+  border: 5px solid #fff;
 }
 #sidebar-auther .author-img img {
   width: 100%;
@@ -877,12 +867,12 @@ blockquote {
 }
 #sidebar-auther .author-info .description {
   font-weight: bold;
-  font-size: 20px;
+  font-size: 18px;
 }
 #about,
 #archive {
   margin: auto;
-  padding-bottom: 1rem;
+  padding: 0 10px 1rem 10px;
   color: #000;
 }
 #about {
@@ -901,6 +891,7 @@ blockquote {
 }
 #archive {
   margin-left: 25vw;
+  width: 75vw;
 }
 #archive .article-title {
   font-size: 2rem;
@@ -940,6 +931,14 @@ blockquote {
   color: #000;
   font-size: 1rem;
   cursor: pointer;
+}
+@media screen and (max-width: 768px) {
+  #sidebar-auther {
+    width: 100vw;
+  }
+  #archive {
+    margin-left: 0;
+  }
 }
 #pagination {
   padding: 1rem 0;
@@ -1068,10 +1067,10 @@ blockquote {
   cursor: pointer;
 }
 #post a {
-  color: #242424;
+  color: #82aaff;
 }
 #post a:hover {
-  color: #000;
+  color: #6190e8;
 }
 #post table {
   width: 100%;
