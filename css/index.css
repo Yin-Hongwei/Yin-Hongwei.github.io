@@ -830,7 +830,6 @@ blockquote {
 #content-outer {
   width: 100%;
   padding-top: 1rem;
-  margin: 3rem 0 1rem 0;
   position: relative;
 }
 #content-outer height calc(100vh- 100px) ul,
