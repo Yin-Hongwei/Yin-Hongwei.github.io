@@ -1,0 +1,62 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="webpack 热更新原理"><meta name="keywords" content="webpack"><meta name="author" content="Yin-Hongwei"><meta name="copyright" content="Yin-Hongwei"><title>webpack 热更新原理 | Hongwei Blog</title><link rel="icon" href="/img/favicon.ico"><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script></head><body><header id="page-header"><nav id="navbar"><span class="nav-left"><a id="site-name" href="/">Hongwei Blog</a></span><i class="fa fa-bars toggle-menu nav-right" aria-hidden="true"></i><span class="title">webpack 热更新原理</span><span class="nav-right menus"><a class="site-page" href="/about">关于我</a></span></nav></header><article id="content-outer"><section id="content-inner"><article id="post"><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="false"><div class="sidebar-toc"><div class="sidebar-toc__title">大纲</div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、背景"><span class="toc-text">一、背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、热更新"><span class="toc-text">二、热更新</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、热替换"><span class="toc-text">三、热替换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、总结"><span class="toc-text">四、总结</span></a></li></ol></div></div></div><div class="article-container" id="post-content"><h2 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h2><p>热更新的出现自然是提升开发效率，但是在开始说热更新之前，先来看看热更新出现之前的开发方式。</p>
+<a id="more"></a>
+<blockquote>
+<p>静态页面</p>
+</blockquote>
+<p>写好的代码需要手动编译，然后刷新浏览器访问。</p>
+<blockquote>
+<p>文件监听</p>
+</blockquote>
+<p>写好的代码不需要手动编译，可以通过起一个静态服务来监听文件变化，监听到后自动编译，但是需要手动刷新浏览器访问。</p>
+<blockquote>
+<p>热更新</p>
+</blockquote>
+<p>接下来就是热更新的方式，这种方式在文件监听的基础上做了改良，不需要手动刷新浏览器，文件编译后就会自动刷新。</p>
+<blockquote>
+<p>热替换</p>
+</blockquote>
+<p>在热更新的基础之上又做了改良，文件发生变化后可以局部更新。</p>
+<h2 id="二、热更新"><a href="#二、热更新" class="headerlink" title="二、热更新"></a>二、热更新</h2><p>实现热更新的工具有很多，这里主要介绍 webpack-dev-server 的实现方式。</p>
+<p><strong>先看服务端的实现</strong>。</p>
+<p>首先 webpack compiler 对文件进行打包，打包好后把编译好的文件传输给 bundleServer， bundleServer 就以服务器的方式让浏览器访问。bundleServer 内部会通过 express 启动一个服务，与客户端建立 websocket 长链接，当监听到文件变化后，会将变化的内容通过 websocket 通知客户端。详情可见 <code>node_modules/webpack-dev-server/lib/Server.js</code>。</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0mmfejg6qj21gy08iq5s.jpg" alt></p>
+<p><strong>再看客户端的实现</strong>。</p>
+<p>访问 webpack 提供的服务器地址，打开控制台如下，可以看到浏览器端和服务器端之间会先建立 <code>websocket</code> 通信。</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0ml795tc9j21ih0u0gq5.jpg" alt></p>
+<p>通过寻找我们不难找到 websocket 相关的代码</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0mlfif6k2j21fb0u0n4o.jpg" alt></p>
+<p>由此可见，dev 模式和 build 模式打包出来的东西还是有所差异，即 dev 模式会在构建后的文件中植入一些代码，为了在文件发生变化的时候能通知到前端，就会和前端建立 websocket 连接。前端监听到变化会刷新浏览器加载最新资源，这也是 webpack 注入的代码在 websocket 接收到消息后主动刷新的，详情见 <code>node_modules/webpack-dev-server/client/index.js</code>。</p>
+<h2 id="三、热替换"><a href="#三、热替换" class="headerlink" title="三、热替换"></a>三、热替换</h2><p>上面介绍的热更新虽然在一定程序上提高了开发效率，但是还有一个痛点就是不能在接收变化后做局部更新而是刷新浏览器，这样在测试一些逻辑的时候，一些操作又要从新来过才能复现之前的场景，这是非常低效的，模块热替换就很好的解决了这个问题。</p>
+<p>开启热模块替换首先 webpack 要开启 hot 选项为 true。默认也是开启的。</p>
+<p>热模块替换和热更新的构建方式是一样的，主要区别是用 hot 字段来区别两种方式，当客户端接收到变化的消息，会调用 reloadApp 方法。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> onSocketMessage = &#123;</span><br><span class="line">	ok: <span class="function"><span class="keyword">function</span> <span class="title">ok</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    sendMessage(<span class="string">"Ok"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (options.overlay) &#123;</span><br><span class="line">      hide();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    reloadApp(options, status);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>reloadApp 方法中可以看出，热模块替换会触发 webpackHotUpdate 事件，热更新就直接走下面刷新浏览器。</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0n99zaef8j21y60tytfo.jpg" alt></p>
+<p>关于热替换的核心，主要是移除过期模块，添加新的模块，并执行相关模块的代码。详情见 <code>node_modules/webpack/lib/hmr/HotModuleReplacement.runtime.js</code>。</p>
+<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><p>webpack-dev-server 的原理是把原来的数据读到服务器去打包，打包后生成一个文件，这个文件和设置输出的文件名一样，但是这个文件只是放在了它的虚拟内存，没有输出到本地，它会提供一个地址去让你访问。</p>
+<p>启动阶段：webpack compiler 对文件进行打包，打包好后把编译好的文件传输给 bundleServer， bundleServer 就可以以服务器的方式让浏览器访问。（1-2-A-B）</p>
+<p>文件更新阶段：文件发生变化后，会经过 webpack compiler 进行编译，编译好了后将代码发送给 HMR Server，HMR Server 知道哪些资源、哪些模块发生了改变，然后 HMR server 会以 websocket 的方式通知 HRM Runtime，HRM Runtime 通过 JSONP 的方式获取更新的内容，HMR runtime 会根据返回的新模块代码做进一步处理，可能是刷新页面，也可能是对模块进行热更新。热更新会利用 HotModuleReplacementPlugin 替换变化的模块并执行，浏览器就会进行对应的刷新。（1-2-3-4）</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h0ndd97wqaj21oy0p4jui.jpg" alt="image.png"></p>
+<ul>
+<li><p>Webpack Compiler：将 JS 文件编译成 bundle.js 文件</p>
+</li>
+<li><p>bundle.js：构建输出的文件</p>
+</li>
+<li><p>Bundle Server：提供文件在浏览器的访问。在浏览器里面正常访问 bundle 文件是以文件目录的形式访问的，使用 Bundle Server 可以让我们以类似于服务器的方式来访问，比如说 localhost:8080</p>
+</li>
+<li><p>HMR：Hot Module Replacement 模块热替换。在运行时更新所有类型的模块，而无需完全刷新。</p>
+</li>
+<li><p>HMR Server：将热更新的文件输出给 HMR Runtime</p>
+</li>
+<li><p>HMR Runtime：会被注入到浏览器，更新文件的变化。开发阶段，打包阶段，会注入到浏览器中的 bundle.js里面，这样的话浏览器端的 bundle.js 会和服务器建立一个链接，通常会是 websocket。这样就能动态更新了。</p>
+</li>
+</ul>
+</div><div class="qr-code"></div><img class="qrcode-img" src="/img/weixin.jpg"><div class="qrcode-desc">微信打赏</div><nav id="pagination"><div class="next-post pull-right"><a href="/2021/12/04/Vue watcher 分类/"><span>Vue watcher 分类</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+  clientID: 'e238e2d1f25ec6e15026',
+  clientSecret: '3c4e537d46a59d056e6c0cc478b04784defafcfb',
+  repo: 'Yin-Hongwei.github.io',
+  owner: 'Yin-Hongwei',
+  admin: 'Yin-Hongwei',
+  id: md5(window.location.pathname)
+})
+gitalk.render('gitalk-container')</script></article></section></article><footer id="footer-outer"><div id="footer-inner"><p class="footer-text">Copyright &copy; 2018-2022 Yin-Hongwei</p></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i></body><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/animejs@latest/lib/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="/js/utils.js" defer></script><script src="/js/transition.js" defer></script><script src="/js/fancybox.js" defer></script><script src="/js/menu.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/scroll.js" defer></script></html>
