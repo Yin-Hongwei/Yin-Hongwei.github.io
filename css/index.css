@@ -358,7 +358,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100%;
-  background-color: #eee;
+  background-color: #fff;
   color: #4c4948;
   font-size: 14px;
   font-family: Lato, Helvetica Neue For Number, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif;
@@ -377,18 +377,22 @@ body {
 }
 #toggle-sidebar {
   position: fixed;
-  bottom: 20px;
-  left: 16px;
-  z-index: 100;
+  left: 0;
+  top: 50%;
   font-size: 16px;
+  z-index: 100;
   cursor: pointer;
+  padding: 15px 4px;
+  border-radius: 8px;
+  background-color: #999;
+  color: #242424 !important;
 }
-.fa.fa-arrow-right.on {
-  color: #1f2d3d !important;
+.fa.fa-caret-right.on {
+  margin-left: 240px;
 }
 #go-up {
   position: fixed;
-  right: -16px;
+  right: -5px;
   bottom: 20px;
   z-index: 100;
   font-size: 16px;
@@ -852,7 +856,7 @@ blockquote {
 #about,
 #archive {
   margin: auto;
-  padding: 0 10px 1rem 10px;
+  padding: 10px 10px 10px 10px;
   color: #000;
 }
 #about {
@@ -1143,13 +1147,16 @@ blockquote {
 #sidebar {
   position: fixed;
   top: 0;
-  width: 300px;
+  width: 250px;
   left: -300px;
   z-index: 10;
   overflow-y: auto;
   padding: 5px;
   height: 100%;
   background-color: #fafafa;
+}
+#sidebar .sidebar-toc {
+  font-size: 12px;
 }
 #sidebar .sidebar-toc a {
   color: #4c4948;
@@ -1170,6 +1177,7 @@ blockquote {
   text-align: center;
   font-weight: 500;
   font-size: 18px;
+  color: #000;
 }
 #sidebar .sidebar-toc .toc-link {
   display: block;
