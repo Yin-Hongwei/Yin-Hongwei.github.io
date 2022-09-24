@@ -33,8 +33,9 @@ body {
   z-index: 100;
   cursor: pointer;
   padding: 15px 4px;
-  border-radius: 8px;
-  background-color: $color-grey-dark;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  background-color: $color-grey;
   color: $color-black !important;
 }
 .fa.fa-caret-right.on {
