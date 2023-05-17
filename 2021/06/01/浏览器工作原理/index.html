@@ -1,0 +1,111 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="浏览器工作原理"><meta name="keywords" content="浏览器"><meta name="author" content="Yin-Hongwei"><meta name="copyright" content="Yin-Hongwei"><title>浏览器工作原理 | Yin-Hongwei</title><link rel="icon" href="/img/favicon.ico"><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script></head><body><header id="page-header"><nav id="navbar"><span class="nav-left"><div class="tou-img"><img src="/img/avatar.jpg"></div><a id="site-name" href="/">Yin-Hongwei</a></span><i class="fa fa-bars toggle-menu nav-right" aria-hidden="true"></i><span class="title">浏览器工作原理</span><span class="nav-right menus"><a class="site-page" href="/about">关于我</a></span></nav></header><article id="content-outer"><section id="content-inner"><article class="article-entry" id="post"><h1>浏览器工作原理</h1><h2 id="一、域名解析"><a href="#一、域名解析" class="headerlink" title="一、域名解析"></a>一、域名解析</h2><p>域名解析的过程就是查找域名对应 IP 地址的过程。</p>
+<a id="more"></a>
+<ul>
+<li>浏览器先检查域名是否在缓存中，有返回，没有继续查找</li>
+<li>在本地 hosts 文件中寻找，有返回，没有继续查找</li>
+<li>主机向本地域名服务器查询，有返回，没有继续查找</li>
+<li>本地域名服务器向根域名服务器查询，<strong>这个过程不会返回域名和IP的映射关系</strong>，只会告诉本地域名服务器向下级域名服务器查询</li>
+<li>本地域名服务器向顶级域名服务器查询，同样告诉本地域名服务器向下级域名服务器查询</li>
+<li>本地域名服务器向二级域名服务器查询，如果还有下级域名服务器，则一直进行迭代查询，直到最后一个子域，有则返回映射关系，并且本地域名服务器将结果加到自己的映射表中。没有则网页报错</li>
+</ul>
+<h2 id="二、通讯"><a href="#二、通讯" class="headerlink" title="二、通讯"></a>二、通讯</h2><p>一旦获取到服务器的 IP 地址，浏览器就会通过 TCP 三次握手与服务器建立连接。</p>
+<p>浏览器向服务器发送 HTTP 请求报文。</p>
+<p>服务器接受请求并处理完后返回一个 HTTP 响应报文。</p>
+<p>浏览器接收 HTTP 响应后，浏览器通过四次挥手和服务器断开连接。</p>
+<h2 id="三、解析-HTML"><a href="#三、解析-HTML" class="headerlink" title="三、解析 HTML"></a>三、解析 HTML</h2><p><img src="https://static001.geekbang.org/resource/image/34/5a/34231687752c11173b7776ba5f4a0e5a.png" alt></p>
+<h3 id="1、词法分析"><a href="#1、词法分析" class="headerlink" title="1、词法分析"></a>1、词法分析</h3><p>词法分析是将字符流解析成词（token）的过程。HTML 无法用常规的解析器进行解析，所以浏览器用自定义的解析器来解析 HTML，解析最常见的方案是使用状态机。</p>
+<blockquote>
+<p>词法分析器（标记生成器）：负责将输入内容分解成一个个有效标记。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;p class=&quot;a&quot;&gt;text text text&lt;/p&gt;</span><br><span class="line">// 词（token）可以看成是这样的一个标记。</span><br><span class="line">// &lt;p“标签开始”的开始；</span><br><span class="line">// class=“a” 属性；</span><br><span class="line">// \&gt; “标签开始”的结束；</span><br><span class="line">// text text text 文本；</span><br><span class="line">// &lt;/p&gt;标签结束</span><br></pre></td></tr></table></figure>
+<p><img src="https://www.html5rocks.com/zh/tutorials/internals/howbrowserswork/image019.png" alt></p>
+<p>关于状态机，初始状态是 <strong>数据状态</strong>。</p>
+<ul>
+<li><p>如果遇到一个非 &lt; 字符，那么可以认为进入了一个文本节点；</p>
+</li>
+<li><p>如果遇到字符 <code>&lt;</code> 时，进入了一个 <strong>标签状态</strong>。</p>
+<ul>
+<li>如果下一个字符是“ ! ” ，那么很可能是进入了注释节点或者CDATA节点。</li>
+<li>如果下一个字符是字母，那么可以确定进入了一个开始标签。这个状态会一直保持到接收 <code>&gt;</code> 字符。在此期间接收的每个字符都会附加到新的标记名称上。</li>
+<li>如果下一个字符是 “/ ”，那么可以确定进入了一个结束标签。直到接收 <code>&gt;</code>。然后将发送新的标记，并回到 <strong>数据状态</strong>。</li>
+</ul>
+</li>
+</ul>
+<p>用状态机做词法分析，其实正是把每个词的“特征字符”逐个拆开成独立状态，然后再把所有词的特征字符链合并起来，形成一个联通图结构。</p>
+<h3 id="2、语法分析（构建-DOM-树）"><a href="#2、语法分析（构建-DOM-树）" class="headerlink" title="2、语法分析（构建 DOM 树）"></a>2、语法分析（构建 DOM 树）</h3><blockquote>
+<p>解析器：负责根据语言的语法规则分析文档的结构，从而构建解析树。</p>
+</blockquote>
+<p>语法分析的过程就是构建 DOM 树的过程。</p>
+<p>浏览器先创建解析器解析词法分析得到的词（token）的同时，会创建 Document 对象。以 Document 为根节点创建 DOM 树，并不断进行修改，向其中添加各种元素。因为在规范中定义了每个标记所对应的 DOM 元素，所以解析器对 token 进行处理生成对应的元素。这些元素不仅会添加到 DOM 树中，还会添加到开放元素的堆栈中。此堆栈用于构建 DOM 树，同时纠正嵌套错误和处理未关闭的标记。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">- 栈顶元素就是当前节点；</span><br><span class="line">- 遇到属性，就添加到当前节点；</span><br><span class="line">- 遇到文本节点，如果当前节点是文本节点，则跟文本节点合并，否则入栈成为当前节点的子节点；</span><br><span class="line">- 遇到注释节点，作为当前节点的子节点；</span><br><span class="line">- 遇到tag start就入栈一个节点，当前节点就是这个节点的父节点；</span><br><span class="line">- 遇到tag end就出栈一个节点（还可以检查是否匹配）。</span><br></pre></td></tr></table></figure>
+<h3 id="3、浏览器的容错机制"><a href="#3、浏览器的容错机制" class="headerlink" title="3、浏览器的容错机制"></a>3、浏览器的容错机制</h3><p>在浏览 HTML 网页时从来不会看到“语法无效”的错误。这是因为浏览器会纠正任何无效内容，然后继续工作。</p>
+<h3 id="4、解析-script-标签"><a href="#4、解析-script-标签" class="headerlink" title="4、解析 script 标签"></a>4、解析 script 标签</h3><p>当 HTML 解析到 script 标签时，会暂停构建 DOM 树，执行完成后才会从暂停的地方开始重新构建。也就是说，如果你想首屏渲染的越快，就越不应该在首屏执行大量 JS 文件。并且 CSS 也会影响 JS 的执行，只有当解析完样式表才会执行 JS，所以也可以认为这种情况下，CSS 也会暂停构建 DOM。</p>
+<h2 id="四、解析-CSS"><a href="#四、解析-CSS" class="headerlink" title="四、解析 CSS"></a>四、解析 CSS</h2><p>在构建 DOM 树的过程中，如果遇到 CSS，就会解析 CSS。CSS 的解析需要经过词法分析和语法分析变成计算机能够理解的结构。</p>
+<p><img src="https://static001.geekbang.org/resource/image/bc/7c/bc93df7b8d03b2675f21e1d9e4e1407c.png" alt></p>
+<p>CSS 样式来源主要有三种：</p>
+<ul>
+<li><p>通过 link 引用的外部 CSS 文件</p>
+</li>
+<li><p>style 标记内的 CSS</p>
+</li>
+<li><p>元素的 style 属性内嵌的 CSS</p>
+</li>
+</ul>
+<h3 id="1、词法分析-1"><a href="#1、词法分析-1" class="headerlink" title="1、词法分析"></a>1、词法分析</h3><p>WebKit 词法分析使用  <a href="http://en.wikipedia.org/wiki/Flex_lexical_analyser" target="_blank" rel="noopener">Flex</a> 将字符流解析成词（token）。</p>
+<h3 id="2、语法分析（构建CSSOM树）"><a href="#2、语法分析（构建CSSOM树）" class="headerlink" title="2、语法分析（构建CSSOM树）"></a>2、语法分析（构建CSSOM树）</h3><p>WebKit 语法分析使用 <a href="http://www.gnu.org/software/bison/" target="_blank" rel="noopener">Bison</a> 解析器生成器，通过 CSS 语法文件自动创建解析器。解析器根据词（token）解析成 <strong>StyleSheet 对象</strong>，且每个对象都包含一个样式表里的多个 CSS 规则，一个 CSS 规则对象包含一个选择器和一个属性集。</p>
+<p>根据 <strong>document.styleSheets</strong> 拿到如下的 CSS 规则。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gr0nbw640wj31i20pe7cl.jpg" alt></p>
+<h3 id="3、生成哈希表-map"><a href="#3、生成哈希表-map" class="headerlink" title="3、生成哈希表 map"></a>3、生成哈希表 map</h3><p>把生成的 CSS 规则集根据最右边的 selector 类型（id、class、标签、伪类选择器）放到四个类型的哈希 map 中，这样做的目的是为了在比较的时候能够很快地取出匹配第一个 selector 的所有规则。然后每条规则再检查它的下一个 selector 是否匹配当前元素。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 哈希 map 类型</span></span><br><span class="line">CompactRuleMap m_idRules;</span><br><span class="line">CompactRuleMap m_classRules;</span><br><span class="line">CompactRuleMap m_tagRules;</span><br><span class="line">CompactRuleMap m_shadowPseudoElementRules;</span><br></pre></td></tr></table></figure>
+<p>哈希表 map 包括了所有 CSS 选择器和每个选择器的相关属性的映射。</p>
+<h2 id="五、构建渲染树"><a href="#五、构建渲染树" class="headerlink" title="五、构建渲染树"></a>五、构建渲染树</h2><h3 id="1、渲染树的概念"><a href="#1、渲染树的概念" class="headerlink" title="1、渲染树的概念"></a>1、渲染树的概念</h3><p>在 DOM 树构建的同时，浏览器还会根据 DOM 树和 CSSOM 树一起构建渲染树。这是由可视化元素按照其显示顺序组成的树，也是文档的可视化表示。</p>
+<p>Firefox 将渲染树中的元素称为“框架”，WebKit 使用的术语是渲染器或渲染对象。每一个渲染器都代表了一个矩形的区域，通常对应于相关节点的 CSS 框，框的类型会受到与节点相关的“display”样式属性的影响。特别的是如果一个元素需要创建特殊的渲染器，就会替换 <code>createRenderer</code> 方法。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">RenderObject* <span class="title">RenderObject::createObject</span><span class="params">(Node* node, RenderStyle* style)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Document* doc = node-&gt;document();</span><br><span class="line">    RenderArena* arena = doc-&gt;renderArena();</span><br><span class="line">    ...</span><br><span class="line">    RenderObject* o = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span> (style-&gt;display()) &#123;</span><br><span class="line">        <span class="keyword">case</span> NONE:</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> INLINE:</span><br><span class="line">            o = <span class="keyword">new</span> (arena) RenderInline(node);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> BLOCK:</span><br><span class="line">            o = <span class="keyword">new</span> (arena) RenderBlock(node);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> INLINE_BLOCK:</span><br><span class="line">            o = <span class="keyword">new</span> (arena) RenderBlock(node);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> LIST_ITEM:</span><br><span class="line">            o = <span class="keyword">new</span> (arena) RenderListItem(node);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">       ...</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> o;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2、构建渲染树的过程"><a href="#2、构建渲染树的过程" class="headerlink" title="2、构建渲染树的过程"></a>2、构建渲染树的过程</h3><p>从 DOM 树的根节点 document 开始深度优先遍历每个节点，根据节点的选择器去四个哈希 map 中计算该节点的样式，计算结果与该节点合并来构建渲染树。</p>
+<h4 id="2-1、计算样式的过程"><a href="#2-1、计算样式的过程" class="headerlink" title="2.1、计算样式的过程"></a>2.1、计算样式的过程</h4><p><strong>1）选择器命中判断</strong></p>
+<p>为了确定哪些规则适用于节点，要进行<strong>选择器匹配</strong>，对每个节点，代码里面会依次按照 id、class、伪元素、标签的顺序取出所有的selector 进行比较判断，最后是通配符，取出所有的选择器对每个节点进行比较，如果匹配，再判断当前选择器是不是最左边的选择器，如果是则返回匹配结果；否则再递归左边的选择器是否匹配。直到左边不匹配或没有时停止。</p>
+<p><strong>2）设置 style</strong></p>
+<p>找到节点对应的 CSS 规则后，就开始<strong>计算</strong>该节点具体的 CSS 属性的值。</p>
+<p>如果属性默认为<strong>继承值</strong>，那么 CSS 引擎会沿着 DOM 树往上查找，看看其祖先元素是否设置了该值，没有则使用<strong>默认值</strong>。CSS 引擎会把通常在一起使用的样式值存储于一个单独的对象中，该对象称为<strong>样式结构</strong>。对于每个类别的样式，存储的都是一个指向样式结构的指针。这种方式称为<strong>样式结构共享</strong>。</p>
+<p>因为可能会有多个选择器的样式命中相同节点，且浏览器本身也提供了一些默认的样式规则（用户代理样式表）。所以需要按照它们的优先级把样式属性综合在一起。</p>
+<p><strong>3）调整 style</strong></p>
+<p>根据 CSS 属性值<strong>调整</strong>其他的 CSS 属性值。比如：把 <code>absolute 定位、fixed 定位、float 的元素</code>设置成 block。</p>
+<h4 id="2-2、渲染对象和-DOM-元素的关系"><a href="#2-2、渲染对象和-DOM-元素的关系" class="headerlink" title="2.2、渲染对象和 DOM 元素的关系"></a>2.2、渲染对象和 DOM 元素的关系</h4><ul>
+<li><p>渲染对象和 DOM 元素相对应，但并非一一对应。非可视化的 DOM 元素不会插入渲染树中，例如“head”元素；如果元素的 display 属性值为“none”，那么也不会显示在渲染树中（但是 visibility 属性值为“hidden”的元素仍会显示）。</p>
+</li>
+<li><p>有一些 DOM 元素对应多个渲染对象。它们往往是具有复杂结构的元素，无法用单一的矩形来描述。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">“select”元素有 3 个渲染对象：一个用于显示区域，一个用于下拉列表框，还有一个用于按钮。如果由于宽度不够，文本无法在一行中显示而分为多行，那么新的行也会作为新的渲染器而添加。</span><br></pre></td></tr></table></figure>
+<ul>
+<li>有一些渲染对象对应于 DOM 节点，但在树中所在的位置与 DOM 节点不同。浮动定位和绝对定位的元素就是这样，它们处于正常的流程之外，放置在树中的其他地方，并映射到真正的框架，而放在原位的是占位框架。</li>
+</ul>
+<h2 id="六、布局"><a href="#六、布局" class="headerlink" title="六、布局"></a>六、布局</h2><p>渲染树创建完需要給每个节点添加位置和大小信息。计算这些值的过程称为布局或重排。布局是一个递归的过程。它从根呈现器（对应于 HTML 文档的 元素）开始，然后递归遍历部分或所有的框架层次结构，为每一个需要计算的呈现器计算几何信息。</p>
+<p>HTML 采用基于流的布局模型，大多数情况下只要一次遍历就能计算出几何信息。处于流中靠后位置元素通常不会影响靠前位置元素的几何特征，因此布局可以按从左至右、从上至下的顺序遍历文档。但是也有例外情况，比如 HTML 表格的计算就需要不止一次的遍历 。</p>
+<p>坐标系是相对于根框架而建立的，使用的是上坐标和左坐标。根呈现器的位置左边是 0,0，其尺寸为视口（也就是浏览器窗口的可见区域）。 </p>
+<h2 id="七、绘制"><a href="#七、绘制" class="headerlink" title="七、绘制"></a>七、绘制</h2><p>在绘制阶段，系统会遍历渲染树，将渲染树的内容显示在屏幕上。绘制工作是使用用户界面基础组件完成的。</p>
+<h2 id="八、总结"><a href="#八、总结" class="headerlink" title="八、总结"></a>八、总结</h2><p>1）在浏览器地址栏输入URL</p>
+<p>2）发送请求前，首先要知道 URL 对应服务器的 IP 地址，所以先进行域名解析。首先先在浏览器缓存里进行查找，然后是本地 hosts 文 件。主机向本地 DNS 服务器查询，如果没有，本地域名服务器向其他根域名服务器继续发出查询请求报文，根域名服务器告诉本地域名服务器下一步向下一个域名服务器进行查询。直到最后其他域名服务器将查询结果告诉主机。</p>
+<p>3）客户端通过三次握手和服务器建立 TCP 链接，</p>
+<p>4）客户端向服务器发送 HTTP 请求报文。这个 http 请求封装在一个 tcp 包中，这个 tcp 包会依次经过传输层，网络层， 数据链路层，物理层到达服务器。</p>
+<p>5）服务器接受请求并处理完后返回一个 HTTP 响应报文。返回相应的 html 给浏览器。</p>
+<p>6）浏览器接收HTTP响应后，客户端通过四次挥手和服务器断开连接。</p>
+<p>7）把请求回来的 HTML 代码经过解析，构建成 DOM 树；</p>
+<p>8）在 DOM 树的构建过程中如果遇到 JS 脚本和外部 JS 连接，则会停止构建 DOM 树来执行和下载相应的代码，这会造成阻塞，这就是为什么推荐 JS 代码应该放在 html 代码的后面</p>
+<p>9）根据外部样式，内部样式，内联样式构建 CSSOM 树；</p>
+<p>10）最后根据 CSSOM 树计算 CSS 属性并和 DOM 树构建渲染树；这里主要做的是排除非视觉节点，比如 script，meta 标签，排除 display 为 none 的节点。</p>
+<p>11）根据渲染树计算每个节点的几何信息。</p>
+<p>12）最后将各个节点绘制到屏幕上。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://www.html5rocks.com/zh/tutorials/internals/howbrowserswork/#Parsing_general" target="_blank" rel="noopener">https://www.html5rocks.com/zh/tutorials/internals/howbrowserswork/#Parsing_general</a></p>
+<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/Performance/How_browsers_work" target="_blank" rel="noopener">https://developer.mozilla.org/zh-CN/docs/Web/Performance/How_browsers_work</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/25380611" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/25380611</a></p>
+<p><a href="https://segmentfault.com/a/1190000014520262" target="_blank" rel="noopener">https://segmentfault.com/a/1190000014520262</a></p>
+<div class="qr-code"></div><img class="qrcode-img" src="/img/weixin.jpg"><div class="qrcode-desc">微信打赏</div><div class="post-tag-list">标签: <a class="post-tags" href="/tags/浏览器/">浏览器</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2021/12/04/Vue watcher 分类/"><i class="fa fa-chevron-left"></i><span>Vue watcher 分类</span></a></div><div class="next-post pull-right"><a href="/2020/07/22/前端数据存储方案/"><span>前端数据存储方案</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+  clientID: 'e238e2d1f25ec6e15026',
+  clientSecret: '3c4e537d46a59d056e6c0cc478b04784defafcfb',
+  repo: 'Yin-Hongwei.github.io',
+  owner: 'Yin-Hongwei',
+  admin: 'Yin-Hongwei',
+  id: md5(window.location.pathname)
+})
+gitalk.render('gitalk-container')</script></article></section></article><footer id="footer-outer"><div id="footer-inner"><p class="footer-text">Copyright &copy; 2018-2023 Yin-Hongwei</p></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i></body><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/animejs@latest/lib/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="/js/utils.js" defer></script><script src="/js/transition.js" defer></script><script src="/js/fancybox.js" defer></script><script src="/js/menu.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/scroll.js" defer></script></html>

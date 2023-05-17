@@ -1,0 +1,134 @@
+html {
+  font-size: $rem;
+}
+body {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  background-color: $theme-body-color;
+  color: $color-black-light;
+  font-size: $font-size;
+  font-family: $font-family;
+  line-height: $text-line-height;
+  -webkit-text-size-adjust: 100%;
+}
+html,
+body {
+  height: 100%;
+}
+#content-outer {
+  flex: 1 auto;
+}
+#content-inner .img-alt {
+  text-decoration: none;
+}
+#toggle-sidebar {
+  position: fixed;
+  left: $sidebar-icon-left;
+  top: $sidebar-icon-top;
+  font-size: $sidebar-icon-size;
+  z-index: 100;
+  cursor: pointer;
+  padding: 15px 4px;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  background-color: $color-grey;
+  color: $color-black !important;
+}
+.fa.fa-caret-right.on {
+  margin-left: $sidebar-margin-left;
+}
+#go-up {
+  position: fixed;
+  right: $go-up-right;
+  bottom: $go-up-bottom;
+  z-index: 100;
+  font-size: $sidebar-icon-size;
+  opacity: 0;
+  cursor: pointer;
+}
+a {
+  text-decoration: none;
+  color: $color-black-light;
+}
+a img,
+a video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: auto;
+  padding: $img-border-padding;
+  border: 1px solid $img-border-color;
+  transition: all 0.2s;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+div {
+  margin: 0;
+}
+* {
+  box-sizing: border-box;
+}
+table {
+  overflow: auto;
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+.left,
+.alignleft {
+  float: left;
+}
+.right,
+.alignright {
+  float: right;
+}
+.clear {
+  clear: both;
+}
+@media screen and (min-width: $sm) {
+  #recent-posts,
+  #tag,
+  #archive,
+  #post,
+  #about {
+    width: 55%;
+  }
+}
+@media screen and (min-width: $sm) and (max-width: $bg) {
+  #recent-posts,
+  #tag,
+  #archive,
+  #post,
+  #about {
+    width: 70%;
+  }
+}
+@media screen and (max-width: $bg) {
+  #recent-posts {
+    width: 100%;
+  }
+  #tag,
+  #archive,
+  #about {
+    width: 90%;
+  }
+  #post {
+    width: 95%;
+  }
+  i#toggle-sidebar,
+  #sidebar {
+    display: none;
+  }
+  body {
+    padding-left: 0 !important;
+  }
+}
