@@ -1,56 +1,346 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="webpack 热更新原理"><meta name="keywords" content="webpack"><meta name="author" content="Yin-Hongwei"><meta name="copyright" content="Yin-Hongwei"><title>webpack 热更新原理 | Yin-Hongwei</title><link rel="icon" href="/img/favicon.ico"><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script></head><body><header id="page-header"><nav id="navbar"><span class="nav-left"><div class="tou-img"><img src="/img/avatar.jpg"></div><a id="site-name" href="/">Yin-Hongwei</a></span><i class="fa fa-bars toggle-menu nav-right" aria-hidden="true"></i><span class="title">webpack 热更新原理</span><span class="nav-right menus"><a class="site-page" href="/about">关于我</a></span></nav></header><article id="content-outer"><section id="content-inner"><article class="article-entry" id="post"><h1>webpack 热更新原理</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h2><p>随着前端技术的不断发展，构建工具与我们的开发已密不可分，但是无论选择哪款构建工具，我们都或多或少的使用过他们热更新的能力，今天就以 webpack 为例，来看 webpack 热更新的原理。</p>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="webpack 热更新原理">
+<meta name="keywords" content="webpack">
+<meta name="author" content="Yin-Hongwei">
+<meta name="copyright" content="Yin-Hongwei">
+<title>webpack 热更新原理 | Yin-Hongwei</title>
+
+
+
+<meta name="robots" content="index,follow">
+
+
+<link rel="canonical" href="http://Yin-Hongwei.github.io/2021/12/25/webpack%20%E7%83%AD%E6%9B%B4%E6%96%B0%E5%8E%9F%E7%90%86/">
+
+
+<link rel="alternate" type="application/rss+xml" title="Yin-Hongwei RSS" href="/atom.xml">
+
+
+
+
+<meta property="og:locale" content="zh_CN">
+<meta property="og:site_name" content="Yin-Hongwei">
+<meta property="og:type" content="article">
+<meta property="og:title" content="webpack 热更新原理 | Yin-Hongwei">
+<meta property="og:description" content="webpack 热更新原理">
+<meta property="og:url" content="http://Yin-Hongwei.github.io/2021/12/25/webpack%20%E7%83%AD%E6%9B%B4%E6%96%B0%E5%8E%9F%E7%90%86/">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/e6c9d24ely1h6htwhrq36j217206gt9s.jpg">
+
+<meta property="article:author" content="Yin-Hongwei">
+<meta property="article:published_time" content="2021-12-25T14:00:00.000Z">
+
+<meta property="article:modified_time" content="2026-07-01T18:13:31.995Z">
+
+
+
+<meta property="article:tag" content="webpack">
+
+
+
+
+
+<meta name="twitter:card" content="summary_large_image">
+
+<meta name="twitter:title" content="webpack 热更新原理 | Yin-Hongwei">
+<meta name="twitter:description" content="webpack 热更新原理">
+<meta name="twitter:image" content="https://tva1.sinaimg.cn/large/e6c9d24ely1h6htwhrq36j217206gt9s.jpg">
+
+
+<script type="application/ld+json">
+
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "webpack 热更新原理",
+  "description": "webpack 热更新原理",
+  "image": [&#34;https://tva1.sinaimg.cn/large/e6c9d24ely1h6htwhrq36j217206gt9s.jpg&#34;],
+  "datePublished": "2021-12-25T14:00:00.000Z",
+  "dateModified": "2026-07-01T18:13:31.995Z",
+  "author": {
+    "@type": "Person",
+    "name": "Yin-Hongwei"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Yin-Hongwei",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://Yin-Hongwei.github.io/img/avatar.jpg"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://Yin-Hongwei.github.io/2021/12/25/webpack%20%E7%83%AD%E6%9B%B4%E6%96%B0%E5%8E%9F%E7%90%86/"
+  }
+}
+
+</script>
+
+
+
+
+
+
+
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement('script');
+    hm.src = 'https://hm.baidu.com/hm.js?b81c2b682a701ca13dc77e03ac709e1a';
+    hm.async = true;
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+
+
+
+
+
+<script>
+  (function () {
+    var key = 'yin-theme-mode'
+    var mode = 'auto'
+    try {
+      mode = localStorage.getItem(key) || mode
+    } catch (err) {}
+    var dark = mode === 'dark' || (mode !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
+    document.documentElement.style.colorScheme = dark ? 'dark' : 'light'
+  })()
+</script>
+
+<link rel="icon" href="/img/favicon.ico">
+
+  
+    <link rel="stylesheet" href="/css/index.css">
+  
+  
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css">
+    
+  
+
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script>
+
+<script>
+  var GLOBAL_CONFIG = {
+    root: '/',
+    hexoVersion: '8.1.2',
+    darkMode: {
+      enable: true,
+      default: 'auto',
+      labels: {
+        toggle: '切换暗色模式',
+        light: '浅色',
+        dark: '深色'
+      }
+    },
+    localSearch: {
+      path: 'search.xml',
+      languages: {
+        hits_empty: '找不到您查询的内容:${query}'
+      }
+    }
+  }
+</script>
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+
+
+
+
+<body class="post-page">
+  
+
+
+
+  <div class="moments-profile post-cover" id="nav">
+    <div class="moments-cover" style="background-image: url(/img/bg.jpg)">
+      <div class="moments-cover-content">
+        <header id="page-header" class="moments-profile-header">
+  <span class="header-brand">
+    <a id="site-name" href="/">Yin-Hongwei</a>
+  </span>
+  
+    <span class="header-post-title">webpack 热更新原理</span>
+  
+  <div class="header-actions">
+    
+      <button type="button" id="dark-mode-toggle" class="site-page social-icon dark-mode-toggle" aria-label="切换暗色模式" aria-pressed="false">
+        <i class="fa fa-moon-o" aria-hidden="true"></i>
+      </button>
+    
+    
+    
+      <a class="site-page social-icon search search--desktop" href="javascript:void(0);">
+        <i class="fa fa-search" aria-hidden="true"></i>
+        <span>搜索</span>
+      </a>
+    
+    
+      <nav class="menus mobile-nav-panel" id="mobile-nav-panel" aria-label="菜单" aria-hidden="true">
+        <div class="mobile-nav-panel__header">
+          <span class="mobile-nav-panel__title">菜单</span>
+        </div>
+        <div class="mobile-nav-panel__body">
+          
+              
+              
+              
+              
+              <a class="site-page" href="/about">
+                
+                  关于我
+                
+              </a>
+            
+              
+              
+              
+              
+              <a class="site-page" href="/archives">
+                
+                  存档
+                
+              </a>
+            
+              
+              
+              
+              
+              <a class="site-page social-icon" href="https://github.com/Yin-Hongwei" target="_blank" rel="noreferrer noopener">
+                
+                  <i class="fa fa-github" aria-hidden="true"></i>
+                  <span class="menu-item-label">GitHub</span>
+                
+              </a>
+            
+        </div>
+      </nav>
+    
+    <button type="button" class="toggle-menu" aria-label="菜单" aria-expanded="false" aria-controls="mobile-nav-panel">
+      <span class="toggle-menu__icon" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+  </div>
+</header>
+<div class="mobile-nav-backdrop" aria-hidden="true"></div>
+
+      </div>
+    </div>
+  </div>
+
+
+  
+    <button type="button" id="toggle-sidebar" class="sidebar-toggle" aria-label="目录" aria-expanded="false">
+      <svg class="sidebar-toggle__chevron" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
+        <path d="M10 4 L6 8 L10 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    
+<div id="sidebar" class="is-open" data-display="true">
+  
+    <div class="sidebar-toc">
+      <div class="sidebar-toc__title">目录</div>
+      <div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81webpack-%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86"><span class="toc-text">一、webpack 编译原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E6%96%B0%E5%BB%BA%E9%A1%B9%E7%9B%AE"><span class="toc-text">1、新建项目</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1%E3%80%81%E6%96%B0%E5%BB%BA%E9%A1%B9%E7%9B%AE"><span class="toc-text">1.1、新建项目</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2%E3%80%81%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90"><span class="toc-text">1.2、问题分析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E4%BD%BF%E7%94%A8"><span class="toc-text">2、使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1%E3%80%81%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"><span class="toc-text">2.1、安装依赖</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2%E3%80%81%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AE"><span class="toc-text">2.2、项目配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3%E3%80%81%E8%BF%90%E8%A1%8C"><span class="toc-text">2.3、运行</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E7%BC%96%E8%AF%91%E7%BB%93%E6%9E%9C"><span class="toc-text">3、编译结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%E3%80%81%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="toc-text">4、实现原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1%E3%80%81%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B"><span class="toc-text">4.1、执行过程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2%E3%80%81%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90"><span class="toc-text">4.2、原理分析</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%96%87%E4%BB%B6%E7%9B%91%E5%90%AC"><span class="toc-text">二、文件监听</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E4%BD%BF%E7%94%A8"><span class="toc-text">1、使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1%E3%80%81%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"><span class="toc-text">1.1、安装依赖</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2%E3%80%81%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AE"><span class="toc-text">1.2、项目配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3%E3%80%81%E8%BF%90%E8%A1%8C"><span class="toc-text">1.3、运行</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E7%BC%96%E8%AF%91%E7%BB%93%E6%9E%9C"><span class="toc-text">2、编译结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="toc-text">3、实现原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1%E3%80%81%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B"><span class="toc-text">3.1、执行过程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2%E3%80%81%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90"><span class="toc-text">3.2、原理分析</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E7%83%AD%E9%87%8D%E8%BD%BD-live-reload"><span class="toc-text">三、热重载 live reload</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E4%BD%BF%E7%94%A8-1"><span class="toc-text">1、使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1%E3%80%81%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96-1"><span class="toc-text">1.1、安装依赖</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2%E3%80%81%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AE-1"><span class="toc-text">1.2、项目配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3%E3%80%81%E8%BF%90%E8%A1%8C-1"><span class="toc-text">1.3、运行</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E7%BC%96%E8%AF%91%E7%BB%93%E6%9E%9C-1"><span class="toc-text">2、编译结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86-1"><span class="toc-text">3、实现原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1%E3%80%81%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B-1"><span class="toc-text">3.1、执行过程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2%E3%80%81%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90-1"><span class="toc-text">3.2、原理分析</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E7%83%AD%E6%9B%B4%E6%96%B0-HMR%EF%BC%88%E7%83%AD%E6%9B%BF%E6%8D%A2%EF%BC%89"><span class="toc-text">四、热更新 HMR（热替换）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E4%BD%BF%E7%94%A8-2"><span class="toc-text">1、使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1%E3%80%81%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96-2"><span class="toc-text">1.1、安装依赖</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2%E3%80%81%E9%A1%B9%E7%9B%AE%E9%85%8D%E7%BD%AE-2"><span class="toc-text">1.2、项目配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3%E3%80%81%E8%BF%90%E8%A1%8C-2"><span class="toc-text">1.3、运行</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E7%BC%96%E8%AF%91%E7%BB%93%E6%9E%9C-2"><span class="toc-text">2、编译结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86-2"><span class="toc-text">3、实现原理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1%E3%80%81%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B-2"><span class="toc-text">3.1、执行过程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2%E3%80%81%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90-2"><span class="toc-text">3.2、原理分析</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E6%80%BB%E7%BB%93"><span class="toc-text">五、总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E6%80%9D%E8%80%83"><span class="toc-text">六、思考</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E6%9E%84%E5%BB%BA%E5%B7%A5%E5%85%B7%E7%83%AD%E6%9B%B4%E6%96%B0%E8%83%BD%E5%8A%9B%E5%AF%B9%E6%AF%94"><span class="toc-text">1、构建工具热更新能力对比</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E9%A1%B9%E7%9B%AE%E5%9C%B0%E5%9D%80"><span class="toc-text">七、项目地址</span></a></li></ol></div>
+    </div>
+  
+</div>
+
+  
+  <article id="content-outer">
+    <section id="content-inner" class="layout">
+      <article id="post">
+  <h1 class="post-title">webpack 热更新原理</h1>
+  <div id="post-content" class="article-container"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h2><p>随着前端技术的不断发展，构建工具与我们的开发已密不可分，但是无论选择哪款构建工具，我们都或多或少的使用过他们热更新的能力，今天就以 webpack 为例，来看 webpack 热更新的原理。</p>
 <p>要实现热更新的能力，首先 webpack 要具备文件监听的能力，其次也要具备模块构建的能力，所以我们就从无到有的看 webpack 热更新的原理。</p>
-<a id="more"></a>
+<span id="more"></span>
+
+
+
 <h2 id="一、webpack-编译原理"><a href="#一、webpack-编译原理" class="headerlink" title="一、webpack 编译原理"></a><strong>一、webpack 编译原理</strong></h2><p>先创建一个项目，看在不引入构建工具的情况下会出现什么问题。</p>
 <h3 id="1、新建项目"><a href="#1、新建项目" class="headerlink" title="1、新建项目"></a><strong>1、新建项目</strong></h3><h4 id="1-1、新建项目"><a href="#1-1、新建项目" class="headerlink" title="1.1、新建项目"></a>1.1、<strong>新建项目</strong></h4><p>新建项目</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir webpack-hmr-demo</span><br><span class="line"><span class="built_in">cd</span> webpack-hmr-demo</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> webpack-hmr-demo</span><br><span class="line"><span class="built_in">cd</span> webpack-hmr-demo</span><br></pre></td></tr></table></figure>
+
 <p> 项目结构</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">.</span><br><span class="line">├── index.html</span><br><span class="line">└── src</span><br><span class="line">    ├── App.vue</span><br><span class="line">    ├── assets</span><br><span class="line">    │   ├── css</span><br><span class="line">    │   │   └── index.css</span><br><span class="line">    │   └── js</span><br><span class="line">    │       └── index.js</span><br><span class="line">    └── main.js</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.</span><br><span class="line">├── index.html</span><br><span class="line">└── src</span><br><span class="line">    ├── App.vue</span><br><span class="line">    ├── assets</span><br><span class="line">    │   ├── css</span><br><span class="line">    │   │   └── index.css</span><br><span class="line">    │   └── js</span><br><span class="line">    │       └── index.js</span><br><span class="line">    └── main.js</span><br></pre></td></tr></table></figure>
+
 <p>main.js</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">"vue"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">"./App.vue"</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">"./assets/css/index.css"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = createApp(App);</span><br><span class="line">app.mount(<span class="string">"#app"</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&quot;vue&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">App</span> <span class="keyword">from</span> <span class="string">&quot;./App.vue&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;./assets/css/index.css&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">createApp</span>(<span class="title class_">App</span>);</span><br><span class="line">app.<span class="title function_">mount</span>(<span class="string">&quot;#app&quot;</span>);</span><br></pre></td></tr></table></figure>
+
 <p>App.vue</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">&lt;div&gt;&#123;&#123; msg &#125;&#125;&lt;/div&gt;</span><br><span class="line">&lt;input type=&quot;text&quot; /&gt;</span><br><span class="line">&lt;button @click=&quot;handleClick&quot;&gt;点击&lt;/button&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">  import &#123; defineComponent, ref &#125; from &quot;vue&quot;;</span><br><span class="line">  </span><br><span class="line">  import &#123; modification &#125; from &quot;./assets/js/index&quot;;</span><br><span class="line">  </span><br><span class="line">  export default defineComponent(&#123;</span><br><span class="line">    name: &quot;App&quot;,</span><br><span class="line">    setup() &#123;</span><br><span class="line">      const msg = ref(&quot;hello world&quot;);</span><br><span class="line">      </span><br><span class="line">      function handleClick() &#123;</span><br><span class="line">        msg.value = modification(msg.value);</span><br><span class="line">      &#125;</span><br><span class="line">      </span><br><span class="line">      return &#123;</span><br><span class="line">        msg,</span><br><span class="line">        handleClick,</span><br><span class="line">      &#125;;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;);</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
-<p>assets/js/index.js</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">modification</span>(<span class="params">str</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">`<span class="subst">$&#123;str&#125;</span>!!!`</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>assets/css/index.css</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-id">#app</span> &#123;</span><br><span class="line">  <span class="attribute">font-size</span>: <span class="number">25px</span>;</span><br><span class="line">  <span class="attribute">font-weight</span>: <span class="number">600</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">&lt;div&gt;&#123;&#123; msg &#125;&#125;&lt;/div&gt;</span><br><span class="line">&lt;input type=&quot;text&quot; /&gt;</span><br><span class="line">&lt;button @click=&quot;handleClick&quot;&gt;点击&lt;/button&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">  import &#123; defineComponent, ref &#125; from &quot;vue&quot;;</span><br><span class="line">  </span><br><span class="line">  import &#123; modification &#125; from &quot;./assets/js/index&quot;;</span><br><span class="line">  </span><br><span class="line">  export default defineComponent(&#123;</span><br><span class="line">    name: &quot;App&quot;,</span><br><span class="line">    setup() &#123;</span><br><span class="line">      const msg = ref(&quot;hello world&quot;);</span><br><span class="line">      </span><br><span class="line">      function handleClick() &#123;</span><br><span class="line">        msg.value = modification(msg.value);</span><br><span class="line">      &#125;</span><br><span class="line">      </span><br><span class="line">      return &#123;</span><br><span class="line">        msg,</span><br><span class="line">        handleClick,</span><br><span class="line">      &#125;;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;);</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>assets&#x2F;js&#x2F;index.js</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">modification</span>(<span class="params">str</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">`<span class="subst">$&#123;str&#125;</span>!!!`</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>assets&#x2F;css&#x2F;index.css</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-id">#app</span> &#123;</span><br><span class="line">  <span class="attribute">font-size</span>: <span class="number">25px</span>;</span><br><span class="line">  <span class="attribute">font-weight</span>: <span class="number">600</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>之后在 index.html 中引入 main.js 文件，理想状态下，通过浏览器应该是能直接访问我们写的页面的，但是通过浏览器打开后，会发现报如下错误：</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6htwhrq36j217206gt9s.jpg" alt></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6htwhrq36j217206gt9s.jpg" class="lazy-img" loading="eager" decoding="async"></p>
 <h4 id="1-2、问题分析"><a href="#1-2、问题分析" class="headerlink" title="1.2、问题分析"></a>1.2、问题分析</h4><p>JavaScript 有两种源文件，一种是脚本，另一种是模块。二者的区别是脚本只有语句，模块除了语句，还有 import 声明或 export 声明。</p>
-<p>main.js 文件属于模块，而 script 标签的 type 属性默认是 text/javascript ，所以浏览器默认会将它作为脚本进行解析，所以此处需要把 type 修改为 module ，将 main.js 作为模块引入。</p>
+<p>main.js 文件属于模块，而 script 标签的 type 属性默认是 text&#x2F;javascript ，所以浏览器默认会将它作为脚本进行解析，所以此处需要把 type 修改为 module ，将 main.js 作为模块引入。</p>
 <p>但是修改后依然报错。</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6hu1dei63j217e09atbs.jpg" alt></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6hu1dei63j217e09atbs.jpg" class="lazy-img" loading="lazy" decoding="async"></p>
 <p>这是因为脚本被跨域策略给拦截了，我们使用的协议是 file、而跨域请求只支持这些协议：http、data、chrome、chrome-extension、chrome-untrusted、https，这里我们需要一个服务来作为资源的提供方，最简单的方式就是通过 VSCode 安装一个插件 Live Server。</p>
 <p>跨域解决了但是项目依然跑不起来，因为没有引入 vue 的模块，即使在 node_modules 下安装了浏览器也找不到，因为它没有对应的查找规则，并且在项目中我们也不能需要什么就通过 cdn 的方式引入或直接把对应模块下载到本地，这个在后期模块的维护管理方面都会带来问题。</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6hu20xtksj216y0643zw.jpg" alt></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6hu20xtksj216y0643zw.jpg" class="lazy-img" loading="lazy" decoding="async"></p>
 <p>所以这个时候，我们就需要使用构建工具来帮我们对文件做处理让浏览器能认识。</p>
-<h3 id="2、使用"><a href="#2、使用" class="headerlink" title="2、使用"></a>2、使用</h3><h4 id="2-1、安装依赖"><a href="#2-1、安装依赖" class="headerlink" title="2.1、安装依赖"></a><strong>2.1、安装依赖</strong></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">yarn init -y</span><br><span class="line"></span><br><span class="line">yarn add webpack webpack-cli --save-dev</span><br><span class="line">yarn add @babel/core @babel/preset-env babel-loader --save-dev</span><br><span class="line">yarn add vue vue-loader vue-template-compiler --save-dev</span><br><span class="line">yarn add html-webpack-plugin --save-dev</span><br><span class="line">yarn add css-loader style-loader --save-dev</span><br></pre></td></tr></table></figure>
-<h4 id="2-2、项目配置"><a href="#2-2、项目配置" class="headerlink" title="2.2、项目配置"></a><strong>2.2、项目配置</strong></h4><p>配置 build/webpack.dev.js 文件</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">"path"</span>);</span><br><span class="line"><span class="keyword">const</span> &#123; CleanWebpackPlugin &#125; = <span class="built_in">require</span>(<span class="string">"clean-webpack-plugin"</span>);</span><br><span class="line"><span class="keyword">const</span> &#123; VueLoaderPlugin &#125; = <span class="built_in">require</span>(<span class="string">"vue-loader"</span>);</span><br><span class="line"><span class="keyword">const</span> HtmlWebpackPlugin = <span class="built_in">require</span>(<span class="string">"html-webpack-plugin"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  mode: <span class="string">"development"</span>,</span><br><span class="line">  entry: path.join(__dirname, <span class="string">"../src/main.js"</span>),</span><br><span class="line">  output: &#123;</span><br><span class="line">    filename: <span class="string">"bundle.js"</span>,</span><br><span class="line">    path: path.join(__dirname, <span class="string">"../dist"</span>),</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="built_in">module</span>: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.js$/</span>,</span><br><span class="line">        exclude: <span class="string">"/node_modules/"</span>,</span><br><span class="line">        use: &#123;</span><br><span class="line">          loader: <span class="string">"babel-loader"</span>,</span><br><span class="line">          options: &#123;</span><br><span class="line">            presets: [<span class="string">"@babel/preset-env"</span>],</span><br><span class="line">          &#125;,</span><br><span class="line">        &#125;,</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.vue$/</span>,</span><br><span class="line">        loader: <span class="string">"vue-loader"</span>,</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.css$/</span>,</span><br><span class="line">        use: [<span class="string">"style-loader"</span>, <span class="string">"css-loader"</span>],</span><br><span class="line">      &#125;,</span><br><span class="line">    ],</span><br><span class="line">  &#125;,</span><br><span class="line">  plugins: [</span><br><span class="line">    <span class="keyword">new</span> CleanWebpackPlugin(),</span><br><span class="line">    <span class="keyword">new</span> VueLoaderPlugin(),</span><br><span class="line">    <span class="keyword">new</span> HtmlWebpackPlugin(&#123;</span><br><span class="line">      template: <span class="string">"./index.html"</span>,</span><br><span class="line">    &#125;),</span><br><span class="line">  ],</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="2、使用"><a href="#2、使用" class="headerlink" title="2、使用"></a>2、使用</h3><h4 id="2-1、安装依赖"><a href="#2-1、安装依赖" class="headerlink" title="2.1、安装依赖"></a><strong>2.1、安装依赖</strong></h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn init -y</span><br><span class="line"></span><br><span class="line">yarn add webpack webpack-cli --save-dev</span><br><span class="line">yarn add @babel/core @babel/preset-env babel-loader --save-dev</span><br><span class="line">yarn add vue vue-loader vue-template-compiler --save-dev</span><br><span class="line">yarn add html-webpack-plugin --save-dev</span><br><span class="line">yarn add css-loader style-loader --save-dev </span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2、项目配置"><a href="#2-2、项目配置" class="headerlink" title="2.2、项目配置"></a><strong>2.2、项目配置</strong></h4><p>配置 build&#x2F;webpack.dev.js 文件</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">&quot;path&quot;</span>);</span><br><span class="line"><span class="keyword">const</span> &#123; <span class="title class_">CleanWebpackPlugin</span> &#125; = <span class="built_in">require</span>(<span class="string">&quot;clean-webpack-plugin&quot;</span>);</span><br><span class="line"><span class="keyword">const</span> &#123; <span class="title class_">VueLoaderPlugin</span> &#125; = <span class="built_in">require</span>(<span class="string">&quot;vue-loader&quot;</span>);</span><br><span class="line"><span class="keyword">const</span> <span class="title class_">HtmlWebpackPlugin</span> = <span class="built_in">require</span>(<span class="string">&quot;html-webpack-plugin&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">  <span class="attr">mode</span>: <span class="string">&quot;development&quot;</span>,</span><br><span class="line">  <span class="attr">entry</span>: path.<span class="title function_">join</span>(__dirname, <span class="string">&quot;../src/main.js&quot;</span>),</span><br><span class="line">  <span class="attr">output</span>: &#123;</span><br><span class="line">    <span class="attr">filename</span>: <span class="string">&quot;bundle.js&quot;</span>,</span><br><span class="line">    <span class="attr">path</span>: path.<span class="title function_">join</span>(__dirname, <span class="string">&quot;../dist&quot;</span>),</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">module</span>: &#123;</span><br><span class="line">    <span class="attr">rules</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">test</span>: <span class="regexp">/\.js$/</span>,</span><br><span class="line">        <span class="attr">exclude</span>: <span class="string">&quot;/node_modules/&quot;</span>,</span><br><span class="line">        <span class="attr">use</span>: &#123;</span><br><span class="line">          <span class="attr">loader</span>: <span class="string">&quot;babel-loader&quot;</span>,</span><br><span class="line">          <span class="attr">options</span>: &#123;</span><br><span class="line">            <span class="attr">presets</span>: [<span class="string">&quot;@babel/preset-env&quot;</span>],</span><br><span class="line">          &#125;,</span><br><span class="line">        &#125;,</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">test</span>: <span class="regexp">/\.vue$/</span>,</span><br><span class="line">        <span class="attr">loader</span>: <span class="string">&quot;vue-loader&quot;</span>,</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">test</span>: <span class="regexp">/\.css$/</span>,</span><br><span class="line">        <span class="attr">use</span>: [<span class="string">&quot;style-loader&quot;</span>, <span class="string">&quot;css-loader&quot;</span>],</span><br><span class="line">      &#125;,</span><br><span class="line">    ],</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">plugins</span>: [</span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">CleanWebpackPlugin</span>(),</span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">VueLoaderPlugin</span>(),</span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">HtmlWebpackPlugin</span>(&#123;</span><br><span class="line">      <span class="attr">template</span>: <span class="string">&quot;./index.html&quot;</span>,</span><br><span class="line">    &#125;),</span><br><span class="line">  ],</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
 <p>配置编译命令</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"scripts"</span>: &#123;</span><br><span class="line">    <span class="attr">"build"</span>: <span class="string">"webpack --config build/webpack.dev.js"</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="2-3、运行"><a href="#2-3、运行" class="headerlink" title="2.3、运行"></a><strong>2.3、运行</strong></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn build</span><br></pre></td></tr></table></figure>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6hu2iwvi7j215k0ds751.jpg" alt></p>
-<h3 id="3、编译结果"><a href="#3、编译结果" class="headerlink" title="3、编译结果"></a><strong>3、编译结果</strong></h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line"><span class="meta">  "use strict"</span>;</span><br><span class="line">  <span class="keyword">var</span> __webpack_modules__ = ([])</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">__webpack_require__</span>(<span class="params">moduleId</span>) </span>&#123;&#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  </span><br><span class="line">  <span class="keyword">var</span> __webpack_exports__ = &#123;&#125;;</span><br><span class="line">  </span><br><span class="line">  (<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">__webpack_require__.r(__webpack_exports__);</span><br><span class="line"><span class="comment">/* harmony import */</span> <span class="keyword">var</span> vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(<span class="comment">/*! vue */</span> <span class="string">"./node_modules/vue/dist/vue.runtime.esm-bundler.js"</span>);</span><br><span class="line"><span class="comment">/* harmony import */</span> <span class="keyword">var</span> _App_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(<span class="comment">/*! ./App.vue */</span> <span class="string">"./src/App.vue"</span>);</span><br><span class="line"><span class="comment">/* harmony import */</span> <span class="keyword">var</span> _assets_css_index_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(<span class="comment">/*! ./assets/css/index.css */</span> <span class="string">"./src/assets/css/index.css"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> app = (<span class="number">0</span>,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_App_vue__WEBPACK_IMPORTED_MODULE_1__[<span class="string">"default"</span>]);</span><br><span class="line">  &#125;)();</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;scripts&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;build&quot;</span><span class="punctuation">:</span> <span class="string">&quot;webpack --config build/webpack.dev.js&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-3、运行"><a href="#2-3、运行" class="headerlink" title="2.3、运行"></a><strong>2.3、运行</strong></h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn build</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6hu2iwvi7j215k0ds751.jpg" class="lazy-img" loading="lazy" decoding="async"></p>
+<h3 id="3、编译结果"><a href="#3、编译结果" class="headerlink" title="3、编译结果"></a><strong>3、编译结果</strong></h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="string">&quot;use strict&quot;</span>;</span><br><span class="line">  <span class="keyword">var</span> __webpack_modules__ = ([])</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">__webpack_require__</span>(<span class="params">moduleId</span>) &#123;&#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  </span><br><span class="line">  <span class="keyword">var</span> __webpack_exports__ = &#123;&#125;;</span><br><span class="line">  </span><br><span class="line">  (<span class="function">() =&gt;</span> &#123;</span><br><span class="line">__webpack_require__.<span class="title function_">r</span>(__webpack_exports__);</span><br><span class="line"><span class="comment">/* harmony import */</span> <span class="keyword">var</span> vue__WEBPACK_IMPORTED_MODULE_0__ = <span class="title function_">__webpack_require__</span>(<span class="comment">/*! vue */</span> <span class="string">&quot;./node_modules/vue/dist/vue.runtime.esm-bundler.js&quot;</span>);</span><br><span class="line"><span class="comment">/* harmony import */</span> <span class="keyword">var</span> _App_vue__WEBPACK_IMPORTED_MODULE_1__ = <span class="title function_">__webpack_require__</span>(<span class="comment">/*! ./App.vue */</span> <span class="string">&quot;./src/App.vue&quot;</span>);</span><br><span class="line"><span class="comment">/* harmony import */</span> <span class="keyword">var</span> _assets_css_index_css__WEBPACK_IMPORTED_MODULE_2__ = <span class="title function_">__webpack_require__</span>(<span class="comment">/*! ./assets/css/index.css */</span> <span class="string">&quot;./src/assets/css/index.css&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> app = (<span class="number">0</span>,vue__WEBPACK_IMPORTED_MODULE_0__.<span class="property">createApp</span>)(_App_vue__WEBPACK_IMPORTED_MODULE_1__[<span class="string">&quot;default&quot;</span>]);</span><br><span class="line">  &#125;)();</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+
 <ul>
 <li>打包后的结果是一个IIFE（匿名闭包）</li>
 <li><strong>webpack_modules</strong> 用来记录当前依赖的所有模块</li>
 <li><strong>webpack_require</strong> 用来加载模块</li>
 <li>最后一段 IIFE 对应的就是我们开头写好的 main.js 文件</li>
 </ul>
-<h3 id="4、实现原理"><a href="#4、实现原理" class="headerlink" title="4、实现原理"></a><strong>4、实现原理</strong></h3><h4 id="4-1、执行过程"><a href="#4-1、执行过程" class="headerlink" title="4.1、执行过程"></a>4.1、执行过程</h4><p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6hu304qxtj21du0ocdhb.jpg" alt></p>
-<h4 id="4-2、原理分析"><a href="#4-2、原理分析" class="headerlink" title="4.2、原理分析"></a>4.2、原理分析</h4><p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6hu3kzveej214m0kijsv.jpg" alt></p>
+<h3 id="4、实现原理"><a href="#4、实现原理" class="headerlink" title="4、实现原理"></a><strong>4、实现原理</strong></h3><h4 id="4-1、执行过程"><a href="#4-1、执行过程" class="headerlink" title="4.1、执行过程"></a>4.1、执行过程</h4><p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6hu304qxtj21du0ocdhb.jpg" class="lazy-img" loading="lazy" decoding="async"></p>
+<h4 id="4-2、原理分析"><a href="#4-2、原理分析" class="headerlink" title="4.2、原理分析"></a>4.2、原理分析</h4><p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6hu3kzveej214m0kijsv.jpg" class="lazy-img" loading="lazy" decoding="async"></p>
 <h2 id="二、文件监听"><a href="#二、文件监听" class="headerlink" title="二、文件监听"></a><strong>二、文件监听</strong></h2><p>经过构建工具的处理，浏览器已经能运行我们写好的代码了，但是每次修改完看渲染效果都需要手动去编译，这就很影响开发效率。</p>
 <p>webpack 提供了监听文件变化，变化后就自动编译的策略。</p>
 <h3 id="1、使用"><a href="#1、使用" class="headerlink" title="1、使用"></a><strong>1、使用</strong></h3><h4 id="1-1、安装依赖"><a href="#1-1、安装依赖" class="headerlink" title="1.1、安装依赖"></a><strong>1.1、安装依赖</strong></h4><p>同上</p>
 <h4 id="1-2、项目配置"><a href="#1-2、项目配置" class="headerlink" title="1.2、项目配置"></a><strong>1.2、项目配置</strong></h4><p>在配置 webpack.config.js 中设置 watch: true 或者启动 webpack 命令时带上 –watch 参数：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"scripts"</span>: &#123;</span><br><span class="line">    <span class="attr">"build"</span>: <span class="string">"webpack --config build/webpack.dev.js"</span>,</span><br><span class="line">    <span class="attr">"watch"</span>: <span class="string">"webpack --config build/webpack.dev.js --watch"</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;scripts&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;build&quot;</span><span class="punctuation">:</span> <span class="string">&quot;webpack --config build/webpack.dev.js&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;watch&quot;</span><span class="punctuation">:</span> <span class="string">&quot;webpack --config build/webpack.dev.js --watch&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
 <h4 id="1-3、运行"><a href="#1-3、运行" class="headerlink" title="1.3、运行"></a><strong>1.3、运行</strong></h4><p>运行后每次修改完保存后 webpack 都会自动帮我们去编译。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn watch</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn watch</span><br></pre></td></tr></table></figure>
+
+
+
 <h3 id="2、编译结果"><a href="#2、编译结果" class="headerlink" title="2、编译结果"></a><strong>2、编译结果</strong></h3><p>同上</p>
-<h3 id="3、实现原理"><a href="#3、实现原理" class="headerlink" title="3、实现原理"></a><strong>3、实现原理</strong></h3><h4 id="3-1、执行过程"><a href="#3-1、执行过程" class="headerlink" title="3.1、执行过程"></a>3.1、执行过程</h4><p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6hu48vwxlj21bs0ladh9.jpg" alt></p>
+<h3 id="3、实现原理"><a href="#3、实现原理" class="headerlink" title="3、实现原理"></a><strong>3、实现原理</strong></h3><h4 id="3-1、执行过程"><a href="#3-1、执行过程" class="headerlink" title="3.1、执行过程"></a>3.1、执行过程</h4><p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6hu48vwxlj21bs0ladh9.jpg" class="lazy-img" loading="lazy" decoding="async"></p>
 <p>与一般编译不同的是，在红色区域会自动监听文件变化。</p>
-<h4 id="3-2、原理分析"><a href="#3-2、原理分析" class="headerlink" title="3.2、原理分析"></a>3.2、原理分析</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (watch) &#123;</span><br><span class="line">  compiler.watch(watchOptions, callback);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  compiler.run(<span class="function">(<span class="params">err, stats</span>) =&gt;</span> &#123;</span><br><span class="line">    compiler.close(<span class="function"><span class="params">err2</span> =&gt;</span> &#123;</span><br><span class="line">      callback(err || err2, stats);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="3-2、原理分析"><a href="#3-2、原理分析" class="headerlink" title="3.2、原理分析"></a>3.2、原理分析</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (watch) &#123;</span><br><span class="line">  compiler.<span class="title function_">watch</span>(watchOptions, callback);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  compiler.<span class="title function_">run</span>(<span class="function">(<span class="params">err, stats</span>) =&gt;</span> &#123;</span><br><span class="line">    compiler.<span class="title function_">close</span>(<span class="function"><span class="params">err2</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="title function_">callback</span>(err || err2, stats);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>在未开启文件监听的功能时，webpack 构建走的是 compiler.run 方法，当开启文件监听的功能后，webpack 在进行构建时会走 compiler.watch 方法。</p>
 <p>而且他们构建后的内容是完全相同的，唯一不同的是开启文件监听会监听文件变化自动构建。所以这里我们主要关注两个问题</p>
 <ul>
@@ -61,23 +351,36 @@
 <p>📌  webpack 怎么做到的监听</p>
 </blockquote>
 <p>Webpack5 是通过 node 的 fs 模块创建监听器来实现文件监听的。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// node_modules/watchpack/lib/watchEventSource.js</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DirectWatcher</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(filePath) &#123;</span><br><span class="line">    <span class="keyword">this</span>.filePath = filePath;</span><br><span class="line">    <span class="keyword">this</span>.watchers = <span class="keyword">new</span> <span class="built_in">Set</span>();</span><br><span class="line">    <span class="keyword">this</span>.watcher = <span class="literal">undefined</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> watcher = fs.watch(filePath);</span><br><span class="line">      <span class="keyword">this</span>.watcher = watcher;</span><br><span class="line">      watcher.on(<span class="string">"change"</span>, (type, filename) =&gt; &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">const</span> w <span class="keyword">of</span> <span class="keyword">this</span>.watchers) &#123;</span><br><span class="line">          w.emit(<span class="string">"change"</span>, type, filename);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">      watcher.on(<span class="string">"error"</span>, error =&gt; &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">const</span> w <span class="keyword">of</span> <span class="keyword">this</span>.watchers) &#123;</span><br><span class="line">          w.emit(<span class="string">"error"</span>, error);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">      process.nextTick(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">const</span> w <span class="keyword">of</span> <span class="keyword">this</span>.watchers) &#123;</span><br><span class="line">          w.emit(<span class="string">"error"</span>, err);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    watcherCount++;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// node_modules/watchpack/lib/watchEventSource.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">DirectWatcher</span> &#123;</span><br><span class="line">  <span class="title function_">constructor</span>(<span class="params">filePath</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">filePath</span> = filePath;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">watchers</span> = <span class="keyword">new</span> <span class="title class_">Set</span>();</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">watcher</span> = <span class="literal">undefined</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> watcher = fs.<span class="title function_">watch</span>(filePath);</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">watcher</span> = watcher;</span><br><span class="line">      watcher.<span class="title function_">on</span>(<span class="string">&quot;change&quot;</span>, <span class="function">(<span class="params">type, filename</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">const</span> w <span class="keyword">of</span> <span class="variable language_">this</span>.<span class="property">watchers</span>) &#123;</span><br><span class="line">          w.<span class="title function_">emit</span>(<span class="string">&quot;change&quot;</span>, type, filename);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">      watcher.<span class="title function_">on</span>(<span class="string">&quot;error&quot;</span>, <span class="function"><span class="params">error</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">const</span> w <span class="keyword">of</span> <span class="variable language_">this</span>.<span class="property">watchers</span>) &#123;</span><br><span class="line">          w.<span class="title function_">emit</span>(<span class="string">&quot;error&quot;</span>, error);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">      process.<span class="title function_">nextTick</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">const</span> w <span class="keyword">of</span> <span class="variable language_">this</span>.<span class="property">watchers</span>) &#123;</span><br><span class="line">          w.<span class="title function_">emit</span>(<span class="string">&quot;error&quot;</span>, err);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    watcherCount++;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>在 webpack 5 以前，mac 上文件监听上报有问题，要依赖了第三方包 chokidar，webpack 5 已重构。</p>
 <blockquote>
 <p>📌  监听到变化后的处理机制</p>
 </blockquote>
 <p>webpack 在监听到文件变化后并不会立刻去构建，它有一套自己的处理机制，主要通过 wathcOptions 的 poll 和 aggregateTimeout 属性来控制，poll 属性是控制多长时间去轮询看文件是否变化，aggregateTimeout 属性是经过 poll 属性的轮询检测到文件变化后需要多久才去执行构建。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.export = &#123;</span><br><span class="line">  watch: <span class="literal">true</span>,</span><br><span class="line">  wathcOptions: &#123; <span class="comment">// 只有开启监听模式时，watchOptions才有意义</span></span><br><span class="line">    ignored: <span class="regexp">/node_modules/</span>,</span><br><span class="line">    aggregateTimeout: <span class="number">300</span>, <span class="comment">// 监听到变化发生后会等300ms再去执行</span></span><br><span class="line">    poll: <span class="number">1000</span> <span class="comment">// 判断文件是否发生变化是通过不停询问系统指定文件有没有变化实现的</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">module</span>.<span class="property">export</span> = &#123;</span><br><span class="line">  <span class="attr">watch</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">wathcOptions</span>: &#123; <span class="comment">// 只有开启监听模式时，watchOptions才有意义</span></span><br><span class="line">    <span class="attr">ignored</span>: <span class="regexp">/node_modules/</span>,</span><br><span class="line">    <span class="attr">aggregateTimeout</span>: <span class="number">300</span>, <span class="comment">// 监听到变化发生后会等300ms再去执行</span></span><br><span class="line">    <span class="attr">poll</span>: <span class="number">1000</span> <span class="comment">// 判断文件是否发生变化是通过不停询问系统指定文件有没有变化实现的</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
 <h2 id="三、热重载-live-reload"><a href="#三、热重载-live-reload" class="headerlink" title="三、热重载 live reload"></a><strong>三、热重载</strong> <strong>live</strong> <strong>reload</strong></h2><p>文件监听的方式虽然能自动帮我们编译代码，但是每次更新都需要手动刷新浏览器，这个体验是非常不友好的，所以 webpack 利用 webpack-dev-server 实现了不需要手动刷新浏览器，编译后自动刷新浏览器的方式。</p>
-<h3 id="1、使用-1"><a href="#1、使用-1" class="headerlink" title="1、使用"></a><strong>1、使用</strong></h3><h4 id="1-1、安装依赖-1"><a href="#1-1、安装依赖-1" class="headerlink" title="1.1、安装依赖"></a>1.1、安装依赖</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add -D webpack-dev-server</span><br></pre></td></tr></table></figure>
-<h4 id="1-2、项目配置-1"><a href="#1-2、项目配置-1" class="headerlink" title="1.2、项目配置"></a>1.2、项目配置</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">"scripts": &#123;</span><br><span class="line">  "build": "webpack --config build/webpack.dev.js",</span><br><span class="line">  "watch": "webpack --config build/webpack.dev.js --watch",</span><br><span class="line">  "dev": "webpack-dev-server --config build/webpack.dev.js --open"</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+<h3 id="1、使用-1"><a href="#1、使用-1" class="headerlink" title="1、使用"></a><strong>1、使用</strong></h3><h4 id="1-1、安装依赖-1"><a href="#1-1、安装依赖-1" class="headerlink" title="1.1、安装依赖"></a>1.1、安装依赖</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn add -D webpack-dev-server</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2、项目配置-1"><a href="#1-2、项目配置-1" class="headerlink" title="1.2、项目配置"></a>1.2、项目配置</h4><figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="attr">&quot;scripts&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;build&quot;</span><span class="punctuation">:</span> <span class="string">&quot;webpack --config build/webpack.dev.js&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;watch&quot;</span><span class="punctuation">:</span> <span class="string">&quot;webpack --config build/webpack.dev.js --watch&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;dev&quot;</span><span class="punctuation">:</span> <span class="string">&quot;webpack-dev-server --config build/webpack.dev.js --open&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br></pre></td></tr></table></figure>
+
 <p>因为 webpack5 默认会开启热更新，所以这里先手动关闭它。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">devServer: &#123;</span><br><span class="line">  hot: <span class="literal">false</span> <span class="comment">// 为 false 时文件发生变化会刷新浏览器</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="1-3、运行-1"><a href="#1-3、运行-1" class="headerlink" title="1.3、运行"></a>1.3、运行</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn dev</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="attr">devServer</span>: &#123;</span><br><span class="line">  <span class="attr">hot</span>: <span class="literal">false</span> <span class="comment">// 为 false 时文件发生变化会刷新浏览器</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-3、运行-1"><a href="#1-3、运行-1" class="headerlink" title="1.3、运行"></a>1.3、运行</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn dev</span><br></pre></td></tr></table></figure>
+
 <p>修改完保存代码浏览器就会自动刷新重新加载代码。</p>
 <h3 id="2、编译结果-1"><a href="#2、编译结果-1" class="headerlink" title="2、编译结果"></a>2、<strong>编译结果</strong></h3><p>在原来构建的基础上多了两个模块。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">__webpack_require__(<span class="string">"./node_modules/webpack-dev-server/client/index.js?protocol=ws%3A&amp;hostname=0.0.0.0&amp;port=8080&amp;pathname=%2Fws&amp;logging=info&amp;reconnect=10"</span>);</span><br><span class="line"><span class="comment">/******/</span>         </span><br><span class="line">__webpack_require__(<span class="string">"./node_modules/webpack/hot/dev-server.js"</span>);</span><br></pre></td></tr></table></figure>
-<h3 id="3、实现原理-1"><a href="#3、实现原理-1" class="headerlink" title="3、实现原理"></a><strong>3、实现原理</strong></h3><h4 id="3-1、执行过程-1"><a href="#3-1、执行过程-1" class="headerlink" title="3.1、执行过程"></a>3.1、执行过程</h4><p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6hu537c7wj21ik0mhdij.jpg" alt></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="title function_">__webpack_require__</span>(<span class="string">&quot;./node_modules/webpack-dev-server/client/index.js?protocol=ws%3A&amp;hostname=0.0.0.0&amp;port=8080&amp;pathname=%2Fws&amp;logging=info&amp;reconnect=10&quot;</span>);</span><br><span class="line"><span class="comment">/******/</span>         </span><br><span class="line"><span class="title function_">__webpack_require__</span>(<span class="string">&quot;./node_modules/webpack/hot/dev-server.js&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3、实现原理-1"><a href="#3、实现原理-1" class="headerlink" title="3、实现原理"></a><strong>3、实现原理</strong></h3><h4 id="3-1、执行过程-1"><a href="#3-1、执行过程-1" class="headerlink" title="3.1、执行过程"></a>3.1、执行过程</h4><p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6hu537c7wj21ik0mhdij.jpg" class="lazy-img" loading="lazy" decoding="async"></p>
 <h4 id="3-2、原理分析-1"><a href="#3-2、原理分析-1" class="headerlink" title="3.2、原理分析"></a>3.2、原理分析</h4><p>这里我们需要关注三个问题：</p>
 <ul>
 <li>热重载和文件监听相比，构建的差异是什么？</li>
@@ -88,27 +391,42 @@
 <p>相比较文件监听，热重载会通过 webpack-dev-server 调用 express 起了一个 node 服务。</p>
 <p>然后创建 <em>Compiler</em> <em>实例，之后也会走</em> <em>Compiler.watch</em> <em>方法执行构建。</em></p>
 <p><em>不同的是编译后的内容没有输出到磁盘，而是输出到了内存</em>，提供一个地址去让你访问。</p>
-<p><img src="https://cdn.nlark.com/yuque/0/2022/jpeg/10367031/1659883287850-6fc6c9b9-8b40-48be-9cf9-f118a3acae7b.jpeg" alt="img"></p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">"express"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/** <span class="doctag">@typedef <span class="type">&#123;import("webpack").Compiler&#125;</span> </span>Compiler */</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Server</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(options = &#123;&#125;, compiler) &#123;</span><br><span class="line">    <span class="keyword">this</span>.compiler = <span class="comment">/** @type &#123;Compiler | MultiCompiler&#125; */</span> (compiler);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  setupApp() &#123;</span><br><span class="line">    <span class="comment">/** <span class="doctag">@type <span class="type">&#123;import("express").Application | undefined&#125;</span></span>*/</span></span><br><span class="line">    <span class="comment">// eslint-disable-next-line new-cap</span></span><br><span class="line">    <span class="keyword">this</span>.app = <span class="keyword">new</span> <span class="comment">/** <span class="doctag">@type <span class="type">&#123;any&#125;</span> </span>*/</span> (express)();</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  setupDevMiddleware() &#123;</span><br><span class="line">    <span class="keyword">const</span> webpackDevMiddleware = <span class="built_in">require</span>(<span class="string">"webpack-dev-middleware"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// middleware for serving webpack bundle</span></span><br><span class="line">    <span class="keyword">this</span>.middleware = webpackDevMiddleware(</span><br><span class="line">      <span class="keyword">this</span>.compiler,</span><br><span class="line">      <span class="keyword">this</span>.options.devMiddleware</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">async</span> start() &#123;</span><br><span class="line">    <span class="keyword">const</span> listenOptions = <span class="keyword">this</span>.options.ipc</span><br><span class="line">      ? &#123; <span class="attr">path</span>: <span class="keyword">this</span>.options.ipc &#125;</span><br><span class="line">      : &#123; <span class="attr">host</span>: <span class="keyword">this</span>.options.host, <span class="attr">port</span>: <span class="keyword">this</span>.options.port &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">await</span> <span class="comment">/** <span class="doctag">@type <span class="type">&#123;Promise&lt;void&gt;&#125;</span> </span>*/</span> (</span><br><span class="line">      <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">/** <span class="doctag">@type <span class="type">&#123;import("http").Server&#125;</span> </span>*/</span></span><br><span class="line">        (<span class="keyword">this</span>.server).listen(listenOptions, () =&gt; &#123;</span><br><span class="line">          resolve();</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;)</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line"> </span><br><span class="line">  <span class="keyword">async</span> initialize() &#123;</span><br><span class="line">    <span class="keyword">this</span>.setupHooks();</span><br><span class="line">    <span class="keyword">this</span>.setupApp();</span><br><span class="line">    <span class="keyword">this</span>.setupHostHeaderCheck();</span><br><span class="line">    <span class="keyword">this</span>.setupDevMiddleware();</span><br><span class="line">    <span class="comment">// Should be after `webpack-dev-middleware`, otherwise other middlewares might rewrite response</span></span><br><span class="line">    <span class="keyword">this</span>.setupBuiltInRoutes();</span><br><span class="line">    <span class="keyword">this</span>.setupWatchFiles();</span><br><span class="line">    <span class="keyword">this</span>.setupWatchStaticFiles();</span><br><span class="line">    <span class="keyword">this</span>.setupMiddlewares();</span><br><span class="line">    <span class="keyword">this</span>.createServer();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<img src="https://cdn.nlark.com/yuque/0/2022/jpeg/10367031/1659883287850-6fc6c9b9-8b40-48be-9cf9-f118a3acae7b.jpeg" referrerpolicy="no-referrer" alt="img" class="lazy-img" loading="lazy" decoding="async">
+
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&quot;express&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/** <span class="doctag">@typedef</span> &#123;<span class="type">import(&quot;webpack&quot;).Compiler</span>&#125; Compiler */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Server</span> &#123;</span><br><span class="line">  <span class="title function_">constructor</span>(<span class="params">options = &#123;&#125;, compiler</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">compiler</span> = <span class="comment">/** <span class="doctag">@type</span> &#123;<span class="type">Compiler | MultiCompiler</span>&#125; */</span> (compiler);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="title function_">setupApp</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">/** <span class="doctag">@type</span> &#123;<span class="type">import(&quot;express&quot;).Application | undefined</span>&#125;*/</span></span><br><span class="line">    <span class="comment">// eslint-disable-next-line new-cap</span></span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">app</span> = <span class="keyword">new</span> <span class="comment">/** <span class="doctag">@type</span> &#123;<span class="type">any</span>&#125; */</span> (express)();</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="title function_">setupDevMiddleware</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> webpackDevMiddleware = <span class="built_in">require</span>(<span class="string">&quot;webpack-dev-middleware&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// middleware for serving webpack bundle</span></span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">middleware</span> = <span class="title function_">webpackDevMiddleware</span>(</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">compiler</span>,</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">options</span>.<span class="property">devMiddleware</span></span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">async</span> <span class="title function_">start</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> listenOptions = <span class="variable language_">this</span>.<span class="property">options</span>.<span class="property">ipc</span></span><br><span class="line">      ? &#123; <span class="attr">path</span>: <span class="variable language_">this</span>.<span class="property">options</span>.<span class="property">ipc</span> &#125;</span><br><span class="line">      : &#123; <span class="attr">host</span>: <span class="variable language_">this</span>.<span class="property">options</span>.<span class="property">host</span>, <span class="attr">port</span>: <span class="variable language_">this</span>.<span class="property">options</span>.<span class="property">port</span> &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">await</span> <span class="comment">/** <span class="doctag">@type</span> &#123;<span class="type">Promise&lt;void&gt;</span>&#125; */</span> (</span><br><span class="line">      <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">/** <span class="doctag">@type</span> &#123;<span class="type">import(&quot;http&quot;).Server</span>&#125; */</span></span><br><span class="line">        (<span class="variable language_">this</span>.<span class="property">server</span>).<span class="title function_">listen</span>(listenOptions, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">          <span class="title function_">resolve</span>();</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;)</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line"> </span><br><span class="line">  <span class="keyword">async</span> <span class="title function_">initialize</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">setupHooks</span>();</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">setupApp</span>();</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">setupHostHeaderCheck</span>();</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">setupDevMiddleware</span>();</span><br><span class="line">    <span class="comment">// Should be after `webpack-dev-middleware`, otherwise other middlewares might rewrite response</span></span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">setupBuiltInRoutes</span>();</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">setupWatchFiles</span>();</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">setupWatchStaticFiles</span>();</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">setupMiddlewares</span>();</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">createServer</span>();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
 <p>浏览器和服务端怎么做的通讯？具体在传递什么信息？</p>
 <p>访问 webpack 提供的地址，打开控制台如下，可以看到浏览器和服务器之间有建立 websocket 通信的信息，但是我们开发的时候代码里并没有做这些额外的事情。我们就需要去看 webpack 是在哪里做的这些事。</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6hu5zn09xj21a60u0q5y.jpg" alt></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6hu5zn09xj21a60u0q5y.jpg" class="lazy-img" loading="lazy" decoding="async"></p>
 <p>通过探寻我们可以在发现 webpack 在开启本地服务前对 webpack 的配置入口做了修改。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 添加 client socket 代码</span></span><br><span class="line">additionalEntries.push(<span class="string">`<span class="subst">$&#123;<span class="built_in">require</span>.resolve(<span class="string">"../client/index.js"</span>)&#125;</span>?<span class="subst">$&#123;webSocketURLStr&#125;</span>`</span>);</span><br><span class="line">  </span><br><span class="line"><span class="comment">// 添加 webpack dev-server 代码</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">this</span>.options.hot === <span class="string">"only"</span>) &#123;</span><br><span class="line">  additionalEntries.push(<span class="built_in">require</span>.resolve(<span class="string">"webpack/hot/only-dev-server"</span>));</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">this</span>.options.hot) &#123;</span><br><span class="line">  additionalEntries.push(<span class="built_in">require</span>.resolve(<span class="string">"webpack/hot/dev-server"</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> webpack = compiler.webpack || <span class="built_in">require</span>(<span class="string">"webpack"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 引入一些需要额外打包的内容</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">typeof</span> webpack.EntryPlugin !== <span class="string">"undefined"</span>) &#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> additionalEntry <span class="keyword">of</span> additionalEntries) &#123;</span><br><span class="line">    <span class="keyword">new</span> webpack.EntryPlugin(compiler.context, additionalEntry, &#123;</span><br><span class="line">      name: <span class="literal">undefined</span>,</span><br><span class="line">    &#125;).apply(compiler);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 添加 client socket 代码</span></span><br><span class="line">additionalEntries.<span class="title function_">push</span>(<span class="string">`<span class="subst">$&#123;<span class="built_in">require</span>.resolve(<span class="string">&quot;../client/index.js&quot;</span>)&#125;</span>?<span class="subst">$&#123;webSocketURLStr&#125;</span>`</span>);</span><br><span class="line">  </span><br><span class="line"><span class="comment">// 添加 webpack dev-server 代码</span></span><br><span class="line"><span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">options</span>.<span class="property">hot</span> === <span class="string">&quot;only&quot;</span>) &#123;</span><br><span class="line">  additionalEntries.<span class="title function_">push</span>(<span class="built_in">require</span>.<span class="title function_">resolve</span>(<span class="string">&quot;webpack/hot/only-dev-server&quot;</span>));</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">options</span>.<span class="property">hot</span>) &#123;</span><br><span class="line">  additionalEntries.<span class="title function_">push</span>(<span class="built_in">require</span>.<span class="title function_">resolve</span>(<span class="string">&quot;webpack/hot/dev-server&quot;</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> webpack = compiler.<span class="property">webpack</span> || <span class="built_in">require</span>(<span class="string">&quot;webpack&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 引入一些需要额外打包的内容</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">typeof</span> webpack.<span class="property">EntryPlugin</span> !== <span class="string">&quot;undefined&quot;</span>) &#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> additionalEntry <span class="keyword">of</span> additionalEntries) &#123;</span><br><span class="line">    <span class="keyword">new</span> webpack.<span class="title class_">EntryPlugin</span>(compiler.<span class="property">context</span>, additionalEntry, &#123;</span><br><span class="line">      <span class="attr">name</span>: <span class="literal">undefined</span>,</span><br><span class="line">    &#125;).<span class="title function_">apply</span>(compiler);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>这里 webpack 帮我们的入口又引入了两个额外的 module 来打包，其中引入的第一个 module 是与服务端建立 websocket 连接用的，第二个 module 就是客户端在接收到文件变化的通知后做处理用的。</p>
 <p>所以浏览器之所以能感应到本地文件变化是本地服务主动推送的缘故。具体是服务端在监听到文件变化后会向客户端发送 hash 事件和 ok 的事件。hash 事件主要返回一个 hash 值，用来对每次的编译结果做标识，ok 事件是通知浏览器进行热重载用的。</p>
 <p>hash 事件是啥具体下面热更新会说</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sendStats(clients, stats, force) &#123;</span><br><span class="line">  <span class="keyword">this</span>.sendMessage(clients, <span class="string">"hash"</span>, stats.hash);</span><br><span class="line">  <span class="keyword">this</span>.sendMessage(clients, <span class="string">"ok"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="title function_">sendStats</span>(<span class="params">clients, stats, force</span>) &#123;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="title function_">sendMessage</span>(clients, <span class="string">&quot;hash&quot;</span>, stats.<span class="property">hash</span>);</span><br><span class="line">  <span class="variable language_">this</span>.<span class="title function_">sendMessage</span>(clients, <span class="string">&quot;ok&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>浏览器怎么做到的更新？</p>
 <p>当检测到需要更新时就调用 reloadApp 刷新浏览器请求最新的资源，其中关键的代码是 <em>window</em>.location.reload()。这就是为什么浏览器会自动刷新的缘故。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">reloadApp</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (liveReload &amp;&amp; allowToLiveReload) &#123;</span><br><span class="line">    <span class="keyword">var</span> rootWindow = self; <span class="comment">// use parent window for reload (in case we're in an iframe with no valid src)</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> intervalId = self.setInterval(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (rootWindow.location.protocol !== <span class="string">"about:"</span>) &#123;</span><br><span class="line">        <span class="comment">// reload immediately if protocol is valid</span></span><br><span class="line">        applyReload(rootWindow, intervalId);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        rootWindow = rootWindow.parent;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (rootWindow.parent === rootWindow) &#123;</span><br><span class="line">          <span class="comment">// if parent equals current window we've reached the root which would continue forever, so trigger a reload anyways</span></span><br><span class="line">          applyReload(rootWindow, intervalId);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">applyReload</span>(<span class="params">rootWindow, intervalId</span>) </span>&#123;</span><br><span class="line">    clearInterval(intervalId);</span><br><span class="line">    log.info(<span class="string">"App updated. Reloading..."</span>);</span><br><span class="line">    rootWindow.location.reload();</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">reloadApp</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (liveReload &amp;&amp; allowToLiveReload) &#123;</span><br><span class="line">    <span class="keyword">var</span> rootWindow = self; <span class="comment">// use parent window for reload (in case we&#x27;re in an iframe with no valid src)</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> intervalId = self.<span class="built_in">setInterval</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (rootWindow.<span class="property">location</span>.<span class="property">protocol</span> !== <span class="string">&quot;about:&quot;</span>) &#123;</span><br><span class="line">        <span class="comment">// reload immediately if protocol is valid</span></span><br><span class="line">        <span class="title function_">applyReload</span>(rootWindow, intervalId);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        rootWindow = rootWindow.<span class="property">parent</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (rootWindow.<span class="property">parent</span> === rootWindow) &#123;</span><br><span class="line">          <span class="comment">// if parent equals current window we&#x27;ve reached the root which would continue forever, so trigger a reload anyways</span></span><br><span class="line">          <span class="title function_">applyReload</span>(rootWindow, intervalId);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">applyReload</span>(<span class="params">rootWindow, intervalId</span>) &#123;</span><br><span class="line">    <span class="built_in">clearInterval</span>(intervalId);</span><br><span class="line">    log.<span class="title function_">info</span>(<span class="string">&quot;App updated. Reloading...&quot;</span>);</span><br><span class="line">    rootWindow.<span class="property">location</span>.<span class="title function_">reload</span>();</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
 <h2 id="四、热更新-HMR（热替换）"><a href="#四、热更新-HMR（热替换）" class="headerlink" title="四、热更新 HMR（热替换）"></a><strong>四、热更新 HMR（热替换）</strong></h2><p>上面介绍的热重载虽然在一定程度上提高了开发效率，满足了我们的基本开发诉求，但是还有一个痛点就是不能在接收变化后保留之前的状态做局部更新，这样在测试一些功能的时候，比如输入框输入一些数据后才能做点击的测试，那我们每次更新完就必须重新输一遍再开始测试，这是非常低效的，热更新就很好的解决了这个问题。</p>
 <h3 id="1、使用-2"><a href="#1、使用-2" class="headerlink" title="1、使用"></a><strong>1、使用</strong></h3><h4 id="1-1、安装依赖-2"><a href="#1-1、安装依赖-2" class="headerlink" title="1.1、安装依赖"></a>1.1、安装依赖</h4><p>同上</p>
 <h4 id="1-2、项目配置-2"><a href="#1-2、项目配置-2" class="headerlink" title="1.2、项目配置"></a>1.2、项目配置</h4><p>将 hot 的值修改为 true 或去掉该配置（默认值 true）。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">devServer: &#123;</span><br><span class="line">  hot: <span class="literal">true</span> <span class="comment">// 为 false 时文件发生变化会刷新浏览器</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="1-3、运行-2"><a href="#1-3、运行-2" class="headerlink" title="1.3、运行"></a>1.3、运行</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn dev</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="attr">devServer</span>: &#123;</span><br><span class="line">  <span class="attr">hot</span>: <span class="literal">true</span> <span class="comment">// 为 false 时文件发生变化会刷新浏览器</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-3、运行-2"><a href="#1-3、运行-2" class="headerlink" title="1.3、运行"></a>1.3、运行</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yarn dev</span><br></pre></td></tr></table></figure>
+
+
+
 <h3 id="2、编译结果-2"><a href="#2、编译结果-2" class="headerlink" title="2、编译结果"></a>2、<strong>编译结果</strong></h3><p>同上</p>
-<h3 id="3、实现原理-2"><a href="#3、实现原理-2" class="headerlink" title="3、实现原理"></a><strong>3、实现原理</strong></h3><h4 id="3-1、执行过程-2"><a href="#3-1、执行过程-2" class="headerlink" title="3.1、执行过程"></a>3.1、执行过程</h4><p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6hu537c7wj21ik0mhdij.jpg" alt></p>
+<h3 id="3、实现原理-2"><a href="#3、实现原理-2" class="headerlink" title="3、实现原理"></a><strong>3、实现原理</strong></h3><h4 id="3-1、执行过程-2"><a href="#3-1、执行过程-2" class="headerlink" title="3.1、执行过程"></a>3.1、执行过程</h4><p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6hu537c7wj21ik0mhdij.jpg" class="lazy-img" loading="lazy" decoding="async"></p>
 <h4 id="3-2、原理分析-2"><a href="#3-2、原理分析-2" class="headerlink" title="3.2、原理分析"></a>3.2、原理分析</h4><p>这里主要关注两个问题是：</p>
 <ul>
 <li>和热重载相比，热更新编译的差异是什么？</li>
@@ -117,28 +435,36 @@
 <p>和热重载相比，热更新编译的差异是什么？</p>
 <p>实例化 HotModuleReplacementPlugin 插件，并监听对应的 hooks。</p>
 <p>webpack4 需要手动引入</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> plugin = <span class="keyword">new</span> webpack.HotModuleReplacementPlugin();</span><br><span class="line"></span><br><span class="line">plugin.apply(compiler);</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> plugin = <span class="keyword">new</span> webpack.<span class="title class_">HotModuleReplacementPlugin</span>();</span><br><span class="line"></span><br><span class="line">plugin.<span class="title function_">apply</span>(compiler);</span><br></pre></td></tr></table></figure>
+
 <p>首先会定义 module.hot 相关 api 的 dependency 以及 template</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HotModuleReplacementPlugin</span> </span>&#123;</span><br><span class="line">  apply(compiler) &#123;</span><br><span class="line">    compiler.hooks.compilation.tap(</span><br><span class="line">      <span class="string">"HotModuleReplacementPlugin"</span>,</span><br><span class="line">      (compilation, &#123; normalModuleFactory &#125;) =&gt; &#123;</span><br><span class="line">        <span class="comment">//#region module.hot.* API</span></span><br><span class="line">        compilation.dependencyFactories.set(</span><br><span class="line">          ModuleHotAcceptDependency,</span><br><span class="line">          normalModuleFactory</span><br><span class="line">        );</span><br><span class="line">        compilation.dependencyTemplates.set(</span><br><span class="line">          ModuleHotAcceptDependency,</span><br><span class="line">          <span class="keyword">new</span> ModuleHotAcceptDependency.Template()</span><br><span class="line">        );</span><br><span class="line">        compilation.dependencyFactories.set(</span><br><span class="line">          ModuleHotDeclineDependency,</span><br><span class="line">          normalModuleFactory</span><br><span class="line">        );</span><br><span class="line">        compilation.dependencyTemplates.set(</span><br><span class="line">          ModuleHotDeclineDependency,</span><br><span class="line">          <span class="keyword">new</span> ModuleHotDeclineDependency.Template()</span><br><span class="line">        );</span><br><span class="line">      &#125;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">HotModuleReplacementPlugin</span> &#123;</span><br><span class="line">  <span class="title function_">apply</span>(<span class="params">compiler</span>) &#123;</span><br><span class="line">    compiler.<span class="property">hooks</span>.<span class="property">compilation</span>.<span class="title function_">tap</span>(</span><br><span class="line">      <span class="string">&quot;HotModuleReplacementPlugin&quot;</span>,</span><br><span class="line">      <span class="function">(<span class="params">compilation, &#123; normalModuleFactory &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">//#region module.hot.* API</span></span><br><span class="line">        compilation.<span class="property">dependencyFactories</span>.<span class="title function_">set</span>(</span><br><span class="line">          <span class="title class_">ModuleHotAcceptDependency</span>,</span><br><span class="line">          normalModuleFactory</span><br><span class="line">        );</span><br><span class="line">        compilation.<span class="property">dependencyTemplates</span>.<span class="title function_">set</span>(</span><br><span class="line">          <span class="title class_">ModuleHotAcceptDependency</span>,</span><br><span class="line">          <span class="keyword">new</span> <span class="title class_">ModuleHotAcceptDependency</span>.<span class="title class_">Template</span>()</span><br><span class="line">        );</span><br><span class="line">        compilation.<span class="property">dependencyFactories</span>.<span class="title function_">set</span>(</span><br><span class="line">          <span class="title class_">ModuleHotDeclineDependency</span>,</span><br><span class="line">          normalModuleFactory</span><br><span class="line">        );</span><br><span class="line">        compilation.<span class="property">dependencyTemplates</span>.<span class="title function_">set</span>(</span><br><span class="line">          <span class="title class_">ModuleHotDeclineDependency</span>,</span><br><span class="line">          <span class="keyword">new</span> <span class="title class_">ModuleHotDeclineDependency</span>.<span class="title class_">Template</span>()</span><br><span class="line">        );</span><br><span class="line">      &#125;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>然后监听parser阶段，对module.hot等api进行解析，例如：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">parser.hooks.call</span><br><span class="line">  .for(<span class="string">"module.hot.accept"</span>)</span><br><span class="line">  .tap(</span><br><span class="line">  <span class="string">"HotModuleReplacementPlugin"</span>,</span><br><span class="line">  createAcceptHandler(parser, ModuleHotAcceptDependency)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">parser.<span class="property">hooks</span>.<span class="property">call</span></span><br><span class="line">  .<span class="title function_">for</span>(<span class="string">&quot;module.hot.accept&quot;</span>)</span><br><span class="line">  .<span class="title function_">tap</span>(</span><br><span class="line">  <span class="string">&quot;HotModuleReplacementPlugin&quot;</span>,</span><br><span class="line">  <span class="title function_">createAcceptHandler</span>(parser, <span class="title class_">ModuleHotAcceptDependency</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
 <p>因此module.hot等api经过parser后会变为相应的dependency。在code generate时，调用对应的template生成新的代码</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 转换前</span></span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">module</span>.hot) &#123;</span><br><span class="line">  <span class="built_in">module</span>.hot.accept([<span class="string">'./moduleB.js'</span>], () =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'======&gt;  accept B'</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 转换后</span></span><br><span class="line"><span class="keyword">if</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">  <span class="built_in">module</span>.hot.accept([<span class="comment">/*! ./moduleB.js */</span> <span class="string">"./src/moduleB.js"</span>], __WEBPACK_OUTDATED_DEPENDENCIES__ =&gt; &#123; </span><br><span class="line">    <span class="comment">/* harmony import */</span> _moduleB__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(<span class="comment">/*! ./moduleB.js */</span> <span class="string">"./src/moduleB.js"</span>);</span><br><span class="line">    (<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'======&gt;  accept B'</span>)</span><br><span class="line">    &#125;)(__WEBPACK_OUTDATED_DEPENDENCIES__); </span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 转换前</span></span><br><span class="line"><span class="keyword">if</span> (<span class="variable language_">module</span>.<span class="property">hot</span>) &#123;</span><br><span class="line">  <span class="variable language_">module</span>.<span class="property">hot</span>.<span class="title function_">accept</span>([<span class="string">&#x27;./moduleB.js&#x27;</span>], <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;======&gt;  accept B&#x27;</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 转换后</span></span><br><span class="line"><span class="keyword">if</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">  <span class="variable language_">module</span>.<span class="property">hot</span>.<span class="title function_">accept</span>([<span class="comment">/*! ./moduleB.js */</span> <span class="string">&quot;./src/moduleB.js&quot;</span>], <span class="function"><span class="params">__WEBPACK_OUTDATED_DEPENDENCIES__</span> =&gt;</span> &#123; </span><br><span class="line">    <span class="comment">/* harmony import */</span> _moduleB__WEBPACK_IMPORTED_MODULE_0__ = <span class="title function_">__webpack_require__</span>(<span class="comment">/*! ./moduleB.js */</span> <span class="string">&quot;./src/moduleB.js&quot;</span>);</span><br><span class="line">    (<span class="function">() =&gt;</span> &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;======&gt;  accept B&#x27;</span>)</span><br><span class="line">    &#125;)(__WEBPACK_OUTDATED_DEPENDENCIES__); </span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
 <p>浏览器在监听到文件变化后做了什么事情？</p>
 <p>要知道浏览器在监听到文件变化后做了什么事情要先回到服务端监听到文件变化给客户端发送 hash 事件和 ok 的事件的时候，我们先看 hash 事件具体做了什么。</p>
 <p>刚打开页面时</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6hu74019yj21ik0aujtd.jpg" alt></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6hu74019yj21ik0aujtd.jpg" class="lazy-img" loading="lazy" decoding="async"></p>
 <p>修改代码保存后</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6hu7c4rzlj21ik0dtq5k.jpg" alt></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6hu7c4rzlj21ik0dtq5k.jpg" class="lazy-img" loading="lazy" decoding="async"></p>
 <p>观察可以发现修改完代码后，浏览器新加载的文件后缀是上次的 hash，所以 Hash 值代表每一次编译的标识，上次输出的 Hash 值会作为本次编译新生成的文件标识。</p>
 <p>知道了 hash 事件的概念后，我们再回到服务端向浏览器发送 hash 事件和 ok 事件，浏览器会调用 reloadApp 方法。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// node_modules/webpack-dev-server/client/index.js</span></span><br><span class="line"><span class="keyword">var</span> onSocketMessage = &#123;</span><br><span class="line">  hash: <span class="function"><span class="keyword">function</span> <span class="title">hash</span>(<span class="params">_hash</span>) </span>&#123;</span><br><span class="line">    status.previousHash = status.currentHash;</span><br><span class="line">    status.currentHash = _hash;</span><br><span class="line">  &#125;,</span><br><span class="line">  ok: <span class="function"><span class="keyword">function</span> <span class="title">ok</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    sendMessage(<span class="string">"Ok"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (options.overlay) &#123;</span><br><span class="line">      hide();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    reloadApp(options, status);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">reloadApp</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (hot &amp;&amp; allowToHot) &#123;</span><br><span class="line">    log.info(<span class="string">"App hot update..."</span>);</span><br><span class="line">    hotEmitter.emit(<span class="string">"webpackHotUpdate"</span>, status.currentHash);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> self !== <span class="string">"undefined"</span> &amp;&amp; self.window) &#123;</span><br><span class="line">      <span class="comment">// broadcast update to window</span></span><br><span class="line">      self.postMessage(<span class="string">"webpackHotUpdate"</span>.concat(status.currentHash), <span class="string">"*"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (liveReload &amp;&amp; allowToLiveReload) &#123;</span><br><span class="line">    <span class="built_in">window</span>.location.reload();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// node_modules/webpack-dev-server/client/index.js</span></span><br><span class="line"><span class="keyword">var</span> onSocketMessage = &#123;</span><br><span class="line">  <span class="attr">hash</span>: <span class="keyword">function</span> <span class="title function_">hash</span>(<span class="params">_hash</span>) &#123;</span><br><span class="line">    status.<span class="property">previousHash</span> = status.<span class="property">currentHash</span>;</span><br><span class="line">    status.<span class="property">currentHash</span> = _hash;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">ok</span>: <span class="keyword">function</span> <span class="title function_">ok</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="title function_">sendMessage</span>(<span class="string">&quot;Ok&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (options.<span class="property">overlay</span>) &#123;</span><br><span class="line">      <span class="title function_">hide</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">reloadApp</span>(options, status);</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">reloadApp</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (hot &amp;&amp; allowToHot) &#123;</span><br><span class="line">    log.<span class="title function_">info</span>(<span class="string">&quot;App hot update...&quot;</span>);</span><br><span class="line">    hotEmitter.<span class="title function_">emit</span>(<span class="string">&quot;webpackHotUpdate&quot;</span>, status.<span class="property">currentHash</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> self !== <span class="string">&quot;undefined&quot;</span> &amp;&amp; self.<span class="property">window</span>) &#123;</span><br><span class="line">      <span class="comment">// broadcast update to window</span></span><br><span class="line">      self.<span class="title function_">postMessage</span>(<span class="string">&quot;webpackHotUpdate&quot;</span>.<span class="title function_">concat</span>(status.<span class="property">currentHash</span>), <span class="string">&quot;*&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (liveReload &amp;&amp; allowToLiveReload) &#123;</span><br><span class="line">    <span class="variable language_">window</span>.<span class="property">location</span>.<span class="title function_">reload</span>();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p>接着触发 webpackHotUpdate 事件，经过一系列的检查后根据上次的 hash 值发送 fetch 请求获取需要更新的模块名。</p>
-<p><img src="https://cdn.nlark.com/yuque/0/2022/png/10367031/1659883436219-7d07db68-e11c-4f4b-aba6-390a822e09c2.png" alt="img"></p>
+<img src="https://cdn.nlark.com/yuque/0/2022/png/10367031/1659883436219-7d07db68-e11c-4f4b-aba6-390a822e09c2.png" referrerpolicy="no-referrer" alt="" class="lazy-img" loading="lazy" decoding="async">
+
 <p>再通过 JSONP 的方式请求这个新的模块，并执行相关模块的代码，这就起到了局部更新的作用。</p>
 <h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a><strong>五、总结</strong></h2><p>webpack compiler 对文件进行打包，打包好后把编译好的文件传输给 bundleServer， bundleServer 就以服务器的方式让浏览器访问。（1-2-A-B）</p>
 <p>文件发生变化后，会再经过 webpack compiler 进行编译，编译后将代码发送给 HMR Server，HMR Server 知道哪些模块发生了改变，然后 HMR server 会以 websocket 的方式通知 HRM Runtime，HRM Runtime 通过 JSONP 的方式获取更新的内容，最后 HMR runtime 会根据返回的新模块代码做进一步处理，可能是刷新页面，也可能是对模块进行热更新。（1-2-3-4）</p>
-<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6hu537c7wj21ik0mhdij.jpg" alt></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h6hu537c7wj21ik0mhdij.jpg" class="lazy-img" loading="lazy" decoding="async"></p>
 <h2 id="六、思考"><a href="#六、思考" class="headerlink" title="六、思考"></a>六、思考</h2><h3 id="1、构建工具热更新能力对比"><a href="#1、构建工具热更新能力对比" class="headerlink" title="1、构建工具热更新能力对比"></a>1、构建工具热更新能力对比</h3><p>gulp：支持热重载，热更新目前没发现支持特别好的包，需要自己实现。</p>
 <table>
 <thead>
@@ -148,8 +474,7 @@
 <th>vite</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>配置</td>
 <td>简单</td>
 <td>简单</td>
@@ -169,15 +494,176 @@
 <td>对构建内容有严格要求且构建结果与平台架构关系紧密</td>
 <td>对构建内容无严格要求</td>
 </tr>
-</tbody>
-</table>
-<h2 id="七、项目地址"><a href="#七、项目地址" class="headerlink" title="七、项目地址"></a><strong>七、项目地址</strong></h2><p><a href="https://github.com/Yin-Hongwei/webpack-hmr-demo" target="_blank" rel="noopener">https://github.com/Yin-Hongwei/webpack-hmr-demo</a></p>
-<div class="qr-code"></div><img class="qrcode-img" src="/img/weixin.jpg"><div class="qrcode-desc">微信打赏</div><div class="post-tag-list">标签: <a class="post-tags" href="/tags/webpack/">webpack</a></div><nav id="pagination"><div class="next-post pull-right"><a href="/2021/12/04/Vue watcher 分类/"><span>Vue watcher 分类</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
-  clientID: 'e238e2d1f25ec6e15026',
-  clientSecret: '3c4e537d46a59d056e6c0cc478b04784defafcfb',
-  repo: 'Yin-Hongwei.github.io',
-  owner: 'Yin-Hongwei',
-  admin: 'Yin-Hongwei',
-  id: md5(window.location.pathname)
-})
-gitalk.render('gitalk-container')</script></article></section></article><footer id="footer-outer"><div id="footer-inner"><p class="footer-text">Copyright &copy; 2018-2023 Yin-Hongwei</p></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i></body><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/animejs@latest/lib/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="/js/utils.js" defer></script><script src="/js/transition.js" defer></script><script src="/js/fancybox.js" defer></script><script src="/js/menu.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/scroll.js" defer></script></html>
+</tbody></table>
+<h2 id="七、项目地址"><a href="#七、项目地址" class="headerlink" title="七、项目地址"></a><strong>七、项目地址</strong></h2><p><a target="_blank" rel="noopener" href="https://github.com/Yin-Hongwei/webpack-hmr-demo">https://github.com/Yin-Hongwei/webpack-hmr-demo</a></p>
+</div>
+  
+
+  
+    <section class="post-copyright post-copyright--wechat">
+      <ul class="post-copyright__list">
+        <li>
+          <span class="post-copyright__label">作者：</span>
+          <span class="post-copyright__value">Yin-Hongwei</span>
+        </li>
+        <li>
+          <span class="post-copyright__label">链接：</span>
+          <a class="post-copyright__value post-copyright__link" href="http://Yin-Hongwei.github.io/2021/12/25/webpack%20%E7%83%AD%E6%9B%B4%E6%96%B0%E5%8E%9F%E7%90%86/">http://Yin-Hongwei.github.io/2021/12/25/webpack%20%E7%83%AD%E6%9B%B4%E6%96%B0%E5%8E%9F%E7%90%86/</a>
+        </li>
+        <li>
+          <span class="post-copyright__label">版权声明：</span>
+          
+            <a class="post-copyright__value post-copyright__link" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-NC-SA 4.0</a>
+          
+        </li>
+      </ul>
+      
+    </section>
+  
+
+
+  
+  <div class="qr-code">
+    <img class="qrcode-img lazy-img" src="/img/weixin.jpg" loading="lazy" decoding="async">
+    <div class="qrcode-desc">微信打赏</div>
+  </div>
+
+
+  
+<nav id="pagination">
+  
+    
+    
+      <div class="next-post pull-right">
+        <a href="/2021/12/04/Vue%20watcher%20%E5%88%86%E7%B1%BB/">
+          <span>Vue watcher 分类</span>
+          <i class="fa fa-chevron-right"></i>
+        </a>
+      </div>
+    
+  
+</nav>
+
+  
+  <div id="gitalk-container"></div>
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'e238e2d1f25ec6e15026',
+      clientSecret: '3c4e537d46a59d056e6c0cc478b04784defafcfb',
+      repo: 'Yin-Hongwei.github.io',
+      owner: 'Yin-Hongwei',
+      admin: 'Yin-Hongwei',
+      id: md5(window.location.pathname)
+    })
+    gitalk.render('gitalk-container')
+  </script>
+
+
+</article>
+
+    </section>
+  </article>
+  
+<footer id="footer-outer">
+  <div id="footer-inner">
+    <p class="footer-text">Copyright &copy; 2018-2026 Yin-Hongwei</p>
+    
+      <p class="footer-text">
+        <a href="https://github.com/Yin-Hongwei/hexo-theme-Yin" target="_blank" rel="noopener noreferrer">hexo-theme-Yin</a>
+      </p>
+    
+    
+      <div class="busuanzi">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+    
+      <span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span></span>
+    
+  
+</div>
+
+    
+  </div>
+</footer>
+
+  
+
+  <div id="site-search" class="search-dialog">
+    <div id="site-search-title" class="search-dialog__title">搜索</div>
+    <div id="site-search-input-panel">
+      <div id="site-search-input">
+        <div class="search-box">
+          <input class="search-box--input" placeholder="搜索文章" autocomplete="off">
+        </div>
+      </div>
+    </div>
+    <div id="site-search-results">
+      <div id="site-search-hits"></div>
+      <p class="search__hint">输入关键词搜索文章</p>
+    </div>
+    <span class="search-close-button">
+      <i class="fa fa-times"></i>
+    </span>
+  </div>
+  <div class="search-mask"></div>
+
+
+  <i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i>
+  
+    
+    
+      <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    
+  
+    
+    
+      <script src="https://cdn.jsdelivr.net/npm/animejs@latest/lib/anime.min.js"></script>
+    
+  
+    
+    
+      <script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script>
+    
+  
+    
+    
+      <script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script>
+    
+  
+    
+    
+      <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+    
+  
+  
+  
+    <script src="/js/search/search-dialog.js"></script>
+  
+  
+    <script src="/js/search/local-search.js" defer></script>
+  
+  
+    
+      <script src="/js/utils.js" defer></script>
+    
+      <script src="/js/transition.js" defer></script>
+    
+      <script src="/js/moments-grid.js" defer></script>
+    
+      <script src="/js/fancybox.js" defer></script>
+    
+      <script src="/js/menu.js" defer></script>
+    
+      <script src="/js/sidebar.js" defer></script>
+    
+      <script src="/js/scroll.js" defer></script>
+    
+      <script src="/js/copy.js" defer></script>
+    
+      <script src="/js/lazyload.js" defer></script>
+    
+      <script src="/js/dark-mode.js" defer></script>
+    
+  
+</body>
+</html>

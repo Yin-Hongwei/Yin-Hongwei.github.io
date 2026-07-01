@@ -1,72 +1,46 @@
 $(function () {
-  $('.toggle-sidebar-info > span').on('click', function () {
-    var toggleText = $(this).attr('data-toggle')
-    $(this).attr('data-toggle', $(this).text())
-    $(this).text(toggleText)
-    changeSideBarInfo()
-  })
-  $('#toggle-sidebar').on('click', function () {
-    if (!isMobile() && $('#sidebar').is(':visible')) {
-      var isOpen = $(this).hasClass('on')
-      isOpen ? $(this).removeClass('on') : $(this).addClass('on')
-      if (isOpen) {
-        $('#page-header').removeClass('open-sidebar')
-        $('body').velocity('stop').velocity({
-          paddingLeft: '0px'
-        }, {
-          duration: 200
-        })
-        $('#sidebar').velocity('stop').velocity({
-          translateX: '0px'
-        }, {
-          duration: 200
-        })
-        $('#toggle-sidebar').velocity('stop').velocity({
-          rotateZ: '0deg',
-          color: '#1F2D3D'
-        }, {
-          duration: 200
-        })
-      } else {
-        $('#page-header').addClass('open-sidebar')
-        $('body').velocity('stop').velocity({
-          paddingLeft: '250px'
-        }, {
-          duration: 200
-        })
-        $('#sidebar').velocity('stop').velocity({
-          translateX: '300px'
-        }, {
-          duration: 200
-        })
-        $('#toggle-sidebar').velocity('stop').velocity({
-          rotateZ: '180deg',
-          color: '#99a9bf'
-        }, {
-          duration: 200
-        })
-      }
-    }
-  })
-  function changeSideBarInfo () {
-    if ($('.author-info').is(':visible')) {
-      $('.author-info').velocity('stop')
-        .velocity('transition.slideLeftOut', {
-          duration: 300,
-          complete: function () {
-            $('.sidebar-toc').velocity('stop')
-              .velocity('transition.slideRightIn', { duration: 500 })
-          }
-        })
-    } else {
-      $('.sidebar-toc').velocity('stop')
-        .velocity('transition.slideRightOut', {
-          duration: 300,
-          complete: function () {
-            $('.author-info').velocity('stop')
-              .velocity('transition.slideLeftIn', { duration: 500 })
-          }
-        })
+  var $sidebar = $('#sidebar')
+  var $toggle = $('#toggle-sidebar')
+
+  function syncToggleState (isOpen) {
+    $toggle.toggleClass('on', isOpen).attr('aria-expanded', isOpen ? 'true' : 'false')
+  }
+
+  if (!isMobile() && $sidebar.data('display')) {
+    syncToggleState($sidebar.hasClass('is-open'))
+    if ($sidebar.hasClass('is-open')) {
+      requestAnimationFrame(function () {
+        $sidebar.addClass('sidebar-animated')
+      })
     }
   }
+
+  $('#toggle-sidebar').on('click', function () {
+    if (!isMobile() && $sidebar.is(':visible')) {
+      var isOpen = $sidebar.hasClass('is-open')
+      $sidebar.toggleClass('is-open', !isOpen).addClass('sidebar-animated')
+      syncToggleState(!isOpen)
+    }
+  })
+
+  function scrollActiveTocIntoView () {
+    var $active = $('.sidebar-toc__content .toc-link.active')
+    if (!$active.length) return
+
+    var $container = $('.sidebar-toc__content')
+    if (!$container.length) return
+
+    var containerTop = $container.scrollTop()
+    var containerHeight = $container.height()
+    var linkTop = $active.position().top
+    var linkHeight = $active.outerHeight()
+
+    if (linkTop < 0) {
+      $container.scrollTop(containerTop + linkTop - 12)
+    } else if (linkTop + linkHeight > containerHeight) {
+      $container.scrollTop(containerTop + linkTop - containerHeight + linkHeight + 12)
+    }
+  }
+
+  window.scrollActiveTocIntoView = scrollActiveTocIntoView
 })

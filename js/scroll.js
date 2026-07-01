@@ -1,22 +1,41 @@
 $(function () {
   var initTop = 0
-  // $('.toc-child').hide()
+  var $momentsHeader = $('#page-header.moments-profile-header')
+  $('.toc-child').hide()
+
+  function updateMomentsHeader (currentTop) {
+    var coverHeight = $('.moments-cover').outerHeight() || 280
+    if (currentTop >= coverHeight) {
+      $momentsHeader.addClass('scrolled')
+    } else {
+      $momentsHeader.removeClass('scrolled')
+    }
+  }
 
   // main of scroll
   $(window).scroll(throttle(function (event) {
     var currentTop = $(this).scrollTop()
     if (!isMobile()) {
-      // head position
       findHeadPosition(currentTop)
     }
-    var isUp = scrollDirection(currentTop)
-    if (currentTop > 56) {
-      if (isUp) {
-        $('#page-header').hasClass('visible') ? $('#page-header').removeClass('visible') : console.log()
-      } else {
-        $('#page-header').hasClass('visible') ? console.log() : $('#page-header').addClass('visible')
+
+    if ($momentsHeader.length) {
+      updateMomentsHeader(currentTop)
+    } else {
+      var isUp = scrollDirection(currentTop)
+      if (currentTop > 60) {
+        if (isUp) {
+          $('#page-header').hasClass('visible') ? $('#page-header').removeClass('visible') : console.log()
+        } else {
+          $('#page-header').hasClass('visible') ? console.log() : $('#page-header').addClass('visible')
+        }
+        $('#page-header').addClass('fixed')
+      } else if (currentTop === 0) {
+        $('#page-header').removeClass('fixed').removeClass('visible')
       }
-      $('#page-header').addClass('fixed')
+    }
+
+    if (currentTop > 60) {
       if ($('#go-up').css('opacity') === '0') {
         $('#go-up').velocity('stop').velocity({
           translateX: -30,
@@ -28,9 +47,6 @@ $(function () {
         })
       }
     } else {
-      if (currentTop === 0) {
-        $('#page-header').removeClass('fixed').removeClass('visible')
-      }
       $('#go-up').velocity('stop').velocity({
         translateX: 0,
         rotateZ: 180,
@@ -41,6 +57,10 @@ $(function () {
       })
     }
   }, 50, 100))
+
+  if ($momentsHeader.length) {
+    updateMomentsHeader($(window).scrollTop())
+  }
 
   // go up smooth scroll
   $('#go-up').on('click', function () {
@@ -55,7 +75,7 @@ $(function () {
     scrollToHead('#' + $(this).attr('id'))
   })
 
-  // head scroll
+  // toc link scroll
   $('.toc-link').on('click', function (e) {
     e.preventDefault()
     scrollToHead($(this).attr('href'))
@@ -80,7 +100,7 @@ $(function () {
     item.velocity('stop').velocity('scroll', {
       duration: 500,
       easing: 'easeInOutQuart',
-      offset: -70,
+      offset: -70
     })
   }
 
@@ -90,8 +110,8 @@ $(function () {
       return
     }
     $item.velocity('stop').velocity('transition.fadeIn', {
-      duration: 500,
-      easing: 'easeInQuart'
+      duration: 200,
+      easing: 'easeOutQuart'
     })
   }
 
@@ -106,13 +126,11 @@ $(function () {
   // ol.toc > (li.toc-item, ...)
   // li.toc-item > (a.toc-link, ol.toc-child > (li.toc-item, ...))
   function findHeadPosition (top) {
-    // assume that we are not in the post page if no TOC link be found,
-    // thus no need to update the status
     if ($('.toc-link').length === 0) {
       return false
     }
 
-    var list = $('#post').find('h1,h2,h3,h4,h5,h6')
+    var list = $('#post-content').find('h1,h2,h3,h4,h5,h6')
     var currentId = ''
     list.each(function () {
       var head = $(this)
@@ -123,14 +141,15 @@ $(function () {
 
     if (currentId === '') {
       $('.toc-link').removeClass('active')
-      // $('.toc-child').hide()
+      $('.toc-child').hide()
     }
 
-    // fix #286 since hexo v5.0.0 will
-    // encodeURI the toc-item href
-    var hexoVersion = '3.9.0'
+    // fix #286 since hexo v5.0.0 will encodeURI the toc-item href
+    var hexoVersion = (typeof GLOBAL_CONFIG !== 'undefined' && GLOBAL_CONFIG.hexoVersion)
+      ? GLOBAL_CONFIG.hexoVersion[0]
+      : '0'
 
-    if (hexoVersion === '5') {
+    if (parseInt(hexoVersion, 10) >= 5) {
       currentId = encodeURI(currentId)
     }
 
@@ -143,17 +162,19 @@ $(function () {
       _this.addClass('active')
 
       var parents = _this.parents('.toc-child')
-      // Returned list is in reverse order of the DOM elements
-      // Thus `parents.last()` is the outermost .toc-child container
-      // i.e. list of subsections
       var topLink = (parents.length > 0) ? parents.last() : _this
       expandToc(topLink.closest('.toc-item').find('.toc-child'))
       topLink
-        // Find all top-level .toc-item containers, i.e. sections
-        // excluding the currently active one
         .closest('.toc-item').siblings('.toc-item')
-        // Hide their respective list of subsections
-        // .find('.toc-child').hide()
+        .find('.toc-child').hide()
+
+      if (typeof window.scrollActiveTocIntoView === 'function') {
+        window.scrollActiveTocIntoView()
+      }
     }
+  }
+
+  if (!isMobile()) {
+    findHeadPosition($(window).scrollTop())
   }
 })

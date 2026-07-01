@@ -1,20 +1,469 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="Vue 响应式原理"><meta name="keywords" content="Vue"><meta name="author" content="Yin-Hongwei"><meta name="copyright" content="Yin-Hongwei"><title>Vue 响应式原理 | Yin-Hongwei</title><link rel="icon" href="/img/favicon.ico"><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script></head><body><header id="page-header"><nav id="navbar"><span class="nav-left"><div class="tou-img"><img src="/img/avatar.jpg"></div><a id="site-name" href="/">Yin-Hongwei</a></span><i class="fa fa-bars toggle-menu nav-right" aria-hidden="true"></i><span class="title">Vue 响应式原理</span><span class="nav-right menus"><a class="site-page" href="/about">关于我</a></span></nav></header><article id="content-outer"><section id="content-inner"><article class="article-entry" id="post"><h1>Vue 响应式原理</h1><h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><p>vue 响应式原理是数据渲染到视图，及数据修改触发视图更新的过程。</p>
-<a id="more"></a>
-<h2 id="二、原理"><a href="#二、原理" class="headerlink" title="二、原理"></a>二、原理</h2><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gsvyh82ifyj30xc0kudhe.jpg" width="600"></p>
-<h3 id="1、数据监听"><a href="#1、数据监听" class="headerlink" title="1、数据监听"></a>1、数据监听</h3><p>当把一个普通的 JavaScript 对象传入 Vue 实例作为 data 选项，Vue 将遍历此对象所有的属性，并使用 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty" target="_blank" rel="noopener"><code>Object.defineProperty</code></a> 为这些属性设置 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Working_with_Objects#定义_getters_与_setters" target="_blank" rel="noopener">getter/setter</a>。</p>
-<p><strong>这些 getter/setter 对用户来说不可见，但是在内部它们让 Vue 能够追踪依赖，在属性被访问和修改时通知变更。</strong></p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">defineReactive</span>(<span class="params">obj: Object, key: string, ...</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> dep = <span class="keyword">new</span> Dep()</span><br><span class="line"></span><br><span class="line">  <span class="built_in">Object</span>.defineProperty(obj, key, &#123;</span><br><span class="line">    enumerable: <span class="literal">true</span>,</span><br><span class="line">    configurable: <span class="literal">true</span>,</span><br><span class="line">    <span class="keyword">get</span>: function reactiveGetter () &#123;</span><br><span class="line">      <span class="comment">// ....</span></span><br><span class="line">      dep.depend()</span><br><span class="line">      <span class="keyword">return</span> value</span><br><span class="line">      <span class="comment">// ....</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="keyword">set</span>: function reactiveSetter (newVal) &#123;</span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line">      val = newVal</span><br><span class="line">      dep.notify()</span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="2、依赖收集"><a href="#2、依赖收集" class="headerlink" title="2、依赖收集"></a>2、依赖收集</h3><p>每个组件在渲染的过程中都会创建一个对应的 <strong>watcher（订阅者）</strong> 实例，创建 watcher 实例时会去进行模版解析，会触发属性的 getter，而每个属性在最开始设置 setter/getter 时会建立一个与之对应的<strong>收集器</strong>， getter 的调用会让该收集器记录当前的 watcher 实例，以便于之后属性变化的时候能通知到它。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">Watcher</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span> (vm: Component, expOrFn: string | Function, cb: Function, ...) &#123;</span><br><span class="line">    <span class="keyword">this</span>.cb = cb</span><br><span class="line">    <span class="keyword">this</span>.getter = expOrFn</span><br><span class="line">    <span class="keyword">this</span>.value = <span class="keyword">this</span>.get()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">get</span> () &#123;</span><br><span class="line">  	Dep.target = target</span><br><span class="line">    value = <span class="keyword">this</span>.getter.call(<span class="keyword">this</span>.vm, <span class="keyword">this</span>.vm) <span class="comment">// 渲染</span></span><br><span class="line">		Dep.target = <span class="literal">null</span></span><br><span class="line">    <span class="keyword">return</span> value</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  addDep (dep: Dep) &#123;</span><br><span class="line">		dep.addSub(<span class="keyword">this</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  update () &#123;</span><br><span class="line">    <span class="keyword">this</span>.run()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  run () &#123;</span><br><span class="line">    <span class="keyword">const</span> oldValue = <span class="keyword">this</span>.value</span><br><span class="line">    <span class="keyword">const</span> value = <span class="keyword">this</span>.get()</span><br><span class="line">    <span class="keyword">this</span>.cb.call(<span class="keyword">this</span>.vm, value, oldValue)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 收集器</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">Dep</span> </span>&#123;</span><br><span class="line">  <span class="keyword">static</span> target: ?Watcher;</span><br><span class="line">  id: number;</span><br><span class="line">  subs: <span class="built_in">Array</span>&lt;Watcher&gt;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">constructor</span> () &#123;</span><br><span class="line">    <span class="keyword">this</span>.id = uid++</span><br><span class="line">    <span class="keyword">this</span>.subs = []</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  addSub (sub: Watcher) &#123;</span><br><span class="line">    <span class="keyword">this</span>.subs.push(sub)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  removeSub (sub: Watcher) &#123;</span><br><span class="line">    remove(<span class="keyword">this</span>.subs, sub)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  depend () &#123;</span><br><span class="line">    <span class="keyword">if</span> (Dep.target) &#123;</span><br><span class="line">      Dep.target.addDep(<span class="keyword">this</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  notify () &#123;</span><br><span class="line">    <span class="keyword">const</span> subs = <span class="keyword">this</span>.subs.slice()</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, l = subs.length; i &lt; l; i++) &#123;</span><br><span class="line">      subs[i].update() <span class="comment">// // 调用订阅者的update方法，通知变化</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="Vue 响应式原理">
+<meta name="keywords" content="Vue">
+<meta name="author" content="Yin-Hongwei">
+<meta name="copyright" content="Yin-Hongwei">
+<title>Vue 响应式原理 | Yin-Hongwei</title>
+
+
+
+<meta name="robots" content="index,follow">
+
+
+<link rel="canonical" href="http://Yin-Hongwei.github.io/2018/08/01/vue%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/">
+
+
+<link rel="alternate" type="application/rss+xml" title="Yin-Hongwei RSS" href="/atom.xml">
+
+
+
+
+<meta property="og:locale" content="zh_CN">
+<meta property="og:site_name" content="Yin-Hongwei">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue 响应式原理 | Yin-Hongwei">
+<meta property="og:description" content="Vue 响应式原理">
+<meta property="og:url" content="http://Yin-Hongwei.github.io/2018/08/01/vue%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gsvyh82ifyj30xc0kudhe.jpg">
+
+<meta property="article:author" content="Yin-Hongwei">
+<meta property="article:published_time" content="2018-08-01T14:00:05.000Z">
+
+<meta property="article:modified_time" content="2021-08-08T06:45:22.000Z">
+
+
+
+<meta property="article:tag" content="Vue">
+
+
+
+
+
+<meta name="twitter:card" content="summary_large_image">
+
+<meta name="twitter:title" content="Vue 响应式原理 | Yin-Hongwei">
+<meta name="twitter:description" content="Vue 响应式原理">
+<meta name="twitter:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gsvyh82ifyj30xc0kudhe.jpg">
+
+
+<script type="application/ld+json">
+
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Vue 响应式原理",
+  "description": "Vue 响应式原理",
+  "image": [&#34;https://tva1.sinaimg.cn/large/008i3skNly1gsvyh82ifyj30xc0kudhe.jpg&#34;],
+  "datePublished": "2018-08-01T14:00:05.000Z",
+  "dateModified": "2021-08-08T06:45:22.000Z",
+  "author": {
+    "@type": "Person",
+    "name": "Yin-Hongwei"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Yin-Hongwei",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://Yin-Hongwei.github.io/img/avatar.jpg"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://Yin-Hongwei.github.io/2018/08/01/vue%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/"
+  }
+}
+
+</script>
+
+
+
+
+
+
+
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement('script');
+    hm.src = 'https://hm.baidu.com/hm.js?b81c2b682a701ca13dc77e03ac709e1a';
+    hm.async = true;
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+
+
+
+
+
+<script>
+  (function () {
+    var key = 'yin-theme-mode'
+    var mode = 'auto'
+    try {
+      mode = localStorage.getItem(key) || mode
+    } catch (err) {}
+    var dark = mode === 'dark' || (mode !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
+    document.documentElement.style.colorScheme = dark ? 'dark' : 'light'
+  })()
+</script>
+
+<link rel="icon" href="/img/favicon.ico">
+
+  
+    <link rel="stylesheet" href="/css/index.css">
+  
+  
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css">
+    
+  
+
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script>
+
+<script>
+  var GLOBAL_CONFIG = {
+    root: '/',
+    hexoVersion: '8.1.2',
+    darkMode: {
+      enable: true,
+      default: 'auto',
+      labels: {
+        toggle: '切换暗色模式',
+        light: '浅色',
+        dark: '深色'
+      }
+    },
+    localSearch: {
+      path: 'search.xml',
+      languages: {
+        hits_empty: '找不到您查询的内容:${query}'
+      }
+    }
+  }
+</script>
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+
+
+
+
+<body class="post-page">
+  
+
+
+
+  <div class="moments-profile post-cover" id="nav">
+    <div class="moments-cover" style="background-image: url(/img/bg.jpg)">
+      <div class="moments-cover-content">
+        <header id="page-header" class="moments-profile-header">
+  <span class="header-brand">
+    <a id="site-name" href="/">Yin-Hongwei</a>
+  </span>
+  
+    <span class="header-post-title">Vue 响应式原理</span>
+  
+  <div class="header-actions">
+    
+      <button type="button" id="dark-mode-toggle" class="site-page social-icon dark-mode-toggle" aria-label="切换暗色模式" aria-pressed="false">
+        <i class="fa fa-moon-o" aria-hidden="true"></i>
+      </button>
+    
+    
+    
+      <a class="site-page social-icon search search--desktop" href="javascript:void(0);">
+        <i class="fa fa-search" aria-hidden="true"></i>
+        <span>搜索</span>
+      </a>
+    
+    
+      <nav class="menus mobile-nav-panel" id="mobile-nav-panel" aria-label="菜单" aria-hidden="true">
+        <div class="mobile-nav-panel__header">
+          <span class="mobile-nav-panel__title">菜单</span>
+        </div>
+        <div class="mobile-nav-panel__body">
+          
+              
+              
+              
+              
+              <a class="site-page" href="/about">
+                
+                  关于我
+                
+              </a>
+            
+              
+              
+              
+              
+              <a class="site-page" href="/archives">
+                
+                  存档
+                
+              </a>
+            
+              
+              
+              
+              
+              <a class="site-page social-icon" href="https://github.com/Yin-Hongwei" target="_blank" rel="noreferrer noopener">
+                
+                  <i class="fa fa-github" aria-hidden="true"></i>
+                  <span class="menu-item-label">GitHub</span>
+                
+              </a>
+            
+        </div>
+      </nav>
+    
+    <button type="button" class="toggle-menu" aria-label="菜单" aria-expanded="false" aria-controls="mobile-nav-panel">
+      <span class="toggle-menu__icon" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+  </div>
+</header>
+<div class="mobile-nav-backdrop" aria-hidden="true"></div>
+
+      </div>
+    </div>
+  </div>
+
+
+  
+    <button type="button" id="toggle-sidebar" class="sidebar-toggle" aria-label="目录" aria-expanded="false">
+      <svg class="sidebar-toggle__chevron" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
+        <path d="M10 4 L6 8 L10 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    
+<div id="sidebar" class="is-open" data-display="true">
+  
+    <div class="sidebar-toc">
+      <div class="sidebar-toc__title">目录</div>
+      <div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%89%8D%E8%A8%80"><span class="toc-text">一、前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%8E%9F%E7%90%86"><span class="toc-text">二、原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E6%95%B0%E6%8D%AE%E7%9B%91%E5%90%AC"><span class="toc-text">1、数据监听</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E4%BE%9D%E8%B5%96%E6%94%B6%E9%9B%86"><span class="toc-text">2、依赖收集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E6%B4%BE%E5%8F%91%E6%9B%B4%E6%96%B0"><span class="toc-text">3、派发更新</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-text">参考链接</span></a></li></ol></div>
+    </div>
+  
+</div>
+
+  
+  <article id="content-outer">
+    <section id="content-inner" class="layout">
+      <article id="post">
+  <h1 class="post-title">Vue 响应式原理</h1>
+  <div id="post-content" class="article-container"><h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><p>vue 响应式原理是数据渲染到视图，及数据修改触发视图更新的过程。</p>
+<span id="more"></span>
+
+<h2 id="二、原理"><a href="#二、原理" class="headerlink" title="二、原理"></a>二、原理</h2><img src="https://tva1.sinaimg.cn/large/008i3skNly1gsvyh82ifyj30xc0kudhe.jpg" width="600" class="lazy-img" loading="eager" decoding="async">
+
+<h3 id="1、数据监听"><a href="#1、数据监听" class="headerlink" title="1、数据监听"></a>1、数据监听</h3><p>当把一个普通的 JavaScript 对象传入 Vue 实例作为 data 选项，Vue 将遍历此对象所有的属性，并使用 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty"><code>Object.defineProperty</code></a> 为这些属性设置 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Working_with_Objects#%E5%AE%9A%E4%B9%89_getters_%E4%B8%8E_setters">getter&#x2F;setter</a>。</p>
+<p><strong>这些 getter&#x2F;setter 对用户来说不可见，但是在内部它们让 Vue 能够追踪依赖，在属性被访问和修改时通知变更。</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">defineReactive</span>(<span class="params">obj: <span class="built_in">Object</span>, key: string, ...</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> dep = <span class="keyword">new</span> <span class="title class_">Dep</span>()</span><br><span class="line"></span><br><span class="line">  <span class="title class_">Object</span>.<span class="title function_">defineProperty</span>(obj, key, &#123;</span><br><span class="line">    <span class="attr">enumerable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">configurable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">get</span>: <span class="keyword">function</span> <span class="title function_">reactiveGetter</span> (<span class="params"></span>) &#123;</span><br><span class="line">      <span class="comment">// ....</span></span><br><span class="line">      dep.<span class="title function_">depend</span>()</span><br><span class="line">      <span class="keyword">return</span> value</span><br><span class="line">      <span class="comment">// ....</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">set</span>: <span class="keyword">function</span> <span class="title function_">reactiveSetter</span> (<span class="params">newVal</span>) &#123;</span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line">      val = newVal</span><br><span class="line">      dep.<span class="title function_">notify</span>()</span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2、依赖收集"><a href="#2、依赖收集" class="headerlink" title="2、依赖收集"></a>2、依赖收集</h3><p>每个组件在渲染的过程中都会创建一个对应的 <strong>watcher（订阅者）</strong> 实例，创建 watcher 实例时会去进行模版解析，会触发属性的 getter，而每个属性在最开始设置 setter&#x2F;getter 时会建立一个与之对应的<strong>收集器</strong>， getter 的调用会让该收集器记录当前的 watcher 实例，以便于之后属性变化的时候能通知到它。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">class</span> <span class="title class_">Watcher</span> &#123;</span><br><span class="line">  <span class="title function_">constructor</span> (<span class="params">vm: Component, expOrFn: string | <span class="built_in">Function</span>, cb: <span class="built_in">Function</span>, ...</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">cb</span> = cb</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">getter</span> = expOrFn</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">value</span> = <span class="variable language_">this</span>.<span class="title function_">get</span>()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">get</span> () &#123;</span><br><span class="line">  	<span class="title class_">Dep</span>.<span class="property">target</span> = target</span><br><span class="line">    value = <span class="variable language_">this</span>.<span class="property">getter</span>.<span class="title function_">call</span>(<span class="variable language_">this</span>.<span class="property">vm</span>, <span class="variable language_">this</span>.<span class="property">vm</span>) <span class="comment">// 渲染</span></span><br><span class="line">		<span class="title class_">Dep</span>.<span class="property">target</span> = <span class="literal">null</span></span><br><span class="line">    <span class="keyword">return</span> value</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">addDep</span> (<span class="attr">dep</span>: <span class="title class_">Dep</span>) &#123;</span><br><span class="line">		dep.<span class="title function_">addSub</span>(<span class="variable language_">this</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">update</span> () &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">run</span>()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">run</span> () &#123;</span><br><span class="line">    <span class="keyword">const</span> oldValue = <span class="variable language_">this</span>.<span class="property">value</span></span><br><span class="line">    <span class="keyword">const</span> value = <span class="variable language_">this</span>.<span class="title function_">get</span>()</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">cb</span>.<span class="title function_">call</span>(<span class="variable language_">this</span>.<span class="property">vm</span>, value, oldValue)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 收集器</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">class</span> <span class="title class_">Dep</span> &#123;</span><br><span class="line">  <span class="keyword">static</span> <span class="attr">target</span>: ?<span class="title class_">Watcher</span>;</span><br><span class="line">  <span class="attr">id</span>: number;</span><br><span class="line">  <span class="attr">subs</span>: <span class="title class_">Array</span>&lt;<span class="title class_">Watcher</span>&gt;;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">constructor</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">id</span> = uid++</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">subs</span> = []</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">addSub</span> (<span class="attr">sub</span>: <span class="title class_">Watcher</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">subs</span>.<span class="title function_">push</span>(sub)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">removeSub</span> (<span class="attr">sub</span>: <span class="title class_">Watcher</span>) &#123;</span><br><span class="line">    <span class="title function_">remove</span>(<span class="variable language_">this</span>.<span class="property">subs</span>, sub)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">depend</span> () &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="title class_">Dep</span>.<span class="property">target</span>) &#123;</span><br><span class="line">      <span class="title class_">Dep</span>.<span class="property">target</span>.<span class="title function_">addDep</span>(<span class="variable language_">this</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="title function_">notify</span> () &#123;</span><br><span class="line">    <span class="keyword">const</span> subs = <span class="variable language_">this</span>.<span class="property">subs</span>.<span class="title function_">slice</span>()</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, l = subs.<span class="property">length</span>; i &lt; l; i++) &#123;</span><br><span class="line">      subs[i].<span class="title function_">update</span>() <span class="comment">// // 调用订阅者的update方法，通知变化</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
 <h3 id="3、派发更新"><a href="#3、派发更新" class="headerlink" title="3、派发更新"></a>3、派发更新</h3><p>当属性被修改时，会触发属性的 <code>setter</code> ，然后该属性的收集器会遍历当前的所有 <strong>watcher</strong> 实例并发送通知，<strong>watcher</strong> 实例会去执行自己的 <code>update()</code> 方法，触发组件的重新渲染，再次去触发属性的 getter。</p>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://cn.vuejs.org/v2/guide/reactivity.html" target="_blank" rel="noopener">https://cn.vuejs.org/v2/guide/reactivity.html</a></p>
-<div class="qr-code"></div><img class="qrcode-img" src="/img/weixin.jpg"><div class="qrcode-desc">微信打赏</div><div class="post-tag-list">标签: <a class="post-tags" href="/tags/Vue/">Vue</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2018/08/17/JavaScript Event Loop/"><i class="fa fa-chevron-left"></i><span>JavaScript Event Loop</span></a></div><div class="next-post pull-right"><a href="/2018/06/01/vue生命周期/"><span>Vue 生命周期</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
-  clientID: 'e238e2d1f25ec6e15026',
-  clientSecret: '3c4e537d46a59d056e6c0cc478b04784defafcfb',
-  repo: 'Yin-Hongwei.github.io',
-  owner: 'Yin-Hongwei',
-  admin: 'Yin-Hongwei',
-  id: md5(window.location.pathname)
-})
-gitalk.render('gitalk-container')</script></article></section></article><footer id="footer-outer"><div id="footer-inner"><p class="footer-text">Copyright &copy; 2018-2023 Yin-Hongwei</p></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i></body><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/animejs@latest/lib/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="/js/utils.js" defer></script><script src="/js/transition.js" defer></script><script src="/js/fancybox.js" defer></script><script src="/js/menu.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/scroll.js" defer></script></html>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a target="_blank" rel="noopener" href="https://cn.vuejs.org/v2/guide/reactivity.html">https://cn.vuejs.org/v2/guide/reactivity.html</a></p>
+</div>
+  
+
+  
+    <section class="post-copyright post-copyright--wechat">
+      <ul class="post-copyright__list">
+        <li>
+          <span class="post-copyright__label">作者：</span>
+          <span class="post-copyright__value">Yin-Hongwei</span>
+        </li>
+        <li>
+          <span class="post-copyright__label">链接：</span>
+          <a class="post-copyright__value post-copyright__link" href="http://Yin-Hongwei.github.io/2018/08/01/vue%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/">http://Yin-Hongwei.github.io/2018/08/01/vue%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/</a>
+        </li>
+        <li>
+          <span class="post-copyright__label">版权声明：</span>
+          
+            <a class="post-copyright__value post-copyright__link" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-NC-SA 4.0</a>
+          
+        </li>
+      </ul>
+      
+    </section>
+  
+
+
+  
+  <div class="qr-code">
+    <img class="qrcode-img lazy-img" src="/img/weixin.jpg" loading="lazy" decoding="async">
+    <div class="qrcode-desc">微信打赏</div>
+  </div>
+
+
+  
+<nav id="pagination">
+  
+    
+      <div class="prev-post pull-left">
+        <a href="/2018/08/17/JavaScript%20Event%20Loop/">
+          <i class="fa fa-chevron-left"></i>
+          <span>JavaScript Event Loop</span>
+        </a>
+      </div>
+    
+    
+      <div class="next-post pull-right">
+        <a href="/2018/04/02/%E8%AE%BE%E8%AE%A1%E4%BD%9C%E5%93%81/">
+          <span>设计作品</span>
+          <i class="fa fa-chevron-right"></i>
+        </a>
+      </div>
+    
+  
+</nav>
+
+  
+  <div id="gitalk-container"></div>
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'e238e2d1f25ec6e15026',
+      clientSecret: '3c4e537d46a59d056e6c0cc478b04784defafcfb',
+      repo: 'Yin-Hongwei.github.io',
+      owner: 'Yin-Hongwei',
+      admin: 'Yin-Hongwei',
+      id: md5(window.location.pathname)
+    })
+    gitalk.render('gitalk-container')
+  </script>
+
+
+</article>
+
+    </section>
+  </article>
+  
+<footer id="footer-outer">
+  <div id="footer-inner">
+    <p class="footer-text">Copyright &copy; 2018-2026 Yin-Hongwei</p>
+    
+      <p class="footer-text">
+        <a href="https://github.com/Yin-Hongwei/hexo-theme-Yin" target="_blank" rel="noopener noreferrer">hexo-theme-Yin</a>
+      </p>
+    
+    
+      <div class="busuanzi">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+    
+      <span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span></span>
+    
+  
+</div>
+
+    
+  </div>
+</footer>
+
+  
+
+  <div id="site-search" class="search-dialog">
+    <div id="site-search-title" class="search-dialog__title">搜索</div>
+    <div id="site-search-input-panel">
+      <div id="site-search-input">
+        <div class="search-box">
+          <input class="search-box--input" placeholder="搜索文章" autocomplete="off">
+        </div>
+      </div>
+    </div>
+    <div id="site-search-results">
+      <div id="site-search-hits"></div>
+      <p class="search__hint">输入关键词搜索文章</p>
+    </div>
+    <span class="search-close-button">
+      <i class="fa fa-times"></i>
+    </span>
+  </div>
+  <div class="search-mask"></div>
+
+
+  <i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i>
+  
+    
+    
+      <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    
+  
+    
+    
+      <script src="https://cdn.jsdelivr.net/npm/animejs@latest/lib/anime.min.js"></script>
+    
+  
+    
+    
+      <script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script>
+    
+  
+    
+    
+      <script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script>
+    
+  
+    
+    
+      <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+    
+  
+  
+  
+    <script src="/js/search/search-dialog.js"></script>
+  
+  
+    <script src="/js/search/local-search.js" defer></script>
+  
+  
+    
+      <script src="/js/utils.js" defer></script>
+    
+      <script src="/js/transition.js" defer></script>
+    
+      <script src="/js/moments-grid.js" defer></script>
+    
+      <script src="/js/fancybox.js" defer></script>
+    
+      <script src="/js/menu.js" defer></script>
+    
+      <script src="/js/sidebar.js" defer></script>
+    
+      <script src="/js/scroll.js" defer></script>
+    
+      <script src="/js/copy.js" defer></script>
+    
+      <script src="/js/lazyload.js" defer></script>
+    
+      <script src="/js/dark-mode.js" defer></script>
+    
+  
+</body>
+</html>

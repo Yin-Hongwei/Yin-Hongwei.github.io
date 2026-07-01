@@ -1,7 +1,280 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="前端数据存储方案"><meta name="keywords" content="Web 前端"><meta name="author" content="Yin-Hongwei"><meta name="copyright" content="Yin-Hongwei"><title>前端数据存储方案 | Yin-Hongwei</title><link rel="icon" href="/img/favicon.ico"><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script></head><body><header id="page-header"><nav id="navbar"><span class="nav-left"><div class="tou-img"><img src="/img/avatar.jpg"></div><a id="site-name" href="/">Yin-Hongwei</a></span><i class="fa fa-bars toggle-menu nav-right" aria-hidden="true"></i><span class="title">前端数据存储方案</span><span class="nav-right menus"><a class="site-page" href="/about">关于我</a></span></nav></header><article id="content-outer"><section id="content-inner"><article class="article-entry" id="post"><h1>前端数据存储方案</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前端数据存储方案主要有 Cookie、Web Storage、IndexedDB 三种。下图为 Chrome 浏览器的存储方案，虽然支持 Web SQL 存储，但是 W3C Web应用工作组于2010年11月停止了对该规范的研究，所以不提倡使用，下面就以上三种存储方案做一下介绍。</p>
-<a id="more"></a>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gh06exiu2nj31nw0u0n2h.jpg" alt></p>
-<p><br></p>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="前端数据存储方案">
+<meta name="keywords" content="Web 前端">
+<meta name="author" content="Yin-Hongwei">
+<meta name="copyright" content="Yin-Hongwei">
+<title>前端数据存储方案 | Yin-Hongwei</title>
+
+
+
+<meta name="robots" content="index,follow">
+
+
+<link rel="canonical" href="http://Yin-Hongwei.github.io/2020/07/22/%E5%89%8D%E7%AB%AF%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88/">
+
+
+<link rel="alternate" type="application/rss+xml" title="Yin-Hongwei RSS" href="/atom.xml">
+
+
+
+
+<meta property="og:locale" content="zh_CN">
+<meta property="og:site_name" content="Yin-Hongwei">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端数据存储方案 | Yin-Hongwei">
+<meta property="og:description" content="前端数据存储方案">
+<meta property="og:url" content="http://Yin-Hongwei.github.io/2020/07/22/%E5%89%8D%E7%AB%AF%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88/">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/007S8ZIlly1gh06exiu2nj31nw0u0n2h.jpg">
+
+<meta property="article:author" content="Yin-Hongwei">
+<meta property="article:published_time" content="2020-07-22T14:25:00.000Z">
+
+<meta property="article:modified_time" content="2021-08-08T06:44:32.000Z">
+
+
+
+<meta property="article:tag" content="Web 前端">
+
+
+
+
+
+<meta name="twitter:card" content="summary_large_image">
+
+<meta name="twitter:title" content="前端数据存储方案 | Yin-Hongwei">
+<meta name="twitter:description" content="前端数据存储方案">
+<meta name="twitter:image" content="https://tva1.sinaimg.cn/large/007S8ZIlly1gh06exiu2nj31nw0u0n2h.jpg">
+
+
+<script type="application/ld+json">
+
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "前端数据存储方案",
+  "description": "前端数据存储方案",
+  "image": [&#34;https://tva1.sinaimg.cn/large/007S8ZIlly1gh06exiu2nj31nw0u0n2h.jpg&#34;],
+  "datePublished": "2020-07-22T14:25:00.000Z",
+  "dateModified": "2021-08-08T06:44:32.000Z",
+  "author": {
+    "@type": "Person",
+    "name": "Yin-Hongwei"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Yin-Hongwei",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://Yin-Hongwei.github.io/img/avatar.jpg"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://Yin-Hongwei.github.io/2020/07/22/%E5%89%8D%E7%AB%AF%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88/"
+  }
+}
+
+</script>
+
+
+
+
+
+
+
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement('script');
+    hm.src = 'https://hm.baidu.com/hm.js?b81c2b682a701ca13dc77e03ac709e1a';
+    hm.async = true;
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+
+
+
+
+
+<script>
+  (function () {
+    var key = 'yin-theme-mode'
+    var mode = 'auto'
+    try {
+      mode = localStorage.getItem(key) || mode
+    } catch (err) {}
+    var dark = mode === 'dark' || (mode !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
+    document.documentElement.style.colorScheme = dark ? 'dark' : 'light'
+  })()
+</script>
+
+<link rel="icon" href="/img/favicon.ico">
+
+  
+    <link rel="stylesheet" href="/css/index.css">
+  
+  
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css">
+    
+  
+
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script>
+
+<script>
+  var GLOBAL_CONFIG = {
+    root: '/',
+    hexoVersion: '8.1.2',
+    darkMode: {
+      enable: true,
+      default: 'auto',
+      labels: {
+        toggle: '切换暗色模式',
+        light: '浅色',
+        dark: '深色'
+      }
+    },
+    localSearch: {
+      path: 'search.xml',
+      languages: {
+        hits_empty: '找不到您查询的内容:${query}'
+      }
+    }
+  }
+</script>
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+
+
+
+
+<body class="post-page">
+  
+
+
+
+  <div class="moments-profile post-cover" id="nav">
+    <div class="moments-cover" style="background-image: url(/img/bg.jpg)">
+      <div class="moments-cover-content">
+        <header id="page-header" class="moments-profile-header">
+  <span class="header-brand">
+    <a id="site-name" href="/">Yin-Hongwei</a>
+  </span>
+  
+    <span class="header-post-title">前端数据存储方案</span>
+  
+  <div class="header-actions">
+    
+      <button type="button" id="dark-mode-toggle" class="site-page social-icon dark-mode-toggle" aria-label="切换暗色模式" aria-pressed="false">
+        <i class="fa fa-moon-o" aria-hidden="true"></i>
+      </button>
+    
+    
+    
+      <a class="site-page social-icon search search--desktop" href="javascript:void(0);">
+        <i class="fa fa-search" aria-hidden="true"></i>
+        <span>搜索</span>
+      </a>
+    
+    
+      <nav class="menus mobile-nav-panel" id="mobile-nav-panel" aria-label="菜单" aria-hidden="true">
+        <div class="mobile-nav-panel__header">
+          <span class="mobile-nav-panel__title">菜单</span>
+        </div>
+        <div class="mobile-nav-panel__body">
+          
+              
+              
+              
+              
+              <a class="site-page" href="/about">
+                
+                  关于我
+                
+              </a>
+            
+              
+              
+              
+              
+              <a class="site-page" href="/archives">
+                
+                  存档
+                
+              </a>
+            
+              
+              
+              
+              
+              <a class="site-page social-icon" href="https://github.com/Yin-Hongwei" target="_blank" rel="noreferrer noopener">
+                
+                  <i class="fa fa-github" aria-hidden="true"></i>
+                  <span class="menu-item-label">GitHub</span>
+                
+              </a>
+            
+        </div>
+      </nav>
+    
+    <button type="button" class="toggle-menu" aria-label="菜单" aria-expanded="false" aria-controls="mobile-nav-panel">
+      <span class="toggle-menu__icon" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+  </div>
+</header>
+<div class="mobile-nav-backdrop" aria-hidden="true"></div>
+
+      </div>
+    </div>
+  </div>
+
+
+  
+    <button type="button" id="toggle-sidebar" class="sidebar-toggle" aria-label="目录" aria-expanded="false">
+      <svg class="sidebar-toggle__chevron" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
+        <path d="M10 4 L6 8 L10 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    
+<div id="sidebar" class="is-open" data-display="true">
+  
+    <div class="sidebar-toc">
+      <div class="sidebar-toc__title">目录</div>
+      <div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81Cookie"><span class="toc-text">一、Cookie</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E6%A6%82%E5%BF%B5"><span class="toc-text">1、概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-text">2、适用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E7%89%B9%E7%82%B9"><span class="toc-text">3、特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%E3%80%81%E7%BC%BA%E7%82%B9"><span class="toc-text">4、缺点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5%E3%80%81API"><span class="toc-text">5、API</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6%E3%80%81HTTP-%E8%AF%B7%E6%B1%82%E5%A4%B4%E5%AD%97%E6%AE%B5%E7%9B%B8%E5%85%B3"><span class="toc-text">6、HTTP 请求头字段相关</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81Web-Storage"><span class="toc-text">二、Web Storage</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E6%A6%82%E5%BF%B5-1"><span class="toc-text">1、概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF-1"><span class="toc-text">2、适用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E7%89%B9%E7%82%B9-1"><span class="toc-text">3、特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%E3%80%81%E7%BC%BA%E7%82%B9-1"><span class="toc-text">4、缺点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5%E3%80%81API-1"><span class="toc-text">5、API</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81IndexedDB"><span class="toc-text">三、IndexedDB</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E6%A6%82%E5%BF%B5-2"><span class="toc-text">1、概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF-2"><span class="toc-text">2、适用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E7%89%B9%E7%82%B9-2"><span class="toc-text">3、特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%E3%80%81%E7%BC%BA%E7%82%B9-2"><span class="toc-text">4、缺点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5%E3%80%81API-2"><span class="toc-text">5、API</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6%E3%80%81%E7%AC%AC%E4%B8%89%E6%96%B9%E7%B1%BB%E5%BA%93"><span class="toc-text">6、第三方类库</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%BA%90"><span class="toc-text">参考资源</span></a></li></ol></div>
+    </div>
+  
+</div>
+
+  
+  <article id="content-outer">
+    <section id="content-inner" class="layout">
+      <article id="post">
+  <h1 class="post-title">前端数据存储方案</h1>
+  <div id="post-content" class="article-container"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前端数据存储方案主要有 Cookie、Web Storage、IndexedDB 三种。下图为 Chrome 浏览器的存储方案，虽然支持 Web SQL 存储，但是 W3C Web应用工作组于2010年11月停止了对该规范的研究，所以不提倡使用，下面就以上三种存储方案做一下介绍。</p>
+<span id="more"></span>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gh06exiu2nj31nw0u0n2h.jpg" class="lazy-img" loading="eager" decoding="async"></p>
+<br/>
+
 <h2 id="一、Cookie"><a href="#一、Cookie" class="headerlink" title="一、Cookie"></a>一、Cookie</h2><h3 id="1、概念"><a href="#1、概念" class="headerlink" title="1、概念"></a>1、概念</h3><p>Cookie 指某些网站为了辨别用户身份而储存在用户本地终端上的数据。每次请求都会把本地的 Cookie 发到服务器，让服务器知道当前用户的状态。</p>
 <p>Cookie 有域的概念，不能跨域操作。</p>
 <h3 id="2、适用场景"><a href="#2、适用场景" class="headerlink" title="2、适用场景"></a>2、适用场景</h3><p>适合客户端存储较少的数据，用于标识状态（用户登录状态、购物车等）。</p>
@@ -10,9 +283,13 @@
 <p><strong>3）数据有效期</strong>：cookie 支持设置数据过期时间。</p>
 <p><strong>4）数据作用域</strong>：cookie 在所有同源窗口中共享。</p>
 <h3 id="4、缺点"><a href="#4、缺点" class="headerlink" title="4、缺点"></a>4、缺点</h3><p>Cookie 容量小（4K）；不安全，容易被拦截暴露数据。</p>
-<h3 id="5、API"><a href="#5、API" class="headerlink" title="5、API"></a>5、API</h3><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/cookie" target="_blank" rel="noopener">https://developer.mozilla.org/zh-CN/docs/Web/API/Document/cookie</a></p>
-<h3 id="6、HTTP-请求头字段相关"><a href="#6、HTTP-请求头字段相关" class="headerlink" title="6、HTTP 请求头字段相关"></a>6、HTTP 请求头字段相关</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1）Expires：cookie最长有效期</span><br><span class="line">2）Max-Age：在 cookie 失效之前需要经过的秒数。（当Expires和Max-Age同时存在时，以 Max-Age 为准）</span><br><span class="line">3）Domain：指定 cookie 可以送达的主机名。</span><br><span class="line">4）Path：指定一个 URL 路径，这个路径必须出现在要请求的资源的路径中才可以发送 Cookie 首部</span><br><span class="line">5）Secure：一个带有安全属性的 cookie 只有在请求使用SSL和HTTPS协议的时候才会被发送到服务器。</span><br><span class="line">6）HttpOnly: 设置了 HttpOnly 属性的 cookie 不能使用 JavaScript 经由 Document.cookie 属性、XMLHttpRequest 和 Request APIs 进行访问，以防范跨站脚本攻击（XSS）。</span><br></pre></td></tr></table></figure>
-<p><br></p>
+<h3 id="5、API"><a href="#5、API" class="headerlink" title="5、API"></a>5、API</h3><p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/cookie">https://developer.mozilla.org/zh-CN/docs/Web/API/Document/cookie</a></p>
+<h3 id="6、HTTP-请求头字段相关"><a href="#6、HTTP-请求头字段相关" class="headerlink" title="6、HTTP 请求头字段相关"></a>6、HTTP 请求头字段相关</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1）Expires：cookie最长有效期</span><br><span class="line">2）Max-Age：在 cookie 失效之前需要经过的秒数。（当Expires和Max-Age同时存在时，以 Max-Age 为准）</span><br><span class="line">3）Domain：指定 cookie 可以送达的主机名。</span><br><span class="line">4）Path：指定一个 URL 路径，这个路径必须出现在要请求的资源的路径中才可以发送 Cookie 首部</span><br><span class="line">5）Secure：一个带有安全属性的 cookie 只有在请求使用SSL和HTTPS协议的时候才会被发送到服务器。</span><br><span class="line">6）HttpOnly: 设置了 HttpOnly 属性的 cookie 不能使用 JavaScript 经由 Document.cookie 属性、XMLHttpRequest 和 Request APIs 进行访问，以防范跨站脚本攻击（XSS）。</span><br></pre></td></tr></table></figure>
+
+<br/>
+
+
+
 <h3 id="二、Web-Storage"><a href="#二、Web-Storage" class="headerlink" title="二、Web Storage"></a>二、Web Storage</h3><h3 id="1、概念-1"><a href="#1、概念-1" class="headerlink" title="1、概念"></a>1、概念</h3><p>Web Storage 有 sessionStorage 和 localStorage 两种存储机制。</p>
 <p>sessionStorage 为每一个给定的源维持一个独立的存储区域，该存储区域在页面会话期间可用；localStorage 在浏览器关闭，然后重新打开后数据仍然存在，可用作持久存储数据。</p>
 <h3 id="2、适用场景-1"><a href="#2、适用场景-1" class="headerlink" title="2、适用场景"></a>2、适用场景</h3><p>适合客户端存储较少的数据，且数字存储时会转成字符串。</p>
@@ -20,11 +297,14 @@
 <p><strong>2）数据存储大小</strong>：5M。</p>
 <p><strong>3）数据有效期</strong>：sessionStorage 仅在当前浏览器窗口关闭之前有效；localStorage 始终有效，窗口或浏览器关闭也一直保存。</p>
 <p><strong>4）数据作用域</strong>：sessionStorage 即使同一页面，不同的浏览器窗口中也不共享；localstorage 在所有同源窗口中都共享。</p>
-<p><strong>5）同步：</strong>操作数据是同步的。</p>
+<p>**5）同步：**操作数据是同步的。</p>
 <h3 id="4、缺点-1"><a href="#4、缺点-1" class="headerlink" title="4、缺点"></a>4、缺点</h3><p>不能用于存储重要信息，本地储存数据都容易被篡改，容易受到 XSS 攻击。</p>
-<h3 id="5、API-1"><a href="#5、API-1" class="headerlink" title="5、API"></a>5、API</h3><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Storage_API/" target="_blank" rel="noopener">https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Storage_API/</a></p>
-<p><br></p>
-<h2 id="三、IndexedDB"><a href="#三、IndexedDB" class="headerlink" title="三、IndexedDB"></a>三、IndexedDB</h2><h3 id="1、概念-2"><a href="#1、概念-2" class="headerlink" title="1、概念"></a>1、概念</h3><p>IndexedDB 是一种在用户浏览器中持久存储数据的方法，用于客户端存储大量结构化数据(包括文件/ 二进制大型对象(blobs)。</p>
+<h3 id="5、API-1"><a href="#5、API-1" class="headerlink" title="5、API"></a>5、API</h3><p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Storage_API/">https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Storage_API/</a></p>
+<br/>
+
+
+
+<h2 id="三、IndexedDB"><a href="#三、IndexedDB" class="headerlink" title="三、IndexedDB"></a>三、IndexedDB</h2><h3 id="1、概念-2"><a href="#1、概念-2" class="headerlink" title="1、概念"></a>1、概念</h3><p>IndexedDB 是一种在用户浏览器中持久存储数据的方法，用于客户端存储大量结构化数据(包括文件&#x2F; 二进制大型对象(blobs)。</p>
 <h3 id="2、适用场景-2"><a href="#2、适用场景-2" class="headerlink" title="2、适用场景"></a>2、适用场景</h3><p>适合客户端存储大量结构化数据。</p>
 <h3 id="3、特点-2"><a href="#3、特点-2" class="headerlink" title="3、特点"></a>3、特点</h3><p><strong>1）键值对储存：</strong> IndexedDB 内部采用对象仓库（object store）存放数据。所有类型的数据都可以直接存入，包括字符串、JavaScript 对象、二进制数据（ArrayBuffer 对象和 Blob 对象）。对象仓库中，数据以”键值对”的形式保存，每一个数据记录都有对应的主键，主键是独一无二的，不能有重复，否则会抛出一个错误。</p>
 <p><strong>2）数据存储大小</strong>： 取决于硬盘大小，<strong>全局限制</strong>为可用磁盘空间的50％。如果超过此范围，则会发起称为<strong>源回收</strong>的过程，删除整个源的数据，直到存储量再次低于限制。删除源数据没有只删一部分的说法——因为这样可能会导致不一致的问题。<strong>组限制</strong>——这被定义为全局限制的20％，但它至少有10 MB，最大为2GB。</p>
@@ -32,22 +312,193 @@
 <p><strong>4）支持事务：</strong> IndexedDB 支持事务（transaction），这意味着一系列操作步骤之中，只要有一步失败，整个事务就都取消，数据库回滚到事务发生之前的状态，不存在只改写一部分数据的情况。</p>
 <p><strong>5）同源限制：</strong> IndexedDB 受到同源限制，每一个数据库对应创建它的域名。网页只能访问自身域名下的数据库，而不能访问跨域的数据库。</p>
 <h3 id="4、缺点-2"><a href="#4、缺点-2" class="headerlink" title="4、缺点"></a>4、缺点</h3><p>不能设置数据存储的范围，数据太多时就比较占内存。</p>
-<h3 id="5、API-2"><a href="#5、API-2" class="headerlink" title="5、API"></a>5、API</h3><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/IndexedDB_API/" target="_blank" rel="noopener">https://developer.mozilla.org/zh-CN/docs/Web/API/IndexedDB_API/</a></p>
+<h3 id="5、API-2"><a href="#5、API-2" class="headerlink" title="5、API"></a>5、API</h3><p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/IndexedDB_API/">https://developer.mozilla.org/zh-CN/docs/Web/API/IndexedDB_API/</a></p>
 <h3 id="6、第三方类库"><a href="#6、第三方类库" class="headerlink" title="6、第三方类库"></a>6、第三方类库</h3><ul>
-<li><a href="https://localforage.github.io/localForage/" target="_blank" rel="noopener">localForage</a>：一个简单名称的Polyfill：客户端数据存储的值语法，它在后台使用IndexedDB，但在不支持IndexedDB的浏览器中回退到WebSQL或localStorage。</li>
-<li><a href="http://www.dexie.org/" target="_blank" rel="noopener">Dexie.js</a>：IndexedDB的包装器，通过简单的语法，可以更快地进行代码开发。</li>
-<li><a href="https://pouchdb.com/" target="_blank" rel="noopener">PouchDB</a>：使用IndexedDB在浏览器中实现CouchDB的客户端。</li>
-<li><a href="https://github.com/jakearchibald/idb" target="_blank" rel="noopener">idb</a>：一个微小的（〜1.15k）库，主要反映了IndexedDB的API，但小的改进，使一个很大的区别的可用性。</li>
+<li><a target="_blank" rel="noopener" href="https://localforage.github.io/localForage/">localForage</a>：一个简单名称的Polyfill：客户端数据存储的值语法，它在后台使用IndexedDB，但在不支持IndexedDB的浏览器中回退到WebSQL或localStorage。</li>
+<li><a target="_blank" rel="noopener" href="http://www.dexie.org/">Dexie.js</a>：IndexedDB的包装器，通过简单的语法，可以更快地进行代码开发。</li>
+<li><a target="_blank" rel="noopener" href="https://pouchdb.com/">PouchDB</a>：使用IndexedDB在浏览器中实现CouchDB的客户端。</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/jakearchibald/idb">idb</a>：一个微小的（〜1.15k）库，主要反映了IndexedDB的API，但小的改进，使一个很大的区别的可用性。</li>
 </ul>
-<p><br></p>
-<h2 id="参考资源"><a href="#参考资源" class="headerlink" title="参考资源"></a>参考资源</h2><p><a href="http://www.ruanyifeng.com/blog/2018/07/indexeddb.html" target="_blank" rel="noopener">http://www.ruanyifeng.com/blog/2018/07/indexeddb.html</a></p>
-<p><br></p>
-<div class="qr-code"></div><img class="qrcode-img" src="/img/weixin.jpg"><div class="qrcode-desc">微信打赏</div><div class="post-tag-list">标签: <a class="post-tags" href="/tags/Web-前端/">Web 前端</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2021/06/01/浏览器工作原理/"><i class="fa fa-chevron-left"></i><span>浏览器工作原理</span></a></div><div class="next-post pull-right"><a href="/2020/06/16/websocket 简介/"><span>WebSocket 简介</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
-  clientID: 'e238e2d1f25ec6e15026',
-  clientSecret: '3c4e537d46a59d056e6c0cc478b04784defafcfb',
-  repo: 'Yin-Hongwei.github.io',
-  owner: 'Yin-Hongwei',
-  admin: 'Yin-Hongwei',
-  id: md5(window.location.pathname)
-})
-gitalk.render('gitalk-container')</script></article></section></article><footer id="footer-outer"><div id="footer-inner"><p class="footer-text">Copyright &copy; 2018-2023 Yin-Hongwei</p></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i></body><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/animejs@latest/lib/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="/js/utils.js" defer></script><script src="/js/transition.js" defer></script><script src="/js/fancybox.js" defer></script><script src="/js/menu.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/scroll.js" defer></script></html>
+<br/>
+
+
+
+<h2 id="参考资源"><a href="#参考资源" class="headerlink" title="参考资源"></a>参考资源</h2><p><a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2018/07/indexeddb.html">http://www.ruanyifeng.com/blog/2018/07/indexeddb.html</a></p>
+<br/></div>
+  
+
+  
+    <section class="post-copyright post-copyright--wechat">
+      <ul class="post-copyright__list">
+        <li>
+          <span class="post-copyright__label">作者：</span>
+          <span class="post-copyright__value">Yin-Hongwei</span>
+        </li>
+        <li>
+          <span class="post-copyright__label">链接：</span>
+          <a class="post-copyright__value post-copyright__link" href="http://Yin-Hongwei.github.io/2020/07/22/%E5%89%8D%E7%AB%AF%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88/">http://Yin-Hongwei.github.io/2020/07/22/%E5%89%8D%E7%AB%AF%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88/</a>
+        </li>
+        <li>
+          <span class="post-copyright__label">版权声明：</span>
+          
+            <a class="post-copyright__value post-copyright__link" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-NC-SA 4.0</a>
+          
+        </li>
+      </ul>
+      
+    </section>
+  
+
+
+  
+  <div class="qr-code">
+    <img class="qrcode-img lazy-img" src="/img/weixin.jpg" loading="lazy" decoding="async">
+    <div class="qrcode-desc">微信打赏</div>
+  </div>
+
+
+  
+<nav id="pagination">
+  
+    
+      <div class="prev-post pull-left">
+        <a href="/2021/06/01/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">
+          <i class="fa fa-chevron-left"></i>
+          <span>浏览器工作原理</span>
+        </a>
+      </div>
+    
+    
+      <div class="next-post pull-right">
+        <a href="/2020/03/18/%E5%89%8D%E7%AB%AF%E6%A8%A1%E5%9D%97%E5%8C%96/">
+          <span>前端模块化</span>
+          <i class="fa fa-chevron-right"></i>
+        </a>
+      </div>
+    
+  
+</nav>
+
+  
+  <div id="gitalk-container"></div>
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'e238e2d1f25ec6e15026',
+      clientSecret: '3c4e537d46a59d056e6c0cc478b04784defafcfb',
+      repo: 'Yin-Hongwei.github.io',
+      owner: 'Yin-Hongwei',
+      admin: 'Yin-Hongwei',
+      id: md5(window.location.pathname)
+    })
+    gitalk.render('gitalk-container')
+  </script>
+
+
+</article>
+
+    </section>
+  </article>
+  
+<footer id="footer-outer">
+  <div id="footer-inner">
+    <p class="footer-text">Copyright &copy; 2018-2026 Yin-Hongwei</p>
+    
+      <p class="footer-text">
+        <a href="https://github.com/Yin-Hongwei/hexo-theme-Yin" target="_blank" rel="noopener noreferrer">hexo-theme-Yin</a>
+      </p>
+    
+    
+      <div class="busuanzi">
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+    
+      <span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span></span>
+    
+  
+</div>
+
+    
+  </div>
+</footer>
+
+  
+
+  <div id="site-search" class="search-dialog">
+    <div id="site-search-title" class="search-dialog__title">搜索</div>
+    <div id="site-search-input-panel">
+      <div id="site-search-input">
+        <div class="search-box">
+          <input class="search-box--input" placeholder="搜索文章" autocomplete="off">
+        </div>
+      </div>
+    </div>
+    <div id="site-search-results">
+      <div id="site-search-hits"></div>
+      <p class="search__hint">输入关键词搜索文章</p>
+    </div>
+    <span class="search-close-button">
+      <i class="fa fa-times"></i>
+    </span>
+  </div>
+  <div class="search-mask"></div>
+
+
+  <i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i>
+  
+    
+    
+      <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    
+  
+    
+    
+      <script src="https://cdn.jsdelivr.net/npm/animejs@latest/lib/anime.min.js"></script>
+    
+  
+    
+    
+      <script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script>
+    
+  
+    
+    
+      <script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script>
+    
+  
+    
+    
+      <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+    
+  
+  
+  
+    <script src="/js/search/search-dialog.js"></script>
+  
+  
+    <script src="/js/search/local-search.js" defer></script>
+  
+  
+    
+      <script src="/js/utils.js" defer></script>
+    
+      <script src="/js/transition.js" defer></script>
+    
+      <script src="/js/moments-grid.js" defer></script>
+    
+      <script src="/js/fancybox.js" defer></script>
+    
+      <script src="/js/menu.js" defer></script>
+    
+      <script src="/js/sidebar.js" defer></script>
+    
+      <script src="/js/scroll.js" defer></script>
+    
+      <script src="/js/copy.js" defer></script>
+    
+      <script src="/js/lazyload.js" defer></script>
+    
+      <script src="/js/dark-mode.js" defer></script>
+    
+  
+</body>
+</html>
