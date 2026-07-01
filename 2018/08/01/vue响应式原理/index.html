@@ -30,12 +30,12 @@
 <meta property="og:title" content="Vue 响应式原理 | Yin-Hongwei">
 <meta property="og:description" content="Vue 响应式原理">
 <meta property="og:url" content="http://Yin-Hongwei.github.io/2018/08/01/vue%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/">
-<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gsvyh82ifyj30xc0kudhe.jpg">
+<meta property="og:image" content="http://Yin-Hongwei.github.io/2018/08/01/vue%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/008i3skNly1gsvyh82ifyj30xc0kudhe.jpg">
 
 <meta property="article:author" content="Yin-Hongwei">
 <meta property="article:published_time" content="2018-08-01T14:00:05.000Z">
 
-<meta property="article:modified_time" content="2021-08-08T06:45:22.000Z">
+<meta property="article:modified_time" content="2026-07-01T20:05:20.354Z">
 
 
 
@@ -49,7 +49,7 @@
 
 <meta name="twitter:title" content="Vue 响应式原理 | Yin-Hongwei">
 <meta name="twitter:description" content="Vue 响应式原理">
-<meta name="twitter:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gsvyh82ifyj30xc0kudhe.jpg">
+<meta name="twitter:image" content="http://Yin-Hongwei.github.io/2018/08/01/vue%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/008i3skNly1gsvyh82ifyj30xc0kudhe.jpg">
 
 
 <script type="application/ld+json">
@@ -59,9 +59,9 @@
   "@type": "BlogPosting",
   "headline": "Vue 响应式原理",
   "description": "Vue 响应式原理",
-  "image": [&#34;https://tva1.sinaimg.cn/large/008i3skNly1gsvyh82ifyj30xc0kudhe.jpg&#34;],
+  "image": [&#34;http://Yin-Hongwei.github.io/2018/08/01/vue%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/008i3skNly1gsvyh82ifyj30xc0kudhe.jpg&#34;],
   "datePublished": "2018-08-01T14:00:05.000Z",
-  "dateModified": "2021-08-08T06:45:22.000Z",
+  "dateModified": "2026-07-01T20:05:20.354Z",
   "author": {
     "@type": "Person",
     "name": "Yin-Hongwei"
@@ -82,22 +82,6 @@
 
 </script>
 
-
-
-
-
-
-
-<script>
-  var _hmt = _hmt || [];
-  (function() {
-    var hm = document.createElement('script');
-    hm.src = 'https://hm.baidu.com/hm.js?b81c2b682a701ca13dc77e03ac709e1a';
-    hm.async = true;
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(hm, s);
-  })();
-</script>
 
 
 
@@ -268,8 +252,7 @@
   <div id="post-content" class="article-container"><h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><p>vue 响应式原理是数据渲染到视图，及数据修改触发视图更新的过程。</p>
 <span id="more"></span>
 
-<h2 id="二、原理"><a href="#二、原理" class="headerlink" title="二、原理"></a>二、原理</h2><img src="https://tva1.sinaimg.cn/large/008i3skNly1gsvyh82ifyj30xc0kudhe.jpg" width="600" class="lazy-img" loading="eager" decoding="async">
-
+<h2 id="二、原理"><a href="#二、原理" class="headerlink" title="二、原理"></a>二、原理</h2><p><img src="/2018/08/01/vue%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/008i3skNly1gsvyh82ifyj30xc0kudhe.jpg" class="lazy-img" loading="eager" decoding="async"></p>
 <h3 id="1、数据监听"><a href="#1、数据监听" class="headerlink" title="1、数据监听"></a>1、数据监听</h3><p>当把一个普通的 JavaScript 对象传入 Vue 实例作为 data 选项，Vue 将遍历此对象所有的属性，并使用 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty"><code>Object.defineProperty</code></a> 为这些属性设置 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Working_with_Objects#%E5%AE%9A%E4%B9%89_getters_%E4%B8%8E_setters">getter&#x2F;setter</a>。</p>
 <p><strong>这些 getter&#x2F;setter 对用户来说不可见，但是在内部它们让 Vue 能够追踪依赖，在属性被访问和修改时通知变更。</strong></p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">defineReactive</span>(<span class="params">obj: <span class="built_in">Object</span>, key: string, ...</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> dep = <span class="keyword">new</span> <span class="title class_">Dep</span>()</span><br><span class="line"></span><br><span class="line">  <span class="title class_">Object</span>.<span class="title function_">defineProperty</span>(obj, key, &#123;</span><br><span class="line">    <span class="attr">enumerable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">configurable</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">get</span>: <span class="keyword">function</span> <span class="title function_">reactiveGetter</span> (<span class="params"></span>) &#123;</span><br><span class="line">      <span class="comment">// ....</span></span><br><span class="line">      dep.<span class="title function_">depend</span>()</span><br><span class="line">      <span class="keyword">return</span> value</span><br><span class="line">      <span class="comment">// ....</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">set</span>: <span class="keyword">function</span> <span class="title function_">reactiveSetter</span> (<span class="params">newVal</span>) &#123;</span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line">      val = newVal</span><br><span class="line">      dep.<span class="title function_">notify</span>()</span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -368,16 +351,6 @@
         <a href="https://github.com/Yin-Hongwei/hexo-theme-Yin" target="_blank" rel="noopener noreferrer">hexo-theme-Yin</a>
       </p>
     
-    
-      <div class="busuanzi">
-  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-  
-    
-      <span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span></span>
-    
-  
-</div>
-
     
   </div>
 </footer>

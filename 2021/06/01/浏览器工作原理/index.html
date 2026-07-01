@@ -35,7 +35,7 @@
 <meta property="article:author" content="Yin-Hongwei">
 <meta property="article:published_time" content="2021-06-01T14:00:00.000Z">
 
-<meta property="article:modified_time" content="2022-03-14T09:20:08.000Z">
+<meta property="article:modified_time" content="2026-07-01T20:04:44.904Z">
 
 
 
@@ -61,7 +61,7 @@
   "description": "浏览器工作原理",
   "image": [&#34;https://static001.geekbang.org/resource/image/34/5a/34231687752c11173b7776ba5f4a0e5a.png&#34;],
   "datePublished": "2021-06-01T14:00:00.000Z",
-  "dateModified": "2022-03-14T09:20:08.000Z",
+  "dateModified": "2026-07-01T20:04:44.904Z",
   "author": {
     "@type": "Person",
     "name": "Yin-Hongwei"
@@ -82,22 +82,6 @@
 
 </script>
 
-
-
-
-
-
-
-<script>
-  var _hmt = _hmt || [];
-  (function() {
-    var hm = document.createElement('script');
-    hm.src = 'https://hm.baidu.com/hm.js?b81c2b682a701ca13dc77e03ac709e1a';
-    hm.async = true;
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(hm, s);
-  })();
-</script>
 
 
 
@@ -326,7 +310,7 @@
 <h3 id="1、词法分析-1"><a href="#1、词法分析-1" class="headerlink" title="1、词法分析"></a>1、词法分析</h3><p>WebKit 词法分析使用  <a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/Flex_lexical_analyser">Flex</a> 将字符流解析成词（token）。</p>
 <h3 id="2、语法分析（构建CSSOM树）"><a href="#2、语法分析（构建CSSOM树）" class="headerlink" title="2、语法分析（构建CSSOM树）"></a>2、语法分析（构建CSSOM树）</h3><p>WebKit 语法分析使用 <a target="_blank" rel="noopener" href="http://www.gnu.org/software/bison/">Bison</a> 解析器生成器，通过 CSS 语法文件自动创建解析器。解析器根据词（token）解析成 <strong>StyleSheet 对象</strong>，且每个对象都包含一个样式表里的多个 CSS 规则，一个 CSS 规则对象包含一个选择器和一个属性集。</p>
 <p>根据 <strong>document.styleSheets</strong> 拿到如下的 CSS 规则。</p>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gr0nbw640wj31i20pe7cl.jpg" class="lazy-img" loading="lazy" decoding="async"></p>
+<p><img src="/2021/06/01/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/008i3skNgy1gr0nbw640wj31i20pe7cl.jpg" class="lazy-img" loading="lazy" decoding="async"></p>
 <h3 id="3、生成哈希表-map"><a href="#3、生成哈希表-map" class="headerlink" title="3、生成哈希表 map"></a>3、生成哈希表 map</h3><p>把生成的 CSS 规则集根据最右边的 selector 类型（id、class、标签、伪类选择器）放到四个类型的哈希 map 中，这样做的目的是为了在比较的时候能够很快地取出匹配第一个 selector 的所有规则。然后每条规则再检查它的下一个 selector 是否匹配当前元素。</p>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 哈希 map 类型</span></span><br><span class="line"><span class="title class_">CompactRuleMap</span> m_idRules;</span><br><span class="line"><span class="title class_">CompactRuleMap</span> m_classRules;</span><br><span class="line"><span class="title class_">CompactRuleMap</span> m_tagRules;</span><br><span class="line"><span class="title class_">CompactRuleMap</span> m_shadowPseudoElementRules;</span><br></pre></td></tr></table></figure>
 
@@ -460,16 +444,6 @@
         <a href="https://github.com/Yin-Hongwei/hexo-theme-Yin" target="_blank" rel="noopener noreferrer">hexo-theme-Yin</a>
       </p>
     
-    
-      <div class="busuanzi">
-  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-  
-    
-      <span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span></span>
-    
-  
-</div>
-
     
   </div>
 </footer>
