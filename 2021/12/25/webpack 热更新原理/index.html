@@ -35,7 +35,7 @@
 <meta property="article:author" content="Yin-Hongwei">
 <meta property="article:published_time" content="2021-12-25T14:00:00.000Z">
 
-<meta property="article:modified_time" content="2026-07-01T20:04:44.360Z">
+<meta property="article:modified_time" content="2026-07-02T02:54:38.259Z">
 
 
 
@@ -61,7 +61,7 @@
   "description": "webpack 热更新原理",
   "image": [&#34;http://Yin-Hongwei.github.io/2021/12/25/webpack%20%E7%83%AD%E6%9B%B4%E6%96%B0%E5%8E%9F%E7%90%86/e6c9d24ely1h6htwhrq36j217206gt9s.jpg&#34;],
   "datePublished": "2021-12-25T14:00:00.000Z",
-  "dateModified": "2026-07-01T20:04:44.360Z",
+  "dateModified": "2026-07-02T02:54:38.259Z",
   "author": {
     "@type": "Person",
     "name": "Yin-Hongwei"
@@ -101,6 +101,13 @@
   })()
 </script>
 
+<script>
+  (function () {
+    if (location.hash === '#more') {
+      history.replaceState(null, '', location.pathname + location.search)
+    }
+  })()
+</script>
 <link rel="icon" href="/img/favicon.ico">
 
   
@@ -158,11 +165,18 @@
         <header id="page-header" class="moments-profile-header">
   <span class="header-brand">
     <a id="site-name" href="/">Yin-Hongwei</a>
+    <a class="header-brand-avatar" href="/" aria-label="Yin-Hongwei">
+      <img src="/img/avatar.jpg" alt="Yin-Hongwei" class="lazy-img" loading="eager" decoding="async">
+    </a>
   </span>
   
     <span class="header-post-title">webpack 热更新原理</span>
   
   <div class="header-actions">
+    
+      <button type="button" id="dark-mode-toggle" class="site-page social-icon dark-mode-toggle" aria-label="切换暗色模式" aria-pressed="false">
+        <i class="fa fa-moon-o" aria-hidden="true"></i>
+      </button>
     
     
     
@@ -260,13 +274,13 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> webpack-hmr-demo</span><br><span class="line"><span class="built_in">cd</span> webpack-hmr-demo</span><br></pre></td></tr></table></figure>
 
 <p> 项目结构</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.</span><br><span class="line">├── index.html</span><br><span class="line">└── src</span><br><span class="line">    ├── App.vue</span><br><span class="line">    ├── assets</span><br><span class="line">    │   ├── css</span><br><span class="line">    │   │   └── index.css</span><br><span class="line">    │   └── js</span><br><span class="line">    │       └── index.js</span><br><span class="line">    └── main.js</span><br></pre></td></tr></table></figure>
+<figure class="highlight tree"><table><tr><td class="code"><pre><span class="line">.</span><br><span class="line"><span class="keyword">├──</span> <span class="string">index.html</span></span><br><span class="line"><span class="keyword">└──</span> <span class="title">src</span></span><br><span class="line">    <span class="keyword">├──</span> <span class="string">App.vue</span></span><br><span class="line">    <span class="keyword">├──</span> <span class="title">assets</span></span><br><span class="line">    <span class="keyword">│</span>   <span class="keyword">├──</span> <span class="title">css</span></span><br><span class="line">    <span class="keyword">│</span>   <span class="keyword">│</span>   <span class="keyword">└──</span> <span class="string">index.css</span></span><br><span class="line">    <span class="keyword">│</span>   <span class="keyword">└──</span> <span class="title">js</span></span><br><span class="line">    <span class="keyword">│</span>       <span class="keyword">└──</span> <span class="string">index.js</span></span><br><span class="line">    <span class="keyword">└──</span> <span class="string">main.js</span></span><br></pre></td></tr></table></figure>
 
 <p>main.js</p>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&quot;vue&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">App</span> <span class="keyword">from</span> <span class="string">&quot;./App.vue&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;./assets/css/index.css&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">createApp</span>(<span class="title class_">App</span>);</span><br><span class="line">app.<span class="title function_">mount</span>(<span class="string">&quot;#app&quot;</span>);</span><br></pre></td></tr></table></figure>
 
 <p>App.vue</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">&lt;div&gt;&#123;&#123; msg &#125;&#125;&lt;/div&gt;</span><br><span class="line">&lt;input type=&quot;text&quot; /&gt;</span><br><span class="line">&lt;button @click=&quot;handleClick&quot;&gt;点击&lt;/button&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">  import &#123; defineComponent, ref &#125; from &quot;vue&quot;;</span><br><span class="line">  </span><br><span class="line">  import &#123; modification &#125; from &quot;./assets/js/index&quot;;</span><br><span class="line">  </span><br><span class="line">  export default defineComponent(&#123;</span><br><span class="line">    name: &quot;App&quot;,</span><br><span class="line">    setup() &#123;</span><br><span class="line">      const msg = ref(&quot;hello world&quot;);</span><br><span class="line">      </span><br><span class="line">      function handleClick() &#123;</span><br><span class="line">        msg.value = modification(msg.value);</span><br><span class="line">      &#125;</span><br><span class="line">      </span><br><span class="line">      return &#123;</span><br><span class="line">        msg,</span><br><span class="line">        handleClick,</span><br><span class="line">      &#125;;</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;);</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight vue"><table><tr><td class="code"><pre><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>&#123;&#123; msg &#125;&#125;<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">button</span> @<span class="attr">click</span>=<span class="string">&quot;handleClick&quot;</span>&gt;</span>点击<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">import</span> &#123; defineComponent, ref &#125; <span class="keyword">from</span> <span class="string">&quot;vue&quot;</span>;</span></span><br><span class="line"><span class="language-javascript">  </span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">import</span> &#123; modification &#125; <span class="keyword">from</span> <span class="string">&quot;./assets/js/index&quot;</span>;</span></span><br><span class="line"><span class="language-javascript">  </span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">export</span> <span class="keyword">default</span> <span class="title function_">defineComponent</span>(&#123;</span></span><br><span class="line"><span class="language-javascript">    <span class="attr">name</span>: <span class="string">&quot;App&quot;</span>,</span></span><br><span class="line"><span class="language-javascript">    <span class="title function_">setup</span>(<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">const</span> msg = <span class="title function_">ref</span>(<span class="string">&quot;hello world&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">      </span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">function</span> <span class="title function_">handleClick</span>(<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">        msg.<span class="property">value</span> = <span class="title function_">modification</span>(msg.<span class="property">value</span>);</span></span><br><span class="line"><span class="language-javascript">      &#125;</span></span><br><span class="line"><span class="language-javascript">      </span></span><br><span class="line"><span class="language-javascript">      <span class="keyword">return</span> &#123;</span></span><br><span class="line"><span class="language-javascript">        msg,</span></span><br><span class="line"><span class="language-javascript">        handleClick,</span></span><br><span class="line"><span class="language-javascript">      &#125;;</span></span><br><span class="line"><span class="language-javascript">    &#125;,</span></span><br><span class="line"><span class="language-javascript">  &#125;);</span></span><br><span class="line"><span class="language-javascript"></span><span class="language-xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
 
 <p>assets&#x2F;js&#x2F;index.js</p>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">modification</span>(<span class="params">str</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">`<span class="subst">$&#123;str&#125;</span>!!!`</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -275,7 +289,7 @@
 <figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-id">#app</span> &#123;</span><br><span class="line">  <span class="attribute">font-size</span>: <span class="number">25px</span>;</span><br><span class="line">  <span class="attribute">font-weight</span>: <span class="number">600</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>之后在 index.html 中引入 main.js 文件，理想状态下，通过浏览器应该是能直接访问我们写的页面的，但是通过浏览器打开后，会发现报如下错误：</p>
-<p><img src="/2021/12/25/webpack%20%E7%83%AD%E6%9B%B4%E6%96%B0%E5%8E%9F%E7%90%86/e6c9d24ely1h6htwhrq36j217206gt9s.jpg" class="lazy-img" loading="eager" decoding="async"></p>
+<p><img src="/2021/12/25/webpack%20%E7%83%AD%E6%9B%B4%E6%96%B0%E5%8E%9F%E7%90%86/e6c9d24ely1h6htwhrq36j217206gt9s.jpg" class="lazy-img" loading="lazy" decoding="async"></p>
 <h4 id="1-2、问题分析"><a href="#1-2、问题分析" class="headerlink" title="1.2、问题分析"></a>1.2、问题分析</h4><p>JavaScript 有两种源文件，一种是脚本，另一种是模块。二者的区别是脚本只有语句，模块除了语句，还有 import 声明或 export 声明。</p>
 <p>main.js 文件属于模块，而 script 标签的 type 属性默认是 text&#x2F;javascript ，所以浏览器默认会将它作为脚本进行解析，所以此处需要把 type 修改为 module ，将 main.js 作为模块引入。</p>
 <p>但是修改后依然报错。</p>

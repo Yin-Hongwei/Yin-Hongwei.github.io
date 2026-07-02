@@ -101,6 +101,13 @@
   })()
 </script>
 
+<script>
+  (function () {
+    if (location.hash === '#more') {
+      history.replaceState(null, '', location.pathname + location.search)
+    }
+  })()
+</script>
 <link rel="icon" href="/img/favicon.ico">
 
   
@@ -158,11 +165,18 @@
         <header id="page-header" class="moments-profile-header">
   <span class="header-brand">
     <a id="site-name" href="/">Yin-Hongwei</a>
+    <a class="header-brand-avatar" href="/" aria-label="Yin-Hongwei">
+      <img src="/img/avatar.jpg" alt="Yin-Hongwei" class="lazy-img" loading="eager" decoding="async">
+    </a>
   </span>
   
     <span class="header-post-title">设计作品</span>
   
   <div class="header-actions">
+    
+      <button type="button" id="dark-mode-toggle" class="site-page social-icon dark-mode-toggle" aria-label="切换暗色模式" aria-pressed="false">
+        <i class="fa fa-moon-o" aria-hidden="true"></i>
+      </button>
     
     
     
@@ -254,7 +268,7 @@
 
 <h2 id="PhotoShop"><a href="#PhotoShop" class="headerlink" title="PhotoShop"></a>PhotoShop</h2><div class="post-gallery">
 
-<p><img src="/2018/04/02/%E8%AE%BE%E8%AE%A1%E4%BD%9C%E5%93%81/00831rSTly1gda2q68cgqj30u00gv75q.jpg" class="lazy-img" loading="eager" decoding="async"></p>
+<p><img src="/2018/04/02/%E8%AE%BE%E8%AE%A1%E4%BD%9C%E5%93%81/00831rSTly1gda2q68cgqj30u00gv75q.jpg" class="lazy-img" loading="lazy" decoding="async"></p>
 <p><img src="/2018/04/02/%E8%AE%BE%E8%AE%A1%E4%BD%9C%E5%93%81/00831rSTly1gda2ojuyd6j31bs0u077p.jpg" class="lazy-img" loading="lazy" decoding="async"></p>
 </div>
 

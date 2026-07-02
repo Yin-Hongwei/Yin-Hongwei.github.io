@@ -101,6 +101,13 @@
   })()
 </script>
 
+<script>
+  (function () {
+    if (location.hash === '#more') {
+      history.replaceState(null, '', location.pathname + location.search)
+    }
+  })()
+</script>
 <link rel="icon" href="/img/favicon.ico">
 
   
@@ -158,11 +165,18 @@
         <header id="page-header" class="moments-profile-header">
   <span class="header-brand">
     <a id="site-name" href="/">Yin-Hongwei</a>
+    <a class="header-brand-avatar" href="/" aria-label="Yin-Hongwei">
+      <img src="/img/avatar.jpg" alt="Yin-Hongwei" class="lazy-img" loading="eager" decoding="async">
+    </a>
   </span>
   
     <span class="header-post-title">浏览器工作原理</span>
   
   <div class="header-actions">
+    
+      <button type="button" id="dark-mode-toggle" class="site-page social-icon dark-mode-toggle" aria-label="切换暗色模式" aria-pressed="false">
+        <i class="fa fa-moon-o" aria-hidden="true"></i>
+      </button>
     
     
     
@@ -264,7 +278,7 @@
 <p>浏览器向服务器发送 HTTP 请求报文。</p>
 <p>服务器接受请求并处理完后返回一个 HTTP 响应报文。</p>
 <p>浏览器接收 HTTP 响应后，浏览器通过四次挥手和服务器断开连接。</p>
-<h2 id="三、解析-HTML"><a href="#三、解析-HTML" class="headerlink" title="三、解析 HTML"></a>三、解析 HTML</h2><p><img src="https://static001.geekbang.org/resource/image/34/5a/34231687752c11173b7776ba5f4a0e5a.png" class="lazy-img" loading="eager" decoding="async"></p>
+<h2 id="三、解析-HTML"><a href="#三、解析-HTML" class="headerlink" title="三、解析 HTML"></a>三、解析 HTML</h2><p><img src="https://static001.geekbang.org/resource/image/34/5a/34231687752c11173b7776ba5f4a0e5a.png" class="lazy-img" loading="lazy" decoding="async"></p>
 <h3 id="1、词法分析"><a href="#1、词法分析" class="headerlink" title="1、词法分析"></a>1、词法分析</h3><p>词法分析是将字符流解析成词（token）的过程。HTML 无法用常规的解析器进行解析，所以浏览器用自定义的解析器来解析 HTML，解析最常见的方案是使用状态机。</p>
 <blockquote>
 <p>词法分析器（标记生成器）：负责将输入内容分解成一个个有效标记。</p>

@@ -5,9 +5,10 @@ $(function () {
 
   function updateMomentsHeader (currentTop) {
     var coverHeight = $('.moments-cover').outerHeight() || 280
-    if (currentTop >= coverHeight) {
+    var isScrolled = $momentsHeader.hasClass('scrolled')
+    if (!isScrolled && currentTop >= coverHeight) {
       $momentsHeader.addClass('scrolled')
-    } else {
+    } else if (isScrolled && currentTop < coverHeight - 24) {
       $momentsHeader.removeClass('scrolled')
     }
   }

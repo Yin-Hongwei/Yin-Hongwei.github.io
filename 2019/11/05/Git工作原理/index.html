@@ -101,6 +101,13 @@
   })()
 </script>
 
+<script>
+  (function () {
+    if (location.hash === '#more') {
+      history.replaceState(null, '', location.pathname + location.search)
+    }
+  })()
+</script>
 <link rel="icon" href="/img/favicon.ico">
 
   
@@ -158,11 +165,18 @@
         <header id="page-header" class="moments-profile-header">
   <span class="header-brand">
     <a id="site-name" href="/">Yin-Hongwei</a>
+    <a class="header-brand-avatar" href="/" aria-label="Yin-Hongwei">
+      <img src="/img/avatar.jpg" alt="Yin-Hongwei" class="lazy-img" loading="eager" decoding="async">
+    </a>
   </span>
   
     <span class="header-post-title">Git 工作原理</span>
   
   <div class="header-actions">
+    
+      <button type="button" id="dark-mode-toggle" class="site-page social-icon dark-mode-toggle" aria-label="切换暗色模式" aria-pressed="false">
+        <i class="fa fa-moon-o" aria-hidden="true"></i>
+      </button>
     
     
     
@@ -250,7 +264,7 @@
       <article id="post">
   <h1 class="post-title">Git 工作原理</h1>
   <div id="post-content" class="article-container"><h2 id="一、Git-是什么"><a href="#一、Git-是什么" class="headerlink" title="一、Git 是什么"></a>一、Git 是什么</h2><p>Git 是目前世界上最先进的分布式版本控制工具之一，下面我将通过数据的流向来介绍它。</p>
-<p><img src="/2019/11/05/Git%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/00831rSTly1gcixg7jnb0j30wk09gdg2.jpg" class="lazy-img" loading="eager" decoding="async"></p>
+<p><img src="/2019/11/05/Git%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/00831rSTly1gcixg7jnb0j30wk09gdg2.jpg" class="lazy-img" loading="lazy" decoding="async"></p>
 <span id="more"></span>
 
 <h2 id="二、从工作区到远程仓库"><a href="#二、从工作区到远程仓库" class="headerlink" title="二、从工作区到远程仓库"></a>二、从工作区到远程仓库</h2><h3 id="1、Workspace（工作区）"><a href="#1、Workspace（工作区）" class="headerlink" title="1、Workspace（工作区）"></a>1、Workspace（工作区）</h3><p>如果要对项目进行版本管理，在开始一个工程前，先执行 <code>git init</code> 命令来对工程进行初始化。 </p>

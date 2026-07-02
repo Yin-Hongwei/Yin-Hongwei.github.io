@@ -1,4 +1,15 @@
+function resetMoreHashScroll () {
+  if (window.location.hash === '#more') {
+    if (window.history.replaceState) {
+      window.history.replaceState(null, '', window.location.pathname + window.location.search)
+    }
+    window.scrollTo(0, 0)
+  }
+}
+
 $(function () {
+  resetMoreHashScroll()
+
   $('.layout')
     .velocity('stop')
     .velocity('transition.slideUpIn', {
@@ -14,3 +25,5 @@ $(function () {
       easing: 'easeOutQuart'
     })
 })
+
+window.addEventListener('load', resetMoreHashScroll)

@@ -103,6 +103,13 @@
   })()
 </script>
 
+<script>
+  (function () {
+    if (location.hash === '#more') {
+      history.replaceState(null, '', location.pathname + location.search)
+    }
+  })()
+</script>
 <link rel="icon" href="/img/favicon.ico">
 
   
@@ -160,11 +167,18 @@
         <header id="page-header" class="moments-profile-header">
   <span class="header-brand">
     <a id="site-name" href="/">Yin-Hongwei</a>
+    <a class="header-brand-avatar" href="/" aria-label="Yin-Hongwei">
+      <img src="/img/avatar.jpg" alt="Yin-Hongwei" class="lazy-img" loading="eager" decoding="async">
+    </a>
   </span>
   
     <span class="header-post-title">Vue + SpringBoot + MyBatis 音乐网站</span>
   
   <div class="header-actions">
+    
+      <button type="button" id="dark-mode-toggle" class="site-page social-icon dark-mode-toggle" aria-label="切换暗色模式" aria-pressed="false">
+        <i class="fa fa-moon-o" aria-hidden="true"></i>
+      </button>
     
     
     
@@ -264,7 +278,7 @@
 <p>IDE：IntelliJ IDEA 2018 &#x2F; VSCode</p>
 <br/>
 
-<h2 id="三、后端项目构建"><a href="#三、后端项目构建" class="headerlink" title="三、后端项目构建"></a>三、后端项目构建</h2><h3 id="1、创建数据库表"><a href="#1、创建数据库表" class="headerlink" title="1、创建数据库表"></a>1、创建数据库表</h3><p><img src="/2019/03/04/music/00831rSTly1gcn0yy1tccj32bf0u01kx.jpg" class="lazy-img" loading="eager" decoding="async"></p>
+<h2 id="三、后端项目构建"><a href="#三、后端项目构建" class="headerlink" title="三、后端项目构建"></a>三、后端项目构建</h2><h3 id="1、创建数据库表"><a href="#1、创建数据库表" class="headerlink" title="1、创建数据库表"></a>1、创建数据库表</h3><p><img src="/2019/03/04/music/00831rSTly1gcn0yy1tccj32bf0u01kx.jpg" class="lazy-img" loading="lazy" decoding="async"></p>
 <h3 id="2、创建项目"><a href="#2、创建项目" class="headerlink" title="2、创建项目"></a>2、创建项目</h3><p>打开 idea，新建一个项目，在 new 一个新项目的时候，选择 <strong>Spring Initializr</strong>，在选择项目依赖的时候勾选 <strong>web</strong>下的 Spring Web Starter 和 <strong>SQL</strong>下的 MySQL Driver 和 MyBatis Framework ，然后一直继续后会得到如下结构（总体分三层）。</p>
 <p><img src="/2019/03/04/music/00831rSTly1gcn02rv93zj31c00u01kx.jpg" class="lazy-img" loading="lazy" decoding="async"></p>
 <h3 id="3、配置文件"><a href="#3、配置文件" class="headerlink" title="3、配置文件"></a>3、配置文件</h3><h4 id="1）application-properties"><a href="#1）application-properties" class="headerlink" title="1）application.properties"></a>1）application.properties</h4><p>配置 <strong>application.properties</strong> 文件，用于连接数据库（代码见项目源码）。</p>
