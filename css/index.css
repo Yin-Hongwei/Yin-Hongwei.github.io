@@ -3116,6 +3116,27 @@ body.post-page #content-inner.layout {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.about-wechat-panel .about-wechat-banner {
+  padding: 0 12px 16px;
+}
+.about-wechat-panel .about-wechat-banner img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  border-radius: 3px;
+  background: #f2f2f2;
+}
+.about-wechat-panel .about-wechat-hint {
+  margin: 10px 0 0;
+  color: #b2b2b2;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+}
+.about-wechat-panel:not(:has(.about-panel-title)) .about-wechat-banner {
+  padding-top: 14px;
+}
 @media screen and (max-width: 768px) {
   .about-signature-strip {
     padding: 2px 12px 10px;
@@ -3167,6 +3188,9 @@ body.post-page #content-inner.layout {
   .about-cell-link-text,
   .about-cell-copy-text {
     max-width: 8rem;
+  }
+  .about-wechat-panel .about-wechat-banner {
+    padding: 0 8px 12px;
   }
 }
 .moments-archive-content {
@@ -3949,6 +3973,12 @@ html[data-theme="dark"] .about-cell-value .fa-angle-right {
 html[data-theme="dark"] .about-photo-cell,
 html[data-theme="dark"] .about-photo-grid[data-count="1"] .about-photo-link img {
   background: #2a2a2a;
+}
+html[data-theme="dark"] .about-wechat-panel .about-wechat-banner img {
+  background: #2a2a2a;
+}
+html[data-theme="dark"] .about-wechat-panel .about-wechat-hint {
+  color: rgba(255,255,255,0.3);
 }
 html[data-theme="dark"] .archive-summary {
   color: rgba(255,255,255,0.3);
