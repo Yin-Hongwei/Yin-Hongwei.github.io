@@ -104,14 +104,13 @@
   
     
     
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
     
   
 
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
-  <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script>
+
+  <link rel="preload" as="image" href="/img/bg.jpg" fetchpriority="high">
 
 <script>
   var GLOBAL_CONFIG = {
@@ -156,7 +155,7 @@
   <span class="header-brand">
     <a id="site-name" href="/">Yin-Hongwei</a>
     <a class="header-brand-avatar" href="/" aria-label="Yin-Hongwei">
-      <img src="/img/avatar.jpg" alt="Yin-Hongwei" class="lazy-img" loading="eager" decoding="async">
+      <img src="/img/avatar.jpg" alt="Yin-Hongwei" decoding="async" width="32" height="32" class="lazy-img" loading="eager" decoding="async">
     </a>
   </span>
   
@@ -231,7 +230,7 @@
     <div class="moments-profile-bottom-inner">
       <div class="moments-profile-name">Yin-Hongwei</div>
       <a class="moments-profile-avatar" href="/about" aria-label="Yin-Hongwei">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" class="lazy-img" loading="lazy" decoding="async">
+        <img src="/img/avatar.jpg" alt="Yin-Hongwei" fetchpriority="high" decoding="async" width="68" height="68" class="lazy-img" loading="lazy" decoding="async">
       </a>
     </div>
   </div>
@@ -247,7 +246,7 @@
     
     <div class="moments-item">
       <a class="moments-avatar" href="/about" aria-hidden="true" tabindex="-1">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" class="lazy-img" loading="lazy" decoding="async">
+        <img src="/img/avatar.jpg" alt="Yin-Hongwei" loading="lazy" decoding="async" width="40" height="40">
       </a>
       <div class="moments-body">
         <div class="moments-header">
@@ -287,7 +286,7 @@
     
     <div class="moments-item">
       <a class="moments-avatar" href="/about" aria-hidden="true" tabindex="-1">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" class="lazy-img" loading="lazy" decoding="async">
+        <img src="/img/avatar.jpg" alt="Yin-Hongwei" loading="lazy" decoding="async" width="40" height="40">
       </a>
       <div class="moments-body">
         <div class="moments-header">
@@ -326,7 +325,7 @@
     
     <div class="moments-item">
       <a class="moments-avatar" href="/about" aria-hidden="true" tabindex="-1">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" class="lazy-img" loading="lazy" decoding="async">
+        <img src="/img/avatar.jpg" alt="Yin-Hongwei" loading="lazy" decoding="async" width="40" height="40">
       </a>
       <div class="moments-body">
         <div class="moments-header">
@@ -365,7 +364,7 @@
     
     <div class="moments-item">
       <a class="moments-avatar" href="/about" aria-hidden="true" tabindex="-1">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" class="lazy-img" loading="lazy" decoding="async">
+        <img src="/img/avatar.jpg" alt="Yin-Hongwei" loading="lazy" decoding="async" width="40" height="40">
       </a>
       <div class="moments-body">
         <div class="moments-header">
@@ -404,7 +403,7 @@
     
     <div class="moments-item">
       <a class="moments-avatar" href="/about" aria-hidden="true" tabindex="-1">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" class="lazy-img" loading="lazy" decoding="async">
+        <img src="/img/avatar.jpg" alt="Yin-Hongwei" loading="lazy" decoding="async" width="40" height="40">
       </a>
       <div class="moments-body">
         <div class="moments-header">
@@ -443,7 +442,7 @@
     
     <div class="moments-item">
       <a class="moments-avatar" href="/about" aria-hidden="true" tabindex="-1">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" class="lazy-img" loading="lazy" decoding="async">
+        <img src="/img/avatar.jpg" alt="Yin-Hongwei" loading="lazy" decoding="async" width="40" height="40">
       </a>
       <div class="moments-body">
         <div class="moments-header">
@@ -483,7 +482,7 @@
     
     <div class="moments-item">
       <a class="moments-avatar" href="/about" aria-hidden="true" tabindex="-1">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" class="lazy-img" loading="lazy" decoding="async">
+        <img src="/img/avatar.jpg" alt="Yin-Hongwei" loading="lazy" decoding="async" width="40" height="40">
       </a>
       <div class="moments-body">
         <div class="moments-header">
@@ -522,7 +521,7 @@
     
     <div class="moments-item">
       <a class="moments-avatar" href="/about" aria-hidden="true" tabindex="-1">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" class="lazy-img" loading="lazy" decoding="async">
+        <img src="/img/avatar.jpg" alt="Yin-Hongwei" loading="lazy" decoding="async" width="40" height="40">
       </a>
       <div class="moments-body">
         <div class="moments-header">
@@ -532,8 +531,9 @@
         <div class="moments-content">
           <a class="moments-title" href="/2019/03/04/music/">Vue + SpringBoot + MyBatis 音乐网站</a>
           
-            <div class="content"><h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><p>本文旨在对项目的开发设计提供一个思路。了解了具体实现的来龙去脉，上手自己做或者做其他项目就容易得多了。总的来说要知道数据是怎么从数据库一步步跑到前端页面的，当知道了整个的流程再去处理中间的细节，接下来我们就开始吧。</p>
-<p>这是我项目的 <strong><a target="_blank" rel="noopener" href="https://github.com/Yin-Hongwei/music-website">地址</a></strong>，可以先预览最后的效果图。</p></div>
+            <div class="content"><h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><p>本文梳理音乐网站从设计到落地的完整思路，重点讲清<strong>数据如何从数据库一步步流到前端页面</strong>。先建立整体流程感，再逐个击破接口、组件等细节——无论是照着做一遍，还是迁移到其他项目，都会顺手得多。</p>
+<p>项目源码：<a target="_blank" rel="noopener" href="https://github.com/Yin-Hongwei/music-website">github.com&#x2F;Yin-Hongwei&#x2F;music-website</a></p>
+<p><img src="/2019/03/04/music/007mxWTUgy1icr7mwfp2sj32c00ikqv6.jpg" alt="音乐网站效果预览" class="lazy-img" loading="lazy" decoding="async"></p></div>
             <a class="moments-more" href="/2019/03/04/music/">全文</a>
           
         </div>
@@ -562,7 +562,7 @@
     
     <div class="moments-item">
       <a class="moments-avatar" href="/about" aria-hidden="true" tabindex="-1">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" class="lazy-img" loading="lazy" decoding="async">
+        <img src="/img/avatar.jpg" alt="Yin-Hongwei" loading="lazy" decoding="async" width="40" height="40">
       </a>
       <div class="moments-body">
         <div class="moments-header">
@@ -601,7 +601,7 @@
     
     <div class="moments-item">
       <a class="moments-avatar" href="/about" aria-hidden="true" tabindex="-1">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" class="lazy-img" loading="lazy" decoding="async">
+        <img src="/img/avatar.jpg" alt="Yin-Hongwei" loading="lazy" decoding="async" width="40" height="40">
       </a>
       <div class="moments-body">
         <div class="moments-header">
@@ -640,7 +640,7 @@
     
     <div class="moments-item">
       <a class="moments-avatar" href="/about" aria-hidden="true" tabindex="-1">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" class="lazy-img" loading="lazy" decoding="async">
+        <img src="/img/avatar.jpg" alt="Yin-Hongwei" loading="lazy" decoding="async" width="40" height="40">
       </a>
       <div class="moments-body">
         <div class="moments-header">
@@ -679,7 +679,7 @@
     
     <div class="moments-item">
       <a class="moments-avatar" href="/about" aria-hidden="true" tabindex="-1">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" class="lazy-img" loading="lazy" decoding="async">
+        <img src="/img/avatar.jpg" alt="Yin-Hongwei" loading="lazy" decoding="async" width="40" height="40">
       </a>
       <div class="moments-body">
         <div class="moments-header">
@@ -689,7 +689,7 @@
         <div class="moments-content">
           <a class="moments-title" href="/2018/04/02/%E8%AE%BE%E8%AE%A1%E4%BD%9C%E5%93%81/">设计作品</a>
           
-            <div class="content"><p>大学时期的部分设计作品，做个纪念。</p>
+            <div class="content"><p>以前部分设计作品，做个纪念。</p>
 <section class="post-gallery-section">
 
 <h2 id="PhotoShop"><a href="#PhotoShop" class="headerlink" title="PhotoShop"></a>PhotoShop</h2><div class="post-gallery">
@@ -772,30 +772,13 @@
 
   <i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i>
   
-    
-    
       <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-    
   
-    
-    
-      <script src="https://cdn.jsdelivr.net/npm/animejs@latest/lib/anime.min.js"></script>
-    
-  
-    
-    
       <script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script>
-    
   
-    
-    
       <script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script>
-    
   
-    
-    
       <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
-    
   
   
   
@@ -805,27 +788,21 @@
     <script src="/js/search/local-search.js" defer></script>
   
   
-    
-      <script src="/js/utils.js" defer></script>
-    
-      <script src="/js/transition.js" defer></script>
-    
-      <script src="/js/moments-grid.js" defer></script>
-    
-      <script src="/js/fancybox.js" defer></script>
-    
-      <script src="/js/menu.js" defer></script>
-    
-      <script src="/js/sidebar.js" defer></script>
-    
-      <script src="/js/scroll.js" defer></script>
-    
-      <script src="/js/copy.js" defer></script>
-    
-      <script src="/js/lazyload.js" defer></script>
-    
-      <script src="/js/dark-mode.js" defer></script>
-    
+    <script src="/js/utils.js" defer></script>
+  
+    <script src="/js/transition.js" defer></script>
+  
+    <script src="/js/menu.js" defer></script>
+  
+    <script src="/js/scroll.js" defer></script>
+  
+    <script src="/js/moments-grid.js" defer></script>
+  
+    <script src="/js/fancybox.js" defer></script>
+  
+    <script src="/js/lazyload.js" defer></script>
+  
+    <script src="/js/dark-mode.js" defer></script>
   
 </body>
 </html>

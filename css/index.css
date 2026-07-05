@@ -673,7 +673,9 @@ table {
   padding-left: 1.25em;
 }
 #content-inner .img-alt {
+  text-align: center;
   text-decoration: none;
+  border-bottom: none;
 }
 body.moments-home,
 body.moments-about,
@@ -1862,7 +1864,10 @@ body.post-page #content-inner.layout {
 #post-content.article-container h3 {
   font-size: 1.125em;
 }
-#post-content.article-container h4,
+#post-content.article-container h4 {
+  font-size: 1.0625em;
+  color: #4c4948;
+}
 #post-content.article-container h5,
 #post-content.article-container h6 {
   font-size: 1em;
@@ -1887,26 +1892,6 @@ body.post-page #content-inner.layout {
 #post-content.article-container cite {
   font-style: italic;
   color: #888;
-}
-#post-content.article-container ul,
-#post-content.article-container ol {
-  margin: 0 0 1.25em;
-  padding: 0;
-}
-#post-content.article-container ul ul,
-#post-content.article-container ol ul {
-  padding-left: 0.75em;
-}
-#post-content.article-container ol {
-  list-style: decimal;
-  padding-left: 1.25em;
-}
-#post-content.article-container li {
-  margin: 0.35em 0;
-}
-#post-content.article-container li ul,
-#post-content.article-container li ol {
-  margin: 0.35em 0 0;
 }
 #post-content.article-container blockquote {
   margin: 1.25em 0;
@@ -1955,6 +1940,11 @@ body.post-page #content-inner.layout {
   display: inline-block;
   max-width: 100%;
   cursor: zoom-in;
+  text-decoration: none;
+  border-bottom: none;
+}
+#post-content.article-container a.fancybox:has(img):hover {
+  border-bottom: none;
 }
 #post-content.article-container a.fancybox:has(img):active img {
   opacity: 0.85;
@@ -1971,7 +1961,9 @@ body.post-page #content-inner.layout {
   color: #b2b2b2;
   font-size: 13px;
   line-height: 1.5;
-  text-align: left;
+  text-align: center;
+  text-decoration: none;
+  border-bottom: none;
 }
 #post-content.article-container .moments-img-grid {
   display: grid;
@@ -2251,6 +2243,40 @@ body.post-page #content-inner.layout {
 }
 #post-content.article-container sub {
   bottom: -0.2em;
+}
+#post #post-content.article-container ul,
+#page-content #post-content.article-container ul,
+#post #post-content.article-container ol,
+#page-content #post-content.article-container ol {
+  margin: 0 0 1.25em;
+}
+#post #post-content.article-container ul,
+#page-content #post-content.article-container ul {
+  list-style: disc outside;
+  padding-left: 1.75em;
+}
+#post #post-content.article-container ul ul,
+#page-content #post-content.article-container ul ul,
+#post #post-content.article-container ol ul,
+#page-content #post-content.article-container ol ul {
+  list-style: circle outside;
+  padding-left: 1.5em;
+}
+#post #post-content.article-container ol,
+#page-content #post-content.article-container ol {
+  list-style: decimal outside;
+  padding-left: 1.75em;
+}
+#post #post-content.article-container li,
+#page-content #post-content.article-container li {
+  margin: 0.35em 0;
+  padding-left: 0.15em;
+}
+#post #post-content.article-container li ul,
+#page-content #post-content.article-container li ul,
+#post #post-content.article-container li ol,
+#page-content #post-content.article-container li ol {
+  margin: 0.35em 0 0;
 }
 #site-social-icons {
   margin: 0 auto;
@@ -3715,6 +3741,15 @@ figure.highlight pre .addition {
 figure.highlight pre .meta {
   color: #c792ea;
 }
+figure.highlight pre .meta .keyword {
+  color: #89ddff;
+}
+figure.highlight pre .meta .string {
+  color: #c3e88d;
+}
+figure.highlight pre .symbol {
+  color: #f78c6c;
+}
 figure.highlight pre .comment {
   color: #546e7a;
 }
@@ -3755,6 +3790,11 @@ figure.highlight pre .tag {
   color: #89ddff;
 }
 figure.highlight pre .tag::selection {
+  background: rgba(128,203,196,0.125);
+  color: #eff;
+}
+figure.highlight pre .tag .name::selection,
+figure.highlight pre .tag .attr::selection {
   background: rgba(128,203,196,0.125);
   color: #eff;
 }
@@ -4033,7 +4073,9 @@ html[data-theme="dark"] #post-content.article-container h6 {
   color: rgba(255,255,255,0.8);
   border-bottom-color: rgba(255,255,255,0.08);
 }
-html[data-theme="dark"] #post-content.article-container h4,
+html[data-theme="dark"] #post-content.article-container h4 {
+  color: rgba(255,255,255,0.8);
+}
 html[data-theme="dark"] #post-content.article-container h5,
 html[data-theme="dark"] #post-content.article-container h6 {
   color: rgba(255,255,255,0.5);
