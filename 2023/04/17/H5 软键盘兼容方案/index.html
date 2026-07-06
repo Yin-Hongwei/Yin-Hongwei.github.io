@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="H5 软键盘兼容方案">
+<meta name="keywords" content="前端, 移动端, H5">
+<meta name="author" content="Yin-Hongwei">
+<meta name="copyright" content="Yin-Hongwei">
+<title>H5 软键盘兼容方案 | Yin-Hongwei</title>
+
+
+
+<meta name="robots" content="index,follow">
+
+
+<link rel="canonical" href="http://Yin-Hongwei.github.io/2023/04/17/H5%20%E8%BD%AF%E9%94%AE%E7%9B%98%E5%85%BC%E5%AE%B9%E6%96%B9%E6%A1%88/">
+
+
+<link rel="alternate" type="application/rss+xml" title="Yin-Hongwei RSS" href="/atom.xml">
+
+
+
+
+<meta property="og:locale" content="zh_CN">
+<meta property="og:site_name" content="Yin-Hongwei">
+<meta property="og:type" content="article">
+<meta property="og:title" content="H5 软键盘兼容方案 | Yin-Hongwei">
+<meta property="og:description" content="H5 软键盘兼容方案">
+<meta property="og:url" content="http://Yin-Hongwei.github.io/2023/04/17/H5%20%E8%BD%AF%E9%94%AE%E7%9B%98%E5%85%BC%E5%AE%B9%E6%96%B9%E6%A1%88/">
+<meta property="og:image" content="http://Yin-Hongwei.github.io/2023/04/17/H5%20%E8%BD%AF%E9%94%AE%E7%9B%98%E5%85%BC%E5%AE%B9%E6%96%B9%E6%A1%88/h5-keyboard-layout-ideal.png">
+
+<meta property="article:author" content="Yin-Hongwei">
+<meta property="article:published_time" content="2023-04-17T03:17:00.000Z">
+
+<meta property="article:modified_time" content="2026-07-06T09:33:02.082Z">
+
+
+
+<meta property="article:tag" content="前端, 移动端, H5">
+
+
+
+
+
+<meta name="twitter:card" content="summary_large_image">
+
+<meta name="twitter:title" content="H5 软键盘兼容方案 | Yin-Hongwei">
+<meta name="twitter:description" content="H5 软键盘兼容方案">
+<meta name="twitter:image" content="http://Yin-Hongwei.github.io/2023/04/17/H5%20%E8%BD%AF%E9%94%AE%E7%9B%98%E5%85%BC%E5%AE%B9%E6%96%B9%E6%A1%88/h5-keyboard-layout-ideal.png">
+
+
+<script type="application/ld+json">
+
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "H5 软键盘兼容方案",
+  "description": "H5 软键盘兼容方案",
+  "image": [&#34;http://Yin-Hongwei.github.io/2023/04/17/H5%20%E8%BD%AF%E9%94%AE%E7%9B%98%E5%85%BC%E5%AE%B9%E6%96%B9%E6%A1%88/h5-keyboard-layout-ideal.png&#34;],
+  "datePublished": "2023-04-17T03:17:00.000Z",
+  "dateModified": "2026-07-06T09:33:02.082Z",
+  "author": {
+    "@type": "Person",
+    "name": "Yin-Hongwei"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Yin-Hongwei",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://Yin-Hongwei.github.io/img/avatar.jpg"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://Yin-Hongwei.github.io/2023/04/17/H5%20%E8%BD%AF%E9%94%AE%E7%9B%98%E5%85%BC%E5%AE%B9%E6%96%B9%E6%A1%88/"
+  }
+}
+
+</script>
+
+
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KB1Q66TZ4T"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-KB1Q66TZ4T');
+</script>
+
+
+
+
+
+
+
+<script>
+  (function () {
+    var key = 'yin-theme-mode'
+    var mode = 'auto'
+    try {
+      mode = localStorage.getItem(key) || mode
+    } catch (err) {}
+    var dark = mode === 'dark' || (mode !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
+    document.documentElement.style.colorScheme = dark ? 'dark' : 'light'
+  })()
+</script>
+
+<script>
+  (function () {
+    if (location.hash === '#more') {
+      history.replaceState(null, '', location.pathname + location.search)
+    }
+  })()
+</script>
+<link rel="icon" href="/img/favicon.ico">
+
+  
+    <link rel="stylesheet" href="/css/index.css">
+  
+  
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    
+  
+
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+  <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script>
+
+
+<script>
+  var GLOBAL_CONFIG = {
+    root: '/',
+    hexoVersion: '8.1.2',
+    darkMode: {
+      enable: true,
+      default: 'auto',
+      labels: {
+        toggle: '切换暗色模式',
+        light: '浅色',
+        dark: '深色'
+      }
+    },
+    localSearch: {
+      path: 'search.xml',
+      languages: {
+        hits_empty: '找不到您查询的内容:${query}'
+      }
+    }
+  }
+</script>
+
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+
+
+
+
+
+<body class="post-page">
+  
+
+
+
+  <div class="moments-profile post-cover" id="nav">
+    <div class="moments-cover" style="background-image: url(/img/bg.jpg)">
+      <div class="moments-cover-content">
+        <header id="page-header" class="moments-profile-header">
+  <span class="header-brand">
+    <a class="header-logo" href="/" aria-label="Yin-Hongwei">
+      <img src="/img/avatar.jpg" alt="Yin-Hongwei" decoding="async" width="36" height="36" class="lazy-img" loading="eager" decoding="async">
+    </a>
+    <a id="site-name" href="/">Yin-Hongwei</a>
+  </span>
+  
+    <span class="header-post-title">H5 软键盘兼容方案</span>
+  
+  <div class="header-actions">
+    <div class="header-actions-main">
+      
+      
+        <nav class="menus mobile-nav-panel" id="mobile-nav-panel" aria-label="菜单" aria-hidden="true">
+          <div class="mobile-nav-panel__header">
+            <span class="mobile-nav-panel__title">菜单</span>
+          </div>
+          <div class="mobile-nav-panel__body">
+            
+              <a class="site-page social-icon search search--desktop" href="javascript:void(0);">
+                <i class="fa fa-search" aria-hidden="true"></i>
+                <span class="menu-item-label">搜索</span>
+              </a>
+            
+            
+              
+                
+                
+                
+                
+                <a class="site-page" href="/about">
+                  
+                    关于我
+                  
+                </a>
+              
+                
+                
+                
+                
+                <a class="site-page social-icon" href="https://github.com/Yin-Hongwei" target="_blank" rel="noreferrer noopener">
+                  
+                    <i class="fa fa-github" aria-hidden="true"></i>
+                    <span class="menu-item-label">GitHub</span>
+                  
+                </a>
+              
+            
+          </div>
+        </nav>
+      
+    </div>
+    <div class="header-actions-tools">
+      <button type="button" class="toggle-menu" aria-label="菜单" aria-expanded="false" aria-controls="mobile-nav-panel">
+        <span class="toggle-menu__icon" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+      
+        <button type="button" id="dark-mode-toggle" class="site-page social-icon dark-mode-toggle" aria-label="切换暗色模式" aria-pressed="false">
+          <i class="fa fa-moon-o" aria-hidden="true"></i>
+        </button>
+      
+    </div>
+  </div>
+</header>
+<div class="mobile-nav-backdrop" aria-hidden="true"></div>
+
+      </div>
+    </div>
+  </div>
+
+
+  
+    <button type="button" id="toggle-sidebar" class="sidebar-toggle" aria-label="目录" aria-expanded="false">
+      <svg class="sidebar-toggle__chevron" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
+        <path d="M10 4 L6 8 L10 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    
+<div id="sidebar" class="is-open" data-display="true">
+  
+    <div class="sidebar-toc">
+      <div class="sidebar-toc__title">目录</div>
+      <div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E7%90%86%E6%83%B3%E5%B8%83%E5%B1%80"><span class="toc-text">一、理想布局</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81iOS"><span class="toc-text">二、iOS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E4%B8%80%EF%BC%9Afixed-%E5%AE%9A%E4%BD%8D%E7%9A%84-Header-%E8%B7%9F%E7%9D%80%E9%A1%B5%E9%9D%A2%E4%B8%8A%E6%BB%91"><span class="toc-text">问题一：fixed 定位的 Header 跟着页面上滑</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%8E%B0%E8%B1%A1"><span class="toc-text">现象</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%9F%E5%9B%A0"><span class="toc-text">原因</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-text">解决方案</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E4%BA%8C%EF%BC%9AiOS-12-4-1-%E9%94%AE%E7%9B%98%E6%94%B6%E8%B5%B7%E5%90%8E%E9%A1%B5%E9%9D%A2%E4%B8%8D%E6%81%A2%E5%A4%8D"><span class="toc-text">问题二：iOS 12.4.1 键盘收起后页面不恢复</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%8E%B0%E8%B1%A1-1"><span class="toc-text">现象</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88-1"><span class="toc-text">解决方案</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81Android"><span class="toc-text">三、Android</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A3%E5%B8%B8%E6%A8%A1%E5%BC%8F"><span class="toc-text">正常模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%82%E5%B8%B8%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%8D%8E%E4%B8%BA%E7%AD%89%E6%9C%BA%E5%9E%8B%E5%B1%85%E5%A4%9A%EF%BC%89"><span class="toc-text">异常模式（华为等机型居多）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88-2"><span class="toc-text">解决方案</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%96%B9%E6%A1%88%E5%AF%B9%E6%AF%94"><span class="toc-text">四、方案对比</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E6%80%BB%E7%BB%93"><span class="toc-text">五、总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-text">参考资料</span></a></li></ol></div>
+    </div>
+  
+</div>
+
+  
+  <article id="content-outer">
+    <section id="content-inner" class="layout">
+      <article id="post">
+  <h1 class="post-title">H5 软键盘兼容方案</h1>
+  <div id="post-content" class="article-container"><p>在 App 内嵌 WebView 的聊天、评论、搜索等场景中，页面通常由三部分组成：<strong>顶部 Header（固定）</strong>、<strong>中间对话区（可滚动）</strong>、<strong>底部输入框（固定）</strong>。</p>
+<p>理想状态下，软键盘弹出时只有中间对话区被压缩，Header 始终吸顶，输入框随键盘上推。但在 iOS 和 Android 上，实际情况往往与预期不符。本文整理了实际开发中常见的兼容问题，以及对应的处理方案。</p>
+<span id="more"></span>
+
+<h2 id="一、理想布局"><a href="#一、理想布局" class="headerlink" title="一、理想布局"></a>一、理想布局</h2><img src="/2023/04/17/H5%20%E8%BD%AF%E9%94%AE%E7%9B%98%E5%85%BC%E5%AE%B9%E6%96%B9%E6%A1%88/h5-keyboard-layout-ideal.png" class=" lazy-img" title="理想的聊天页面布局" loading="lazy" decoding="async">
+
+<p>核心诉求可以概括为：<strong>键盘只影响中间内容区的高度，不改变 Header 和输入框的相对位置关系。</strong></p>
+<h2 id="二、iOS"><a href="#二、iOS" class="headerlink" title="二、iOS"></a>二、iOS</h2><h3 id="问题一：fixed-定位的-Header-跟着页面上滑"><a href="#问题一：fixed-定位的-Header-跟着页面上滑" class="headerlink" title="问题一：fixed 定位的 Header 跟着页面上滑"></a>问题一：fixed 定位的 Header 跟着页面上滑</h3><h4 id="现象"><a href="#现象" class="headerlink" title="现象"></a>现象</h4><p>输入框获得焦点后，Header 虽然设置了 <code>position: fixed</code>，但键盘弹出时仍会跟着整个页面一起滑走，无法保持吸顶。</p>
+<img src="/2023/04/17/H5%20%E8%BD%AF%E9%94%AE%E7%9B%98%E5%85%BC%E5%AE%B9%E6%96%B9%E6%A1%88/h5-keyboard-ios-problem-steps.png" class=" lazy-img" title="键盘弹出后 Header 随整页上滑，fixed 定位失效" loading="lazy" decoding="async">
+
+<h4 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h4><p>2015 年 3 月 iOS 8.2 发布后，键盘弹起时 WebView <strong>不会被压缩</strong>，而是<strong>整体被顶上去</strong>。此时 <code>fixed</code> 元素不会重新计算定位，仍保持原来的相对位置，于是跟着页面一起上移。</p>
+<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><p><strong>方案一：客户端原生 Header（推荐）</strong></p>
+<p>由客户端提供自定义 Header，或针对当前场景定制原生导航栏。原生 Header 不属于 WebView 内容，WebView 上推时它依然保持吸顶——这是从根源上规避问题的方式。</p>
+<p><strong>方案二：H5 动态修正 Header 定位</strong></p>
+<p>既然页面高度没变、只是整体上移，那么获取键盘高度后重新设置 Header 的 <code>top</code> 即可。</p>
+<p>获取键盘高度有两种方式：</p>
+<table>
+<thead>
+<tr>
+<th>方式</th>
+<th>原理</th>
+<th>局限</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>window.pageYOffset</code></td>
+<td>页面上移的距离即键盘高度</td>
+<td>通用性好</td>
+</tr>
+<tr>
+<td><code>VisualViewport</code> API</td>
+<td>用 WebView 高度减去可视区域高度</td>
+<td>iOS 13+ 才支持</td>
+</tr>
+</tbody></table>
+<p>推荐第一种方式。处理时机是输入框 <code>focus</code> 时——iOS 键盘弹出有约 300ms 延迟，需要 <code>setTimeout</code> 配合：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">isIOS</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="regexp">/iPad|iPhone|iPod/</span>.<span class="title function_">test</span>(navigator.<span class="property">userAgent</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">HEADER_SELECTOR</span> = <span class="string">&#x27;.page-header&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">fixHeaderPosition</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> header = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="variable constant_">HEADER_SELECTOR</span>);</span><br><span class="line">  <span class="keyword">if</span> (!header) <span class="keyword">return</span>;</span><br><span class="line">  header.<span class="property">style</span>.<span class="property">top</span> = <span class="string">`<span class="subst">$&#123;<span class="variable language_">window</span>.pageYOffset&#125;</span>px`</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">resetHeaderPosition</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">window</span>.<span class="title function_">scrollTo</span>(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">  <span class="keyword">const</span> header = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="variable constant_">HEADER_SELECTOR</span>);</span><br><span class="line">  <span class="keyword">if</span> (header) header.<span class="property">style</span>.<span class="property">top</span> = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 组件内</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">onInputFocus</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (!<span class="title function_">isIOS</span>()) <span class="keyword">return</span>;</span><br><span class="line">  <span class="built_in">setTimeout</span>(fixHeaderPosition, <span class="number">350</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">onInputBlur</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (!<span class="title function_">isIOS</span>()) <span class="keyword">return</span>;</span><br><span class="line">  <span class="title function_">resetHeaderPosition</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>iPad 横竖屏切换</strong></p>
+<p>iPad 翻转屏幕时，如果不重新计算 Header 定位，页面会出现错乱。监听 <code>resize</code> 让输入框失焦，聚焦时再重新计算：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">window</span>.<span class="title function_">addEventListener</span>(<span class="string">&#x27;resize&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="title function_">isIOS</span>()) &#123;</span><br><span class="line">    inputEl.<span class="title function_">blur</span>();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>参考：<a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000018959389">可能这些是你想要的 H5 软键盘兼容方案</a></p>
+<p><strong>已知缺点</strong></p>
+<p>切换键盘类型（如中英文切换）时，无法检测到键盘高度变化，页面会有轻微上下跳动。如需更平滑，可在 <code>focus</code> 期间监听页面滚动，实时更新 Header 的 <code>top</code>，<code>blur</code> 后恢复。</p>
+<p><strong>避坑：不要用 scrollTo 强拉页面</strong></p>
+<p>网上有一种做法是：键盘弹出后强制 <code>scrollTo</code> 把页面拉回来，再修改 <code>body</code> 高度：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> initialBodyHeight = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">onInputFocusBad</span>(<span class="params"></span>) &#123;</span><br><span class="line">  initialBodyHeight = <span class="variable language_">document</span>.<span class="property">body</span>.<span class="property">clientHeight</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!<span class="title function_">isIOS</span>()) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">document</span>.<span class="property">body</span>.<span class="property">scrollTop</span> = <span class="variable language_">document</span>.<span class="property">body</span>.<span class="property">scrollHeight</span>;</span><br><span class="line">    <span class="variable language_">window</span>.<span class="title function_">scrollTo</span>(<span class="number">0</span>, <span class="variable language_">document</span>.<span class="property">body</span>.<span class="property">scrollTop</span> + <span class="number">1</span>);</span><br><span class="line">    <span class="variable language_">document</span>.<span class="property">body</span>.<span class="property">scrollTop</span> &gt;= <span class="number">1</span> &amp;&amp; <span class="variable language_">window</span>.<span class="title function_">scrollTo</span>(<span class="number">0</span>, <span class="variable language_">document</span>.<span class="property">body</span>.<span class="property">scrollTop</span> - <span class="number">1</span>);</span><br><span class="line">  &#125;, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> keyboardHeight = <span class="variable language_">window</span>.<span class="property">innerHeight</span> - <span class="variable language_">window</span>.<span class="property">visualViewport</span>.<span class="property">height</span>;</span><br><span class="line">    <span class="keyword">if</span> (keyboardHeight &gt; <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="variable language_">document</span>.<span class="property">body</span>.<span class="property">style</span>.<span class="property">height</span> = <span class="string">`<span class="subst">$&#123;initialBodyHeight - keyboardHeight&#125;</span>px`</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, <span class="number">300</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">onInputBlurBad</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (!<span class="title function_">isIOS</span>()) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  <span class="variable language_">document</span>.<span class="property">body</span>.<span class="property">style</span>.<span class="property">height</span> = <span class="string">`<span class="subst">$&#123;initialBodyHeight&#125;</span>px`</span>;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> scrollTop = <span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="property">scrollTop</span> || <span class="variable language_">document</span>.<span class="property">body</span>.<span class="property">scrollTop</span> || <span class="number">0</span>;</span><br><span class="line">    <span class="variable language_">window</span>.<span class="title function_">scrollTo</span>(<span class="number">0</span>, <span class="title class_">Math</span>.<span class="title function_">max</span>(scrollTop - <span class="number">1</span>, <span class="number">0</span>));</span><br><span class="line">  &#125;, <span class="number">200</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种方式看似可行，但如果恰好在滑动页面时聚焦，<code>scrollTo</code> 会与 <code>-webkit-overflow-scrolling: touch</code> 冲突，导致滚动异常。处理滑动问题时，应尽量避开对该属性的影响——它能让滚动更流畅，建议保持开启：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">-webkit-<span class="attribute">overflow</span>-scrolling: touch;  <span class="comment">/* 手指离开后继续惯性滚动 */</span></span><br><span class="line">-webkit-<span class="attribute">overflow</span>-scrolling: auto;    <span class="comment">/* 手指离开后立即停止 */</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>方案三：H5 + 客户端 SDK</strong></p>
+<p>客户端提供 SDK，实时通知前端键盘高度变化，前端据此动态设置 <code>top</code>。精度和实时性最好，但需要客户端配合。</p>
+<h3 id="问题二：iOS-12-4-1-键盘收起后页面不恢复"><a href="#问题二：iOS-12-4-1-键盘收起后页面不恢复" class="headerlink" title="问题二：iOS 12.4.1 键盘收起后页面不恢复"></a>问题二：iOS 12.4.1 键盘收起后页面不恢复</h3><h4 id="现象-1"><a href="#现象-1" class="headerlink" title="现象"></a>现象</h4><p><code>fixed</code> 定位容器内的 <code>input</code> 聚焦时软键盘占位，失焦后键盘消失但<strong>占位未释放</strong>，导致输入框无法再次输入。</p>
+<h4 id="解决方案-1"><a href="#解决方案-1" class="headerlink" title="解决方案"></a>解决方案</h4><p>失焦时主动滚动页面，释放占位：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">window</span>.<span class="title function_">scrollTo</span>(<span class="number">0</span>, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="三、Android"><a href="#三、Android" class="headerlink" title="三、Android"></a>三、Android</h2><p>Android 不会出现 Header 不固定的问题，但键盘弹出的表现分两种模式。</p>
+<img src="/2023/04/17/H5%20%E8%BD%AF%E9%94%AE%E7%9B%98%E5%85%BC%E5%AE%B9%E6%96%B9%E6%A1%88/h5-keyboard-android-modes.png" class=" lazy-img" title="Android 键盘弹出的两种表现" loading="lazy" decoding="async">
+
+<h3 id="正常模式"><a href="#正常模式" class="headerlink" title="正常模式"></a>正常模式</h3><p>键盘弹出时 WebView 被压缩，底部输入框自然上滑——<strong>最理想的状态，无需额外处理。</strong></p>
+<h3 id="异常模式（华为等机型居多）"><a href="#异常模式（华为等机型居多）" class="headerlink" title="异常模式（华为等机型居多）"></a>异常模式（华为等机型居多）</h3><p>键盘弹出后页面<strong>毫无变化</strong>，WebView 没有被压缩，键盘直接覆盖在 H5 页面上，输入框被挡住。</p>
+<p>原因尚不明确，且因为可视区没有变化，前端也<strong>无法直接获取键盘高度</strong>。</p>
+<h3 id="解决方案-2"><a href="#解决方案-2" class="headerlink" title="解决方案"></a>解决方案</h3><p><strong>方案一：H5 按屏幕比例估算键盘高度</strong></p>
+<p>思路比较粗糙：根据不同设备的宽高比推算键盘大概高度，给一个固定值。以下系数来自常见机型的实测经验，<strong>上线前需按目标设备微调</strong>。</p>
+<ul>
+<li>监听 <code>resize</code> 无效——异常机型可视区根本不改变</li>
+<li><code>scrollIntoView</code> 也无效——系统认为屏幕大小就是可视区，不会产生滚动</li>
+</ul>
+<p>聚焦后等待 600ms，对比前后可视区高度，<strong>过滤掉正常机型</strong>（正常机型键盘弹出后可视区会减小，不需要处理）：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 宽高比下限 → 键盘高度系数（值越小，估算键盘越高）</span></span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">KEYBOARD_RATIO_MAP</span> = [</span><br><span class="line">  [<span class="number">1.9</span>, <span class="number">1.835</span>],</span><br><span class="line">  [<span class="number">1.8</span>, <span class="number">1.89</span>],</span><br><span class="line">  [<span class="number">1.7</span>, <span class="number">1.945</span>],</span><br><span class="line">  [<span class="number">1.6</span>, <span class="number">2.0</span>],</span><br><span class="line">  [<span class="number">1.5</span>, <span class="number">2.055</span>],</span><br><span class="line">  [<span class="number">1.4</span>, <span class="number">2.11</span>],</span><br><span class="line">  [<span class="number">1.3</span>, <span class="number">2.165</span>],</span><br><span class="line">  [<span class="number">1.2</span>, <span class="number">2.22</span>],</span><br><span class="line">  [<span class="number">1.1</span>, <span class="number">2.275</span>],</span><br><span class="line">  [<span class="number">1.0</span>, <span class="number">2.33</span>],</span><br><span class="line">  [<span class="number">0.9</span>, <span class="number">2.4</span>],</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">getViewportSize</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="attr">width</span>: <span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="property">clientWidth</span>,</span><br><span class="line">    <span class="attr">height</span>: <span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="property">clientHeight</span>,</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">estimateKeyboardHeight</span>(<span class="params">screenHeight, width, height</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> aspectRatio = height / width;</span><br><span class="line">  <span class="keyword">if</span> (aspectRatio &gt; <span class="number">2</span>) <span class="keyword">return</span> screenHeight / <span class="number">1.78</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> ratio = <span class="variable constant_">KEYBOARD_RATIO_MAP</span>.<span class="title function_">find</span>(<span class="function">(<span class="params">[min]</span>) =&gt;</span> aspectRatio &gt;= min)?.[<span class="number">1</span>] ?? <span class="number">2.6</span>;</span><br><span class="line">  <span class="keyword">return</span> screenHeight / ratio;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> cachedScreenHeight = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">onInputFocus</span>(<span class="params"></span>) &#123;</span><br><span class="line">  cachedScreenHeight = <span class="title function_">getViewportSize</span>().<span class="property">height</span>;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    inputEl.<span class="title function_">scrollIntoView</span>(<span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 过滤正常机型：可视区高度有变化说明 WebView 已被压缩</span></span><br><span class="line">    <span class="keyword">const</span> &#123; width, height &#125; = <span class="title function_">getViewportSize</span>();</span><br><span class="line">    <span class="keyword">if</span> (cachedScreenHeight !== height) &#123;</span><br><span class="line">      cachedScreenHeight = <span class="number">0</span>;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> inputTop = inputBarEl.<span class="title function_">getBoundingClientRect</span>().<span class="property">top</span>;</span><br><span class="line">    <span class="keyword">const</span> keyboardHeight = <span class="title function_">estimateKeyboardHeight</span>(cachedScreenHeight, width, height);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (inputTop - keyboardHeight &lt; <span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="variable language_">document</span>.<span class="property">body</span>.<span class="property">style</span>.<span class="property">height</span> = <span class="string">`<span class="subst">$&#123;cachedScreenHeight - (inputTop - keyboardHeight)&#125;</span>px`</span>;</span><br><span class="line">  &#125;, <span class="number">600</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">onInputBlur</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (cachedScreenHeight === <span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">  <span class="variable language_">document</span>.<span class="property">body</span>.<span class="property">style</span>.<span class="property">height</span> = <span class="string">`<span class="subst">$&#123;cachedScreenHeight&#125;</span>px`</span>;</span><br><span class="line">  cachedScreenHeight = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>失焦时重置页面高度即可。上面示例用 <code>inputEl</code>、<code>inputBarEl</code> 代指输入框及其容器，Vue 项目中可对应 <code>$refs.input</code>、<code>$refs.inputBar</code>。</p>
+<p><strong>缺点</strong>：实现有投机成分，不够严谨，但能兼容大多数异常机型。</p>
+<p><strong>方案二：H5 + 客户端 SDK</strong></p>
+<p>与 iOS 方案三相同，由客户端实时通知键盘高度，前端动态调整布局——最理想的长期方案。</p>
+<h2 id="四、方案对比"><a href="#四、方案对比" class="headerlink" title="四、方案对比"></a>四、方案对比</h2><table>
+<thead>
+<tr>
+<th>方案</th>
+<th>适用平台</th>
+<th>精度</th>
+<th>客户端成本</th>
+<th>推荐度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>原生 Header</td>
+<td>iOS</td>
+<td>完美</td>
+<td>中</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td>H5 修正 <code>top</code></td>
+<td>iOS</td>
+<td>较好</td>
+<td>无</td>
+<td>⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td>H5 估算键盘高度</td>
+<td>Android 异常机型</td>
+<td>一般</td>
+<td>无</td>
+<td>⭐⭐⭐</td>
+</tr>
+<tr>
+<td>客户端 SDK</td>
+<td>iOS &#x2F; Android</td>
+<td>最好</td>
+<td>高</td>
+<td>⭐⭐⭐⭐⭐</td>
+</tr>
+</tbody></table>
+<h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><p>H5 软键盘兼容没有银弹，核心思路是：</p>
+<ol>
+<li><strong>能交给客户端的尽量交给客户端</strong>——原生 Header 或键盘高度 SDK 是最稳的方案</li>
+<li><strong>iOS 的关键是补偿 <code>pageYOffset</code></strong>——键盘顶起整个页面后，用 <code>top</code> 把 fixed 元素拉回来</li>
+<li><strong>Android 异常机型只能曲线救国</strong>——按屏幕比例估算，先过滤正常机型再处理</li>
+<li><strong>避开 <code>scrollTo</code> + <code>-webkit-overflow-scrolling: touch</code> 的组合</strong>——会引发滚动冲突</li>
+</ol>
+<p>如果业务对体验要求高，建议推动客户端提供键盘高度 SDK，前端统一监听、统一适配，一劳永逸。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a target="_blank" rel="noopener" href="http://www.alloyteam.com/2020/02/14265/">AlloyTeam：移动端 H5 软键盘兼容</a></li>
+<li><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000018959389">SegmentFault：可能这些是你想要的 H5 软键盘兼容方案</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7148986270369185799">掘金：7 种解决 iOS 软键盘 fixed 吸顶失效的方案</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6961757804491178014">掘金：移动端软键盘问题及解决方法</a></li>
+</ul>
+</div>
+  
+
+  
+    <section class="post-copyright post-copyright--wechat">
+      <ul class="post-copyright__list">
+        <li>
+          <span class="post-copyright__label">作者：</span>
+          <span class="post-copyright__value">Yin-Hongwei</span>
+        </li>
+        <li>
+          <span class="post-copyright__label">链接：</span>
+          <a class="post-copyright__value post-copyright__link" href="http://Yin-Hongwei.github.io/2023/04/17/H5%20%E8%BD%AF%E9%94%AE%E7%9B%98%E5%85%BC%E5%AE%B9%E6%96%B9%E6%A1%88/">http://Yin-Hongwei.github.io/2023/04/17/H5%20%E8%BD%AF%E9%94%AE%E7%9B%98%E5%85%BC%E5%AE%B9%E6%96%B9%E6%A1%88/</a>
+        </li>
+        <li>
+          <span class="post-copyright__label">版权声明：</span>
+          
+            <a class="post-copyright__value post-copyright__link" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-NC-SA 4.0</a>
+          
+        </li>
+      </ul>
+      
+    </section>
+  
+
+
+  
+  <div class="qr-code">
+    <img class="qrcode-img lazy-img" src="/img/weixin.jpg" loading="lazy" decoding="async">
+    <div class="qrcode-desc">微信打赏</div>
+  </div>
+
+
+  
+<nav id="pagination">
+  
+    
+    
+      <div class="next-post pull-right">
+        <a href="/2021/12/25/webpack%20%E7%83%AD%E6%9B%B4%E6%96%B0%E5%8E%9F%E7%90%86/">
+          <span>webpack 热更新原理</span>
+          <i class="fa fa-chevron-right"></i>
+        </a>
+      </div>
+    
+  
+</nav>
+
+  
+  <div id="gitalk-container"></div>
+  <script>
+    var gitalk = new Gitalk({
+      clientID: 'e238e2d1f25ec6e15026',
+      clientSecret: '3c4e537d46a59d056e6c0cc478b04784defafcfb',
+      repo: 'Yin-Hongwei.github.io',
+      owner: 'Yin-Hongwei',
+      admin: 'Yin-Hongwei',
+      id: md5(window.location.pathname)
+    })
+    gitalk.render('gitalk-container')
+  </script>
+
+
+</article>
+
+    </section>
+  </article>
+  
+<footer id="footer-outer">
+  <div id="footer-inner">
+    <p class="footer-text">Copyright &copy; 2018-2026 Yin-Hongwei</p>
+    
+      <p class="footer-text">
+        <a href="https://github.com/Yin-Hongwei/hexo-theme-Yin" target="_blank" rel="noopener noreferrer">hexo-theme-Yin</a>
+      </p>
+    
+  </div>
+</footer>
+
+  
+
+  <div id="site-search" class="search-dialog">
+    <div id="site-search-title" class="search-dialog__title">搜索</div>
+    <div id="site-search-input-panel">
+      <div id="site-search-input">
+        <div class="search-box">
+          <input class="search-box--input" placeholder="搜索文章" autocomplete="off">
+        </div>
+      </div>
+    </div>
+    <div id="site-search-results">
+      <div id="site-search-hits"></div>
+      <p class="search__hint">输入关键词搜索文章</p>
+    </div>
+    <span class="search-close-button">
+      <i class="fa fa-times"></i>
+    </span>
+  </div>
+  <div class="search-mask"></div>
+
+
+  <i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i>
+  
+      <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+  
+      <script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script>
+  
+      <script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script>
+  
+      <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+  
+  
+  
+    <script src="/js/search/search-dialog.js"></script>
+  
+  
+    <script src="/js/search/local-search.js" defer></script>
+  
+  
+    <script src="/js/utils.js" defer></script>
+  
+    <script src="/js/transition.js" defer></script>
+  
+    <script src="/js/menu.js" defer></script>
+  
+    <script src="/js/scroll.js" defer></script>
+  
+    <script src="/js/moments-grid.js" defer></script>
+  
+    <script src="/js/fancybox.js" defer></script>
+  
+    <script src="/js/sidebar.js" defer></script>
+  
+    <script src="/js/copy.js" defer></script>
+  
+    <script src="/js/lazyload.js" defer></script>
+  
+    <script src="/js/dark-mode.js" defer></script>
+  
+</body>
+</html>

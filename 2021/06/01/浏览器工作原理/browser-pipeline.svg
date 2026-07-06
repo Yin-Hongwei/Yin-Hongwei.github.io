@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 920" width="720" height="920">
+  <!-- svg-source:excalidraw -->
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0 0, 10 4, 0 8" fill="#495057"/>
+    </marker>
+    <marker id="arrow-dashed" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0 0, 10 4, 0 8" fill="#868e96"/>
+    </marker>
+  </defs>
+  <rect width="100%" height="100%" fill="#ffffff"/>
+
+  <!-- 客户端 -->
+  <rect x="24" y="16" width="672" height="116" rx="10" fill="#fff0f6" stroke="#dee2e6" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="44" y="36" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#868e96">客户端（浏览器）</text>
+
+  <rect x="130" y="54" width="150" height="48" rx="8" fill="#ffc9c9" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="205" y="74" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1e1e1e">用户输入 URL</text>
+  <text x="205" y="92" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#495057">地址栏 / 点击链接</text>
+
+  <line x1="280" y1="78" x2="310" y2="78" stroke="#495057" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <rect x="310" y="54" width="280" height="48" rx="8" fill="#ffe3e3" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="450" y="74" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1e1e1e">URL 校验与解析</text>
+  <text x="450" y="92" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#495057">协议 / 主机 / 路径 · HSTS · 安全检测</text>
+
+  <!-- 网络层 -->
+  <rect x="24" y="152" width="672" height="168" rx="10" fill="#f8f9fa" stroke="#dee2e6" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="44" y="172" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#868e96">网络层</text>
+
+  <rect x="350" y="194" width="200" height="44" rx="8" fill="#a5d8ff" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="450" y="222" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1e1e1e">DNS 解析</text>
+
+  <line x1="450" y1="102" x2="450" y2="194" stroke="#495057" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="450" y="148" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#868e96">校验通过后发起请求</text>
+
+  <rect x="350" y="266" width="200" height="44" rx="8" fill="#a5d8ff" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="450" y="294" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1e1e1e">TCP / TLS / HTTP</text>
+
+  <line x1="450" y1="238" x2="450" y2="266" stroke="#495057" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- 解析层 -->
+  <rect x="24" y="340" width="672" height="324" rx="10" fill="#fff9db" stroke="#dee2e6" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="44" y="360" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#868e96">解析层</text>
+
+  <!-- 第一行：HTML + CSS 并行 -->
+  <rect x="150" y="382" width="160" height="44" rx="8" fill="#ffec99" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="230" y="410" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1e1e1e">解析 HTML</text>
+
+  <line x1="310" y1="404" x2="410" y2="404" stroke="#495057" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="360" y="396" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#868e96">并行</text>
+
+  <rect x="410" y="382" width="160" height="44" rx="8" fill="#ffec99" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="490" y="410" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1e1e1e">解析 CSS</text>
+
+  <line x1="450" y1="310" x2="230" y2="382" stroke="#495057" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- 第二行：JS（HTML 解析的中断分支） -->
+  <rect x="280" y="454" width="160" height="52" rx="8" fill="#ffd8a8" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="360" y="476" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" fill="#1e1e1e">解析 / 执行 JS</text>
+  <text x="360" y="496" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#495057">async · defer · module</text>
+
+  <!-- HTML → JS：遇到 script -->
+  <line x1="270" y1="426" x2="320" y2="454" stroke="#495057" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="248" y="444" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#e03131">遇到 script</text>
+  <text x="248" y="456" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#e03131">默认阻塞解析</text>
+
+  <!-- JS → HTML：恢复解析 -->
+  <path d="M 300 454 Q 180 440 190 404" fill="none" stroke="#868e96" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrow-dashed)"/>
+  <text x="168" y="428" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#868e96">恢复解析</text>
+
+  <!-- CSS → JS：CSS 阻塞 JS -->
+  <line x1="440" y1="426" x2="400" y2="454" stroke="#868e96" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrow-dashed)"/>
+  <text x="448" y="448" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#868e96">CSS 阻塞 JS</text>
+
+  <!-- 第三行：DOM + CSSOM -->
+  <rect x="150" y="548" width="160" height="52" rx="8" fill="#ffe066" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="230" y="568" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1e1e1e">DOM 树</text>
+  <text x="230" y="588" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#495057">文档结构 · 增量构建</text>
+
+  <rect x="410" y="548" width="160" height="52" rx="8" fill="#ffe066" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="490" y="568" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1e1e1e">CSSOM 树</text>
+  <text x="490" y="588" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#495057">样式规则</text>
+
+  <!-- HTML → DOM：增量构建（主路径） -->
+  <line x1="200" y1="426" x2="200" y2="548" stroke="#495057" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="118" y="492" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#495057">增量构建</text>
+
+  <!-- CSS → CSSOM -->
+  <line x1="490" y1="426" x2="490" y2="548" stroke="#495057" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- JS → DOM：可能修改 -->
+  <line x1="320" y1="506" x2="260" y2="548" stroke="#868e96" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrow-dashed)"/>
+  <text x="318" y="534" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#868e96">可能修改 DOM</text>
+
+  <!-- 渲染层 -->
+  <rect x="24" y="684" width="672" height="220" rx="10" fill="#ebfbee" stroke="#dee2e6" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="44" y="704" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="13" fill="#868e96">渲染层</text>
+
+  <rect x="260" y="728" width="200" height="52" rx="8" fill="#b2f2bb" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="360" y="748" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1e1e1e">渲染树 Render Tree</text>
+  <text x="360" y="768" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="12" fill="#495057">DOM + CSSOM 合并</text>
+
+  <line x1="230" y1="600" x2="310" y2="728" stroke="#495057" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="490" y1="600" x2="410" y2="728" stroke="#495057" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <rect x="280" y="812" width="160" height="44" rx="8" fill="#b2f2bb" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="360" y="840" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="15" fill="#1e1e1e">布局 → 绘制 → 合成</text>
+
+  <line x1="360" y1="780" x2="360" y2="812" stroke="#495057" stroke-width="2" marker-end="url(#arrow)"/>
+</svg>

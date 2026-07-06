@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 400" width="780" height="400">
+  <!-- svg-source:excalidraw -->
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <polygon points="0 0, 10 4, 0 8" fill="#495057"/>
+    </marker>
+  </defs>
+  <rect width="100%" height="100%" fill="#ffffff"/>
+
+  <!-- 输入 -->
+  <rect x="140" y="14" width="500" height="40" rx="8" fill="#f8f9fa" stroke="#dee2e6" stroke-width="1.5"/>
+  <text x="158" y="32" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#868e96">HTML 字符流</text>
+  <text x="390" y="40" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" fill="#1e1e1e">&lt;p class="a"&gt;text&lt;/p&gt;</text>
+  <line x1="390" y1="54" x2="390" y2="68" stroke="#495057" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Tokenizer -->
+  <rect x="20" y="68" width="340" height="310" rx="8" fill="#e7f5ff" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="190" y="94" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="600" fill="#1e1e1e">词法分析 · Tokenizer</text>
+  <text x="190" y="110" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#495057">状态机将字符流切分为 token</text>
+
+  <rect x="36" y="124" width="64" height="24" rx="4" fill="#d0ebff" stroke="#74c0fc" stroke-width="1"/>
+  <text x="68" y="140" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#1864ab">标签开始</text>
+  <rect x="108" y="124" width="236" height="24" rx="4" fill="#ffffff" stroke="#1e1e1e" stroke-width="1.5"/>
+  <text x="226" y="140" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="#1e1e1e">&lt;p</text>
+
+  <rect x="36" y="156" width="64" height="24" rx="4" fill="#d0ebff" stroke="#74c0fc" stroke-width="1"/>
+  <text x="68" y="172" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#1864ab">属性</text>
+  <rect x="108" y="156" width="236" height="24" rx="4" fill="#ffffff" stroke="#1e1e1e" stroke-width="1.5"/>
+  <text x="226" y="172" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="#1e1e1e">class="a"</text>
+
+  <rect x="36" y="188" width="64" height="24" rx="4" fill="#d0ebff" stroke="#74c0fc" stroke-width="1"/>
+  <text x="68" y="204" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#1864ab">标签结束</text>
+  <rect x="108" y="188" width="236" height="24" rx="4" fill="#ffffff" stroke="#1e1e1e" stroke-width="1.5"/>
+  <text x="226" y="204" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="#1e1e1e">&gt;</text>
+
+  <rect x="36" y="220" width="64" height="24" rx="4" fill="#d0ebff" stroke="#74c0fc" stroke-width="1"/>
+  <text x="68" y="236" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#1864ab">文本</text>
+  <rect x="108" y="220" width="236" height="24" rx="4" fill="#ffffff" stroke="#1e1e1e" stroke-width="1.5"/>
+  <text x="226" y="236" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="#1e1e1e">text</text>
+
+  <rect x="36" y="252" width="64" height="24" rx="4" fill="#d0ebff" stroke="#74c0fc" stroke-width="1"/>
+  <text x="68" y="268" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#1864ab">结束标签</text>
+  <rect x="108" y="252" width="236" height="24" rx="4" fill="#ffffff" stroke="#1e1e1e" stroke-width="1.5"/>
+  <text x="226" y="268" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="#1e1e1e">&lt;/p&gt;</text>
+
+  <text x="190" y="300" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#868e96">边接收字节边产出 token（流式解析）</text>
+
+  <!-- token 流 -->
+  <line x1="360" y1="220" x2="420" y2="220" stroke="#495057" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="390" y="208" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" fill="#868e96">token 流</text>
+
+  <!-- Tree Builder -->
+  <rect x="420" y="68" width="340" height="310" rx="8" fill="#ebfbee" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="590" y="94" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="14" font-weight="600" fill="#1e1e1e">语法分析 · Tree Builder</text>
+  <text x="590" y="110" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#495057">消费 token，维护开放元素栈，构建 DOM</text>
+
+  <!-- 开放元素栈 -->
+  <text x="436" y="136" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" font-weight="600" fill="#2b8a3e">开放元素栈</text>
+  <rect x="436" y="144" width="108" height="26" rx="4" fill="#ffffff" stroke="#1e1e1e" stroke-width="1.5"/>
+  <text x="490" y="162" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="#868e96">body</text>
+  <rect x="436" y="174" width="108" height="26" rx="4" fill="#ffffff" stroke="#1e1e1e" stroke-width="1.5"/>
+  <text x="490" y="192" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="#1e1e1e">p</text>
+  <text x="554" y="192" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#e03131">← 栈顶</text>
+
+  <!-- DOM 树 -->
+  <text x="610" y="136" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="11" font-weight="600" fill="#2b8a3e">DOM 树（片段）</text>
+  <rect x="580" y="152" width="88" height="26" rx="4" fill="#ffffff" stroke="#1e1e1e" stroke-width="1.5"/>
+  <text x="624" y="170" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="#1e1e1e">body</text>
+  <line x1="624" y1="178" x2="624" y2="192" stroke="#495057" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="590" y="192" width="88" height="26" rx="4" fill="#ffffff" stroke="#1e1e1e" stroke-width="1.5"/>
+  <text x="634" y="210" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="#1e1e1e">p</text>
+  <text x="686" y="210" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10" fill="#868e96">.a</text>
+  <line x1="634" y1="218" x2="634" y2="232" stroke="#495057" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="598" y="232" width="100" height="26" rx="4" fill="#fff9db" stroke="#1e1e1e" stroke-width="1.5"/>
+  <text x="648" y="250" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="#1e1e1e">"text"</text>
+  <text x="648" y="272" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#868e96">#text 节点</text>
+
+  <!-- 栈操作 -->
+  <line x1="436" y1="284" x2="744" y2="284" stroke="#dee2e6" stroke-width="1"/>
+  <text x="436" y="300" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#495057">StartTag &lt;p class="a"&gt; → 创建节点、写入属性、挂到父节点后入栈</text>
+  <text x="436" y="316" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#868e96">（左侧「标签开始 / 属性 / 标签结束」是 Tokenizer 内部状态，Tree Builder 消费完整 token）</text>
+  <text x="436" y="334" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#495057">Character text → 插入为栈顶元素的子节点（不入栈）</text>
+  <text x="436" y="350" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10" fill="#495057">EndTag &lt;/p&gt; → 出栈并校验标签匹配</text>
+</svg>

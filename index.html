@@ -153,75 +153,73 @@
     <div class="moments-cover-content">
       <header id="page-header" class="moments-profile-header">
   <span class="header-brand">
-    <a id="site-name" href="/">Yin-Hongwei</a>
-    <a class="header-brand-avatar" href="/" aria-label="Yin-Hongwei">
-      <img src="/img/avatar.jpg" alt="Yin-Hongwei" decoding="async" width="32" height="32" class="lazy-img" loading="eager" decoding="async">
+    <a class="header-logo" href="/" aria-label="Yin-Hongwei">
+      <img src="/img/avatar.jpg" alt="Yin-Hongwei" decoding="async" width="36" height="36" class="lazy-img" loading="eager" decoding="async">
     </a>
+    <a id="site-name" href="/">Yin-Hongwei</a>
   </span>
   
   <div class="header-actions">
-    
-      <button type="button" id="dark-mode-toggle" class="site-page social-icon dark-mode-toggle" aria-label="切换暗色模式" aria-pressed="false">
-        <i class="fa fa-moon-o" aria-hidden="true"></i>
+    <div class="header-actions-main">
+      
+      
+        <nav class="menus mobile-nav-panel" id="mobile-nav-panel" aria-label="菜单" aria-hidden="true">
+          <div class="mobile-nav-panel__header">
+            <span class="mobile-nav-panel__title">菜单</span>
+          </div>
+          <div class="mobile-nav-panel__body">
+            
+              <a class="site-page social-icon search search--desktop" href="javascript:void(0);">
+                <i class="fa fa-search" aria-hidden="true"></i>
+                <span class="menu-item-label">搜索</span>
+              </a>
+            
+            
+              
+                
+                
+                
+                
+                <a class="site-page" href="/about">
+                  
+                    关于我
+                  
+                </a>
+              
+                
+                
+                
+                
+                <a class="site-page social-icon" href="https://github.com/Yin-Hongwei" target="_blank" rel="noreferrer noopener">
+                  
+                    <i class="fa fa-github" aria-hidden="true"></i>
+                    <span class="menu-item-label">GitHub</span>
+                  
+                </a>
+              
+            
+          </div>
+        </nav>
+      
+    </div>
+    <div class="header-actions-tools">
+      <button type="button" class="toggle-menu" aria-label="菜单" aria-expanded="false" aria-controls="mobile-nav-panel">
+        <span class="toggle-menu__icon" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
       </button>
-    
-    
-    
-      <a class="site-page social-icon search search--desktop" href="javascript:void(0);">
-        <i class="fa fa-search" aria-hidden="true"></i>
-        <span>搜索</span>
-      </a>
-    
-    
-      <nav class="menus mobile-nav-panel" id="mobile-nav-panel" aria-label="菜单" aria-hidden="true">
-        <div class="mobile-nav-panel__header">
-          <span class="mobile-nav-panel__title">菜单</span>
-        </div>
-        <div class="mobile-nav-panel__body">
-          
-              
-              
-              
-              
-              <a class="site-page" href="/about">
-                
-                  关于我
-                
-              </a>
-            
-              
-              
-              
-              
-              <a class="site-page social-icon" href="https://github.com/Yin-Hongwei" target="_blank" rel="noreferrer noopener">
-                
-                  <i class="fa fa-github" aria-hidden="true"></i>
-                  <span class="menu-item-label">GitHub</span>
-                
-              </a>
-            
-        </div>
-      </nav>
-    
-    <button type="button" class="toggle-menu" aria-label="菜单" aria-expanded="false" aria-controls="mobile-nav-panel">
-      <span class="toggle-menu__icon" aria-hidden="true">
-        <span></span>
-        <span></span>
-        <span></span>
-      </span>
-    </button>
+      
+        <button type="button" id="dark-mode-toggle" class="site-page social-icon dark-mode-toggle" aria-label="切换暗色模式" aria-pressed="false">
+          <i class="fa fa-moon-o" aria-hidden="true"></i>
+        </button>
+      
+    </div>
   </div>
 </header>
 <div class="mobile-nav-backdrop" aria-hidden="true"></div>
 
-    </div>
-  </div>
-  <div class="moments-profile-bottom">
-    <div class="moments-profile-bottom-inner">
-      <div class="moments-profile-name">Yin-Hongwei</div>
-      <a class="moments-profile-avatar" href="/about" aria-label="Yin-Hongwei">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" fetchpriority="high" decoding="async" width="68" height="68" class="lazy-img" loading="lazy" decoding="async">
-      </a>
     </div>
   </div>
 </div>
@@ -235,16 +233,48 @@
   
     
     <div class="moments-item">
-      <a class="moments-avatar" href="/about" aria-hidden="true" tabindex="-1">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" loading="lazy" decoding="async" width="40" height="40">
-      </a>
       <div class="moments-body">
-        <div class="moments-header">
-          <a class="moments-name" href="/about">Yin-Hongwei</a>
+        <div class="moments-content">
+          <div class="moments-title-row">
+            <a class="moments-title" href="/2023/04/17/H5%20%E8%BD%AF%E9%94%AE%E7%9B%98%E5%85%BC%E5%AE%B9%E6%96%B9%E6%A1%88/">H5 软键盘兼容方案</a>
+            
+          </div>
+          
+            <div class="content"><p>在 App 内嵌 WebView 的聊天、评论、搜索等场景中，页面通常由三部分组成：<strong>顶部 Header（固定）</strong>、<strong>中间对话区（可滚动）</strong>、<strong>底部输入框（固定）</strong>。</p>
+<p>理想状态下，软键盘弹出时只有中间对话区被压缩，Header 始终吸顶，输入框随键盘上推。但在 iOS 和 Android 上，实际情况往往与预期不符。本文整理了实际开发中常见的兼容问题，以及对应的处理方案。</p></div>
+            <a class="moments-more" href="/2023/04/17/H5%20%E8%BD%AF%E9%94%AE%E7%9B%98%E5%85%BC%E5%AE%B9%E6%96%B9%E6%A1%88/">全文</a>
           
         </div>
+        <div class="moments-footer">
+          <div class="moments-meta">
+            
+              
+              <time class="post-meta__date">2023-04-17</time>
+            
+            
+          </div>
+          <div class="moments-actions">
+            <button class="moments-action-btn" type="button" aria-label="操作">
+              <span class="moments-action-dot"></span>
+              <span class="moments-action-dot"></span>
+            </button>
+            <div class="moments-action-menu">
+              <a class="moments-action-item" href="/2023/04/17/H5%20%E8%BD%AF%E9%94%AE%E7%9B%98%E5%85%BC%E5%AE%B9%E6%96%B9%E6%A1%88/">阅读全文</a>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    
+    <div class="moments-item">
+      <div class="moments-body">
         <div class="moments-content">
-          <a class="moments-title" href="/2021/12/25/webpack%20%E7%83%AD%E6%9B%B4%E6%96%B0%E5%8E%9F%E7%90%86/">webpack 热更新原理</a>
+          <div class="moments-title-row">
+            <a class="moments-title" href="/2021/12/25/webpack%20%E7%83%AD%E6%9B%B4%E6%96%B0%E5%8E%9F%E7%90%86/">webpack 热更新原理</a>
+            
+          </div>
           
             <div class="content"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h2><p>随着前端技术的不断发展，构建工具与我们的开发已密不可分，但是无论选择哪款构建工具，我们都或多或少的使用过他们热更新的能力，今天就以 webpack 为例，来看 webpack 热更新的原理。</p>
 <p>要实现热更新的能力，首先 webpack 要具备文件监听的能力，其次也要具备模块构建的能力，所以我们就从无到有的看 webpack 热更新的原理。</p></div>
@@ -275,16 +305,12 @@
   
     
     <div class="moments-item">
-      <a class="moments-avatar" href="/about" aria-hidden="true" tabindex="-1">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" loading="lazy" decoding="async" width="40" height="40">
-      </a>
       <div class="moments-body">
-        <div class="moments-header">
-          <a class="moments-name" href="/about">Yin-Hongwei</a>
-          
-        </div>
         <div class="moments-content">
-          <a class="moments-title" href="/2021/12/04/Vue%20watcher%20%E5%88%86%E7%B1%BB/">Vue watcher 分类</a>
+          <div class="moments-title-row">
+            <a class="moments-title" href="/2021/12/04/Vue%20watcher%20%E5%88%86%E7%B1%BB/">Vue watcher 分类</a>
+            
+          </div>
           
             <div class="content"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>知道 Vue 响应式原理的都知道，每个组件都对应有一个自己的 watcher 实例，但是除了组件对应的 watcher 实例，computed 和 watch 也都分别对应有自己的 watcher 实例，所以下面我们就针对这三种 watcher 做一下研究，知道了底层实现，也能更好的让我们在使用中做出更好的抉择。</p></div>
             <a class="moments-more" href="/2021/12/04/Vue%20watcher%20%E5%88%86%E7%B1%BB/">全文</a>
@@ -314,18 +340,14 @@
   
     
     <div class="moments-item">
-      <a class="moments-avatar" href="/about" aria-hidden="true" tabindex="-1">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" loading="lazy" decoding="async" width="40" height="40">
-      </a>
       <div class="moments-body">
-        <div class="moments-header">
-          <a class="moments-name" href="/about">Yin-Hongwei</a>
-          
-        </div>
         <div class="moments-content">
-          <a class="moments-title" href="/2021/06/01/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a>
+          <div class="moments-title-row">
+            <a class="moments-title" href="/2021/06/01/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">浏览器工作原理</a>
+            
+          </div>
           
-            <div class="content"><h2 id="一、域名解析"><a href="#一、域名解析" class="headerlink" title="一、域名解析"></a>一、域名解析</h2><p>域名解析的过程就是查找域名对应 IP 地址的过程。</p></div>
+            <div class="content"><p>从地址栏输入 URL 到页面显示，浏览器依次完成 <strong>URL 校验 → DNS 解析 → 网络请求 → HTML&#x2F;CSS&#x2F;JS 解析 → 渲染树构建 → 布局 → 绘制 → 合成</strong>。理解这条 <strong>关键渲染路径（Critical Rendering Path）</strong>，是掌握浏览器内部机制的基础。</p></div>
             <a class="moments-more" href="/2021/06/01/%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">全文</a>
           
         </div>
@@ -353,16 +375,12 @@
   
     
     <div class="moments-item">
-      <a class="moments-avatar" href="/about" aria-hidden="true" tabindex="-1">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" loading="lazy" decoding="async" width="40" height="40">
-      </a>
       <div class="moments-body">
-        <div class="moments-header">
-          <a class="moments-name" href="/about">Yin-Hongwei</a>
-          
-        </div>
         <div class="moments-content">
-          <a class="moments-title" href="/2020/07/22/%E5%89%8D%E7%AB%AF%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88/">前端数据存储方案</a>
+          <div class="moments-title-row">
+            <a class="moments-title" href="/2020/07/22/%E5%89%8D%E7%AB%AF%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88/">前端数据存储方案</a>
+            
+          </div>
           
             <div class="content"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前端数据存储方案主要有 Cookie、Web Storage、IndexedDB 三种。下图为 Chrome 浏览器的存储方案，虽然支持 Web SQL 存储，但是 W3C Web应用工作组于2010年11月停止了对该规范的研究，所以不提倡使用，下面就以上三种存储方案做一下介绍。</p></div>
             <a class="moments-more" href="/2020/07/22/%E5%89%8D%E7%AB%AF%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88/">全文</a>
@@ -392,16 +410,12 @@
   
     
     <div class="moments-item">
-      <a class="moments-avatar" href="/about" aria-hidden="true" tabindex="-1">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" loading="lazy" decoding="async" width="40" height="40">
-      </a>
       <div class="moments-body">
-        <div class="moments-header">
-          <a class="moments-name" href="/about">Yin-Hongwei</a>
-          
-        </div>
         <div class="moments-content">
-          <a class="moments-title" href="/2020/03/18/%E5%89%8D%E7%AB%AF%E6%A8%A1%E5%9D%97%E5%8C%96/">前端模块化</a>
+          <div class="moments-title-row">
+            <a class="moments-title" href="/2020/03/18/%E5%89%8D%E7%AB%AF%E6%A8%A1%E5%9D%97%E5%8C%96/">前端模块化</a>
+            
+          </div>
           
             <div class="content"><h2 id="一、模块化进化史"><a href="#一、模块化进化史" class="headerlink" title="一、模块化进化史"></a>一、模块化进化史</h2><p>对于 js 的编写，不能像其他语言一样很好的支持模块化，很多程序会比较臃肿的丢在一个文件里，要把这个程序拆分开使用，两个文件之前变量的传递就是个问题。</p></div>
             <a class="moments-more" href="/2020/03/18/%E5%89%8D%E7%AB%AF%E6%A8%A1%E5%9D%97%E5%8C%96/">全文</a>
@@ -431,16 +445,12 @@
   
     
     <div class="moments-item">
-      <a class="moments-avatar" href="/about" aria-hidden="true" tabindex="-1">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" loading="lazy" decoding="async" width="40" height="40">
-      </a>
       <div class="moments-body">
-        <div class="moments-header">
-          <a class="moments-name" href="/about">Yin-Hongwei</a>
-          
-        </div>
         <div class="moments-content">
-          <a class="moments-title" href="/2019/11/05/Git%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">Git 工作原理</a>
+          <div class="moments-title-row">
+            <a class="moments-title" href="/2019/11/05/Git%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">Git 工作原理</a>
+            
+          </div>
           
             <div class="content"><h2 id="一、Git-是什么"><a href="#一、Git-是什么" class="headerlink" title="一、Git 是什么"></a>一、Git 是什么</h2><p>Git 是目前世界上最先进的分布式版本控制工具之一，下面我将通过数据的流向来介绍它。</p>
 <p><img src="/2019/11/05/Git%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/00831rSTly1gcixg7jnb0j30wk09gdg2.jpg" class="lazy-img" loading="lazy" decoding="async"></p></div>
@@ -471,18 +481,14 @@
   
     
     <div class="moments-item">
-      <a class="moments-avatar" href="/about" aria-hidden="true" tabindex="-1">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" loading="lazy" decoding="async" width="40" height="40">
-      </a>
       <div class="moments-body">
-        <div class="moments-header">
-          <a class="moments-name" href="/about">Yin-Hongwei</a>
-          
-        </div>
         <div class="moments-content">
-          <a class="moments-title" href="/2019/07/29/Hexo%20%E4%B8%BB%E9%A2%98%E5%88%B6%E4%BD%9C/">Hexo 主题制作</a>
+          <div class="moments-title-row">
+            <a class="moments-title" href="/2019/07/29/Hexo%20%E4%B8%BB%E9%A2%98%E5%88%B6%E4%BD%9C/">Hexo 主题制作</a>
+            
+          </div>
           
-            <div class="content"><h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><p>之前的主题用的是默认的，网上也下载使用过别人写的主题，但是终究还是想用自己写的。所以就写了这个主题——<a target="_blank" rel="noopener" href="https://github.com/Yin-Hongwei/hexo-theme-Yin">Yin</a>。</p></div>
+            <div class="content"><p>用过默认主题，也试过别人写的主题，最后还是想有一套自己的。于是做了 <a target="_blank" rel="noopener" href="https://github.com/Yin-Hongwei/hexo-theme-Yin">Yin</a> 主题。本文记录从零搭建 Hexo 主题的完整流程：<strong>目录结构 → 数据来源 → 各页面实现 → 发布到官方主题库</strong>。</p></div>
             <a class="moments-more" href="/2019/07/29/Hexo%20%E4%B8%BB%E9%A2%98%E5%88%B6%E4%BD%9C/">全文</a>
           
         </div>
@@ -510,16 +516,12 @@
   
     
     <div class="moments-item">
-      <a class="moments-avatar" href="/about" aria-hidden="true" tabindex="-1">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" loading="lazy" decoding="async" width="40" height="40">
-      </a>
       <div class="moments-body">
-        <div class="moments-header">
-          <a class="moments-name" href="/about">Yin-Hongwei</a>
-          
-        </div>
         <div class="moments-content">
-          <a class="moments-title" href="/2019/03/04/music/">Vue + SpringBoot + MyBatis 音乐网站</a>
+          <div class="moments-title-row">
+            <a class="moments-title" href="/2019/03/04/music/">Vue + SpringBoot + MyBatis 音乐网站</a>
+            
+          </div>
           
             <div class="content"><h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><p>本文梳理音乐网站从设计到落地的完整思路，重点讲清<strong>数据如何从数据库一步步流到前端页面</strong>。先建立整体流程感，再逐个击破接口、组件等细节——无论是照着做一遍，还是迁移到其他项目，都会顺手得多。</p>
 <p>项目源码：<a target="_blank" rel="noopener" href="https://github.com/Yin-Hongwei/music-website">github.com&#x2F;Yin-Hongwei&#x2F;music-website</a></p>
@@ -551,16 +553,12 @@
   
     
     <div class="moments-item">
-      <a class="moments-avatar" href="/about" aria-hidden="true" tabindex="-1">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" loading="lazy" decoding="async" width="40" height="40">
-      </a>
       <div class="moments-body">
-        <div class="moments-header">
-          <a class="moments-name" href="/about">Yin-Hongwei</a>
-          
-        </div>
         <div class="moments-content">
-          <a class="moments-title" href="/2018/10/15/JavaScript%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">JavaScript 正则表达式</a>
+          <div class="moments-title-row">
+            <a class="moments-title" href="/2018/10/15/JavaScript%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">JavaScript 正则表达式</a>
+            
+          </div>
           
             <div class="content"><h2 id="一、概念"><a href="#一、概念" class="headerlink" title="一、概念"></a>一、概念</h2><p>正则表达式是用于匹配字符串中字符组合的模式。</p></div>
             <a class="moments-more" href="/2018/10/15/JavaScript%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">全文</a>
@@ -590,18 +588,14 @@
   
     
     <div class="moments-item">
-      <a class="moments-avatar" href="/about" aria-hidden="true" tabindex="-1">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" loading="lazy" decoding="async" width="40" height="40">
-      </a>
       <div class="moments-body">
-        <div class="moments-header">
-          <a class="moments-name" href="/about">Yin-Hongwei</a>
-          
-        </div>
         <div class="moments-content">
-          <a class="moments-title" href="/2018/08/17/JavaScript%20Event%20Loop/">JavaScript Event Loop</a>
+          <div class="moments-title-row">
+            <a class="moments-title" href="/2018/08/17/JavaScript%20Event%20Loop/">JavaScript Event Loop</a>
+            
+          </div>
           
-            <div class="content"><h2 id="一、Event-Loop"><a href="#一、Event-Loop" class="headerlink" title="一、Event Loop"></a>一、Event Loop</h2><h3 id="1、过程描述"><a href="#1、过程描述" class="headerlink" title="1、过程描述"></a>1、过程描述</h3><p>首先 JavaScript 是单线程的脚本语言，因为假定 JS 同时有两个线程，一个线程在某个DOM节点上添加内容，另一个线程删除了这个节点，这时浏览器就不知道以哪个线程为准。</p></div>
+            <div class="content"><p>JavaScript 是单线程语言，异步能力依赖 Event Loop 调度宏任务与微任务。理解这套机制，是读懂 <code>setTimeout</code>、<code>Promise</code>、<code>async/await</code> 等 API 执行顺序的基础。</p></div>
             <a class="moments-more" href="/2018/08/17/JavaScript%20Event%20Loop/">全文</a>
           
         </div>
@@ -629,16 +623,12 @@
   
     
     <div class="moments-item">
-      <a class="moments-avatar" href="/about" aria-hidden="true" tabindex="-1">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" loading="lazy" decoding="async" width="40" height="40">
-      </a>
       <div class="moments-body">
-        <div class="moments-header">
-          <a class="moments-name" href="/about">Yin-Hongwei</a>
-          
-        </div>
         <div class="moments-content">
-          <a class="moments-title" href="/2018/08/01/vue%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/">Vue 响应式原理</a>
+          <div class="moments-title-row">
+            <a class="moments-title" href="/2018/08/01/vue%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/">Vue 响应式原理</a>
+            
+          </div>
           
             <div class="content"><h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><p>vue 响应式原理是数据渲染到视图，及数据修改触发视图更新的过程。</p></div>
             <a class="moments-more" href="/2018/08/01/vue%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/">全文</a>
@@ -668,16 +658,12 @@
   
     
     <div class="moments-item">
-      <a class="moments-avatar" href="/about" aria-hidden="true" tabindex="-1">
-        <img src="/img/avatar.jpg" alt="Yin-Hongwei" loading="lazy" decoding="async" width="40" height="40">
-      </a>
       <div class="moments-body">
-        <div class="moments-header">
-          <a class="moments-name" href="/about">Yin-Hongwei</a>
-          
-        </div>
         <div class="moments-content">
-          <a class="moments-title" href="/2018/04/02/%E8%AE%BE%E8%AE%A1%E4%BD%9C%E5%93%81/">设计作品</a>
+          <div class="moments-title-row">
+            <a class="moments-title" href="/2018/04/02/%E8%AE%BE%E8%AE%A1%E4%BD%9C%E5%93%81/">设计作品</a>
+            
+          </div>
           
             <div class="content"><p>以前部分设计作品，做个纪念。</p>
 <section class="post-gallery-section">
